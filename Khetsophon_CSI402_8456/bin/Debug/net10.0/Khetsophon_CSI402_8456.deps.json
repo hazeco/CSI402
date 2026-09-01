@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Khetsophon_CSI402_8456/1.0.0": {
+        "runtime": {
+          "Khetsophon_CSI402_8456.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Khetsophon_CSI402_8456/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
