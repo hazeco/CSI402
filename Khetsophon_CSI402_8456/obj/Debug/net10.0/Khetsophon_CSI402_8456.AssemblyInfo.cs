@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Khetsophon_CSI402_8456")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae8de62a90081579cd6b235cd9d2b14026f6ebe1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+beabb74234b04aeef297a393ca10a71f4cd2907f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Khetsophon_CSI402_8456")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Khetsophon_CSI402_8456")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -49,65 +49,48 @@ public class HomeController : Controller
         //     <p>@name</p>
         // }
 
+        // 1.Declare Variable
         string fullName = "Khetsophon Ainautoon", roomNumber = "L001", programlanguage = "HTML, CSS, Javascript, JAVA";
-        int year = 3, s1=0, s2=0, s3=10, s4=0, s5=0, s6=0, s7=0 ,s8=10, s9=10, s10=10, sum;
-    
-        sum = s1+s2+s3+s4+s5+s6+s7+s8+s9+s10;
+        int year = 3;
+        ViewBag.fullName = fullName;
+        ViewBag.roomNumber = roomNumber;
+        ViewBag.programlanguage = programlanguage;
+        ViewBag.year = year;
 
+        // 2.Score Array
+        int[] scores = { 0, 0, 10, 0, 0, 0, 0, 10, 10, 10 };
 
-        if(sum >= 80) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is A";
-        } 
-        else if(sum >= 76) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is B+";
-        } else if(sum >= 70) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is B";
+        // 3.Calculate Total
+        int totalScore = scores.Sum();
+
+        // 4.Compare
+        string grade = "";
+        if(totalScore >= 80) grade = "A";
+        else if(totalScore >= 76) grade = "B";
+        else if(totalScore >= 70) grade = "B";
+        else if(totalScore >= 66) grade = "C+";
+        else if(totalScore >= 60) grade = "C";
+        else if(totalScore >= 56) grade = "D+";
+        else if(totalScore >= 50) grade = "D";
+        else grade = "F";
+
+        ViewBag.Grade = grade;
+
+        // 5.Additional
+        List<int> workFaileds = new List<int>();
+        if (grade == "F")
+        {
+            for (int i = 0 ; i < scores.Length ; i++)
+            {
+                if (scores[i] < 5)
+                {
+                    // plus one because normal person they will confuse why start with 0 if not + 1 it will start with 0 1 2...
+                    workFaileds.Add(i + 1);
+                }
+            }
         }
-        else if(sum >= 66) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is C+";
-        } else if(sum >= 60) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is C";
-        }
-        else if(sum >= 56) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is D+";
-        } else if(sum >= 50) {
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is D";
-        } else{
-            ViewBag.fullName = fullName;
-            ViewBag.roomNumber = roomNumber;
-            ViewBag.programlanguage = programlanguage;
-            ViewBag.year = year;
-            ViewBag.sum = "Your grade is F";
-            
-        }
+        ViewBag.workFaileds = workFaileds;
+
         return View();
     }
 
