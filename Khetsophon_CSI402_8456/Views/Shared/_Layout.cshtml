@@ -5,50 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Khetsophon_CSI402_8456</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Khetsophon_CSI402_8456.styles.css" asp-append-version="true" />
-    
 </head>
-<body>
+<body class="flex min-h-screen flex-col bg-gray-50 text-gray-900">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Khetsophon_CSI402_8456</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+        <nav class="border-b border-gray-200 bg-white shadow-sm">
+            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+                <a class="text-lg font-semibold text-gray-900" asp-area="" asp-controller="Home" asp-action="Index">Khetsophon_CSI402_8456</a>
+
+                <button id="nav-toggle" type="button"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 sm:hidden"
+                        aria-controls="nav-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Lab2">Lab2</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+
+                <ul id="nav-menu" class="hidden w-full flex-col gap-1 sm:flex sm:w-auto sm:flex-row sm:items-center sm:gap-4">
+                    <li>
+                        <a class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li>
+                        <a class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" asp-area="" asp-controller="Home" asp-action="Lab2">Lab2</a>
+                    </li>
+                    <li>
+                        <a class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Khetsophon_CSI402_8456 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-t border-gray-200 bg-white py-4 text-sm text-gray-500">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6">
+            &copy; 2026 - Khetsophon_CSI402_8456 - <a class="hover:text-gray-700 hover:underline" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.getElementById('nav-toggle')?.addEventListener('click', function () {
+            var menu = document.getElementById('nav-menu');
+            var expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', String(!expanded));
+            menu.classList.toggle('hidden');
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

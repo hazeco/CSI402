@@ -1,0 +1,12 @@
+{
+  "name": "khetsophon_csi402_8456",
+  "private": true,
+  "scripts": {
+    "tailwind:build": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/site.css --minify",
+    "tailwind:watch": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/site.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.0",
+    "@tailwindcss/cli": "^4.1.0"
+  }
+}
