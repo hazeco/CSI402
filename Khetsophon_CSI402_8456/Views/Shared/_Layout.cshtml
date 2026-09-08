@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Khetsophon_CSI402_8456.Controllers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,9 +9,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Khetsophon_CSI402_8456.styles.css" asp-append-version="true" />
 </head>
-<body class="flex min-h-screen flex-col bg-gray-50 text-gray-900">
+<body class="flex  flex-col bg-gray-50 text-gray-900">
     <header>
-        <nav class="border-b border-gray-200 bg-white shadow-sm">
+        @* <nav class="border-b border-gray-200 bg-white shadow-sm">
             <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
                 <a class="text-lg font-semibold text-gray-900" asp-area="" asp-controller="Home" asp-action="Index">Khetsophon_CSI402_8456</a>
 
@@ -34,31 +35,19 @@
                     </li>
                 </ul>
             </div>
-        </nav>
+        </nav> *@
+        @await Component.InvokeAsync("Navbar")
     </header>
 
-    <div class="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">
+    <div class="mx-auto w-full max-w-6xl flex-1 sm:px-6">
         <main role="main">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-t border-gray-200 bg-white py-4 text-sm text-gray-500">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6">
-            &copy; 2026 - Khetsophon_CSI402_8456 - <a class="hover:text-gray-700 hover:underline" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    @await Component.InvokeAsync("Footer")
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        document.getElementById('nav-toggle')?.addEventListener('click', function () {
-            var menu = document.getElementById('nav-menu');
-            var expanded = this.getAttribute('aria-expanded') === 'true';
-            this.setAttribute('aria-expanded', String(!expanded));
-            menu.classList.toggle('hidden');
-        });
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

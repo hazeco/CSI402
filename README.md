@@ -151,3 +151,7 @@ CSI402/
 
 - โปรเจกต์นี้ใช้ ASP.NET Core MVC pattern
 - หากต้องการเปิดด้วย Visual Studio หรือ VS Code ให้เปิดไฟล์ `Khetsophon_CSI402_8456.sln` หรือโฟลเดอร์ root ของ repo
+
+
+#2F39A9 primary
+#92EEFF second

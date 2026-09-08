@@ -8,19 +8,19 @@
     "net10.0": []
   },
   "packageFolders": {
-    "C:\\Users\\hazeco\\.nuget\\packages\\": {}
+    "C:\\Users\\5-1001\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\code\\CSI402\\Khetsophon_CSI402_8456\\Khetsophon_CSI402_8456.csproj",
+      "projectUniqueName": "C:\\Users\\5-1001\\Desktop\\CSI402\\Khetsophon_CSI402_8456\\Khetsophon_CSI402_8456.csproj",
       "projectName": "Khetsophon_CSI402_8456",
-      "projectPath": "D:\\code\\CSI402\\Khetsophon_CSI402_8456\\Khetsophon_CSI402_8456.csproj",
-      "packagesPath": "C:\\Users\\hazeco\\.nuget\\packages\\",
-      "outputPath": "D:\\code\\CSI402\\Khetsophon_CSI402_8456\\obj\\",
+      "projectPath": "C:\\Users\\5-1001\\Desktop\\CSI402\\Khetsophon_CSI402_8456\\Khetsophon_CSI402_8456.csproj",
+      "packagesPath": "C:\\Users\\5-1001\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\5-1001\\Desktop\\CSI402\\Khetsophon_CSI402_8456\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\hazeco\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\5-1001\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
@@ -45,7 +45,7 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.300"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net10.0": {
@@ -70,7 +70,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
