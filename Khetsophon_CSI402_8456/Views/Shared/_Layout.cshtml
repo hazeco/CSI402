@@ -11,31 +11,6 @@
 </head>
 <body class="flex  flex-col bg-gray-50 text-gray-900">
     <header>
-        @* <nav class="border-b border-gray-200 bg-white shadow-sm">
-            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-                <a class="text-lg font-semibold text-gray-900" asp-area="" asp-controller="Home" asp-action="Index">Khetsophon_CSI402_8456</a>
-
-                <button id="nav-toggle" type="button"
-                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:bg-gray-100 sm:hidden"
-                        aria-controls="nav-menu" aria-expanded="false" aria-label="Toggle navigation">
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-
-                <ul id="nav-menu" class="hidden w-full flex-col gap-1 sm:flex sm:w-auto sm:flex-row sm:items-center sm:gap-4">
-                    <li>
-                        <a class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li>
-                        <a class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" asp-area="" asp-controller="Home" asp-action="Lab2">Lab2</a>
-                    </li>
-                    <li>
-                        <a class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>
-        </nav> *@
         @await Component.InvokeAsync("Navbar")
     </header>
 

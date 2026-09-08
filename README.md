@@ -155,3 +155,6 @@ CSI402/
 
 #2F39A9 primary
 #92EEFF second
+#3027ff Accent
+#050315 text
+#fbfbfe background

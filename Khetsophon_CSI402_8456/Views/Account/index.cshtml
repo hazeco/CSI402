@@ -3,15 +3,6 @@
     Layout = "_BlankLayout";
 }
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+@await Component.InvokeAsync("Navbar")
+<section class="h-dvh"></section>
+@await Component.InvokeAsync("Footer")
