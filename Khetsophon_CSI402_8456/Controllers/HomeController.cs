@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Khetsophon_CSI402_8456.Models;
 using Microsoft.VisualBasic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Khetsophon_CSI402_8456.Controllers;
 
@@ -91,6 +92,10 @@ public class HomeController : Controller
         }
         ViewBag.workFaileds = workFaileds;
 
+
+        return View();
+    }
+    public IActionResult Lab4(){
         return View();
     }
 
