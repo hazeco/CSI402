@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "สถานะพรีออเดอร์ของฉัน — FriendHouse";
+
+    // Top-of-file Media & Content Configuration
+    var statusMedia = new {
+        ProductImageUrl = "~/media/images/cloud_bear_plush.png"
+    };
+
+    var order = new {
+        RefCode = "#PO-000482",
+        Status = "รอดำเนินการ",
+        ProductName = "Cloud Bear ตุ๊กตาหมีเมฆ (สีฟ้าพาสเทล)",
+        Price = "฿590",
+        Quantity = 1,
+        OrderDate = "5 ก.ย. 2569",
+        PickupDeadline = "20 ก.ย. 2569",
+        CurrentStep = 2,
+        Steps = new[] {
+            new { StepNumber = 1, Title = "แจ้งจองออเดอร์", IsCompleted = true, IsActive = false },
+            new { StepNumber = 2, Title = "ชำระเงิน/รับสินค้า", IsCompleted = false, IsActive = true }
+        },
+        Notice = "รายการนี้จะแสดงอยู่ที่นี่จนกว่าจะมีการอัปเดตสถานะที่หน้าร้าน และจะหายไปโดยอัตโนมัติเมื่อพนักงานบันทึกว่า \"รับสินค้าและชำระเงินแล้ว\" หรือ \"ไม่มารับตามนัด (No-show)\" — ระบบจะไม่แสดงประวัติพรีออเดอร์ที่ปิดรายการแล้ว"
+    };
+}
+
+<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-white">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium" aria-label="แถบนำทาง">
+        <a asp-controller="Home" asp-action="Index" class="hover:text-primary transition-colors">หน้าแรก</a>
+        <span>/</span>
+        <span class="text-text font-semibold">พรีออเดอร์ของฉัน</span>
+    </nav>
+
+    <!-- Header -->
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">สถานะพรีออเดอร์ของฉัน</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">รายการพรีออเดอร์ที่กำลังรอดำเนินการของคุณในขณะนี้</p>
+    </div>
+
+    <!-- Active Pre-order Card (Figma Node 60:1130) -->
+    <div class="rounded-3xl border border-slate-200/80 bg-white shadow-sm overflow-hidden transition-all hover:border-primary/30">
+        <!-- Top Banner with Ref and Status -->
+        <div class="flex items-center justify-between border-b border-amber-200/80 bg-amber-50/80 px-6 py-3.5">
+            <div class="flex items-center gap-2 text-amber-800 text-xs sm:text-sm font-bold">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>@order.Status</span>
+            </div>
+            <span class="text-xs font-semibold text-amber-700/80">อ้างอิง @order.RefCode</span>
+        </div>
+
+        <!-- Order Item Info -->
+        <div class="p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                <!-- Thumbnail with Real Image -->
+                <div class="size-20 sm:size-24 shrink-0 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 shadow-xs">
+                    <img src="@Url.Content(statusMedia.ProductImageUrl)" alt="@order.ProductName" class="size-full object-cover" />
+                </div>
+
+                <!-- Info -->
+                <div class="flex-1 space-y-1">
+                    <h2 class="text-base sm:text-lg font-bold text-text leading-snug">@order.ProductName</h2>
+                    <div class="text-xs font-semibold text-primary">@order.Price • จำนวน @order.Quantity ชิ้น</div>
+
+                    <div class="flex flex-wrap items-center gap-6 pt-2 text-xs">
+                        <div>
+                            <span class="text-slate-400 block">วันที่ทำรายการ</span>
+                            <span class="font-bold text-text">@order.OrderDate</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 block">กรุณามารับภายใน</span>
+                            <span class="font-bold text-text">@order.PickupDeadline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2-Step Progress Tracker -->
+            <div class="border-t border-slate-100 pt-6">
+                <div class="relative max-w-md mx-auto">
+                    <!-- Connecting Track Behind Steps -->
+                    <div class="absolute top-4.5 left-1/4 right-1/4 h-0.5 bg-slate-200 -z-0">
+                        <div class="h-full bg-primary w-full"></div>
+                    </div>
+
+                    <div class="relative z-10 grid grid-cols-2 gap-8">
+                        @foreach (var step in order.Steps)
+                        {
+                            <div class="flex flex-col items-center text-center space-y-2">
+                                @if (step.IsCompleted)
+                                {
+                                    <div class="flex size-9 sm:size-10 items-center justify-center rounded-full bg-primary text-white shadow-xs">
+                                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs sm:text-sm font-semibold text-text">@step.Title</span>
+                                }
+                                else if (step.IsActive)
+                                {
+                                    <div class="flex size-9 sm:size-10 items-center justify-center rounded-full bg-primary text-white ring-4 ring-primary/20 shadow-xs">
+                                        <span class="size-2.5 rounded-full bg-white animate-pulse"></span>
+                                    </div>
+                                    <span class="text-xs sm:text-sm font-bold text-primary">@step.Title</span>
+                                }
+                                else
+                                {
+                                    <div class="flex size-9 sm:size-10 items-center justify-center rounded-full bg-slate-100 text-slate-400 font-bold text-xs">
+                                        @step.StepNumber
+                                    </div>
+                                    <span class="text-xs sm:text-sm font-medium text-slate-400">@step.Title</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notice Box -->
+            <div class="rounded-2xl border border-primary/15 bg-primary/5 p-4 flex gap-3 text-xs text-slate-600 leading-relaxed">
+                <svg class="size-5 shrink-0 text-primary mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>@order.Notice</span>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,9 @@
 @{
-    ViewData["Title"] = "AccountIndex";
+    ViewData["Title"] = "เข้าสู่ระบบ";
     Layout = "_AccountLayout";
 }
 
-<div class="h-dvh flex-1 flex items-center justify-center px-4 py-10">
+<div class="h-dvh flex-1 flex items-center justify-center px-4 py-10 bg-white">
     <div class="w-full max-w-sm">
         <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
             <div class="flex flex-col items-center text-center mb-6">
@@ -37,18 +37,53 @@
                   <input type="checkbox" class="cursor-pointer rounded border-slate-300 text-primary focus:ring-primary/30">
                   <div class="font-medium text-slate-600">จดจำฉันไว้ในเครื่องนี้</div>
                 </label>
-                <a href="#" class="text-xs text-primary hover:underline">ลืมรหัสผ่าน?</a>
+                <a asp-controller="Account" asp-action="ResetPassword" class="text-xs text-primary hover:underline">ลืมรหัสผ่าน?</a>
               </div>
-              <button type="button" class="cursor-pointer w-full py-2.5 rounded-xl bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition">เข้าสู่ระบบ</button>
-            <div class="flex items-center gap-3 my-5">
-                <div class="h-px flex-1 bg-slate-300/10"></div>
-                <span class="text-[11px] text-slate-500">หรือ</span>
-                <div class="h-px flex-1 bg-slate-300/10"></div>
-            </div>
-            <p class="text-center text-[14px] text-slate-500">
-              หากยังไม่มีบัญชี?
-              <a asp-area="" asp-controller="Account" asp-action="Register" class="text-primary font-semibold hover:underline">สมัครสมาชิก</a>
-            </p>
+              <a asp-controller="Home" asp-action="Customer"
+                 class="block w-full py-2.5 rounded-xl bg-primary text-white text-center text-sm font-semibold shadow-sm hover:opacity-90 transition cursor-pointer">
+                  เข้าสู่ระบบ
+              </a>
+
+              <!-- Mock Fast Login for Demo -->
+              <div class="pt-2 border-t border-slate-100 space-y-2">
+                  <span class="block text-[11px] font-bold text-slate-400 text-center uppercase tracking-wider">เข้าสู่ระบบด่วน (Mock Fast Login)</span>
+                  <div class="grid grid-cols-1 gap-2">
+                      <a asp-controller="Home" asp-action="Customer"
+                         class="flex items-center justify-center gap-2 rounded-xl bg-secondary/25 py-2 px-3 text-xs font-bold text-primary hover:bg-secondary/40 transition-colors cursor-pointer">
+                          <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                              <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                          <span>ลูกค้าทั่วไป (Customer View)</span>
+                      </a>
+                      <a asp-controller="Staff" asp-action="Index"
+                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
+                          <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                          </svg>
+                          <span>พนักงานหน้าร้าน (Staff View)</span>
+                      </a>
+                      <a asp-controller="Owner" asp-action="Index"
+                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
+                          <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                          </svg>
+                          <span>เจ้าของร้าน (Owner View)</span>
+                      </a>
+                  </div>
+              </div>
+
+              <div class="flex items-center gap-3 my-4">
+                  <div class="h-px flex-1 bg-slate-200"></div>
+                  <span class="text-[11px] text-slate-400">หรือ</span>
+                  <div class="h-px flex-1 bg-slate-200"></div>
+              </div>
+
+              <p class="text-center text-xs text-slate-500">
+                ยังไม่มีบัญชีสมาชิก?
+                <a asp-controller="Account" asp-action="Register" class="text-primary font-bold hover:underline">สมัครสมาชิกใหม่</a>
+              </p>
             </form>
         </div>
     </div>

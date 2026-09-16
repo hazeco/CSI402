@@ -1,46 +1,47 @@
 @{
     var figuretLinks = new[]
     {
-        new { Label = "ฟิกเกอร์", Href = "#" },
-        new { Label = "ของสะสม", Href = "#" },
-        new { Label = "สินค้าใหม่", Href = "#" }
+        new { Label = "คอลเลกชันทั้งหมด", Controller = "Home", Action = "Collection" },
+        new { Label = "สินค้าแนะนำ", Controller = "Home", Action = "Index" },
+        new { Label = "สถานะพรีออเดอร์", Controller = "Home", Action = "PreorderStatus" }
     };
 
     var platformLinks = new[]
     {
-        new { Label = "เกี่ยวกับเรา", Href = "#" },
-        new { Label = "วิธีใช้งาน", Href = "#" },
-        new { Label = "ติดต่อเรา", Href = "#" }
+        new { Label = "โปรโมชั่น", Controller = "Home", Action = "Promotion" },
+        new { Label = "แลกแต้มรางวัล", Controller = "Home", Action = "Rewards" }
     };
 
     var siteName = "FriendHouse";
-    var lineId = "your-line-id";
-    var contactEmail = "contact@example.com";
+    var phone = "02-xxx-xxxx";
+    var lineId = "friendhouse_shop";
+    var contactEmail = "hello@friendhouse.shop";
 }
 
-<footer class="border-t border-gray-200 bg-white px-4 pt-10 pb-8 text-gray-700">
+<footer id="footer" class="scroll-mt-10 border-t border-slate-200 bg-white px-4 pt-10 pb-8 text-slate-700">
     <div class="mx-auto max-w-7xl">
-        <div class="mb-10 grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mb-10 grid grid-cols-1 gap-9 sm:grid-cols-2 lg:grid-cols-3">
             <div>
-                <div class="mb-4 flex items-center gap-2 text-xl font-bold text-text sm:text-2xl">
-                    <span
-                    class="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">FH</span>
-                    <span>FriendHouse</span>
+                <div class="mb-4 flex items-center gap-2.5 text-xl font-bold text-text sm:text-2xl">
+                    <div class="flex size-9 items-center justify-center overflow-hidden rounded-xl border border-primary/20 bg-white shadow-xs">
+                        <img src="~/logo/logo.png" alt="@siteName" class="size-full object-cover" />
+                    </div>
+                    <span>@siteName</span>
                 </div>
 
-                <p class="max-w-260px text-sm leading-7 text-gray-500">
+                <p class="max-w-[260px] text-sm leading-7 text-slate-500">
                     ร้านฟิกเกอร์และของสะสมสำหรับคนรักอนิเมะ จองล่วงหน้า รับและชำระเงินที่หน้าร้าน
                 </p>
             </div>
 
             <div>
-                <h4 class="mb-4 font-semibold">ฟิกเกอร์</h4>
+                <h4 class="mb-4 font-semibold text-text">ฟิกเกอร์และสินค้า</h4>
 
-                <ul class="space-y-2 text-sm text-gray-500">
+                <ul class="space-y-2 text-sm text-slate-500">
                     @foreach (var link in figuretLinks)
                     {
                         <li>
-                            <a href="@link.Href" class="hover:text-blue-700">
+                            <a asp-controller="@link.Controller" asp-action="@link.Action" class="hover:text-primary transition-colors">
                                 @link.Label
                             </a>
                         </li>
@@ -48,42 +49,23 @@
                 </ul>
             </div>
 
+            
             <div>
-                <h4 class="mb-4 font-semibold">แพลตฟอร์ม</h4>
+                <h4 class="mb-4 font-semibold text-text">ติดต่อ</h4>
 
-                <ul class="space-y-2 text-sm text-gray-500">
-                    @foreach (var link in platformLinks)
-                    {
-                        <li>
-                            <a href="@link.Href" class="hover:text-blue-700">
-                                @link.Label
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </div>
-
-            <div>
-                <h4 class="mb-4 font-semibold">ติดต่อ</h4>
-
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li>
-                        <a href="https://line.me/R/ti/p/@lineId" target="_blank" rel="noreferrer"
-                           class="hover:text-blue-700">
-                            LINE: @lineId
-                        </a>
-                    </li>
-                    <li>@contactEmail</li>
+                <ul class="space-y-2 text-sm text-slate-500">
+                    <li>โทร: @phone</li>
+                    <li>LINE: @lineId</li>
+                    <li>อีเมล: @contactEmail</li>
                 </ul>
             </div>
         </div>
 
-        <div
-            class="flex flex-col gap-3 border-t border-gray-200 pt-6 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-col gap-3 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
             <span>
                 &copy; @DateTime.Now.Year @siteName. All rights reserved.
             </span>
-            <span>จองล่วงหน้า รับและชำระเงินที่หน้าร้าน เท่านั้น</span>
+            <span>จองล่วงหน้า รับและชำระเงินที่หน้าร้านเท่านั้น</span>
         </div>
     </div>
 </footer>

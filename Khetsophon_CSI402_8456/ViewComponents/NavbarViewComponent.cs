@@ -6,9 +6,14 @@ public class  NavbarViewComponent : ViewComponent
 {
     public IViewComponentResult Invoke(string role = "guest")
     {
-        // role = "guest" -> Default.cshtml
-        // role = "staff" -> Staff.cshtml
-        string viewName = role == "guest" ? "Default" : role;
+        string viewName = (role?.ToLowerInvariant()) switch
+        {
+            "staff" => "Staff",
+            "owner" => "Owner",
+            "itsupport" or "it" => "ITSupport",
+            "accountant" or "acc" => "Accountant",
+            _ => "Default"
+        };
         return View(viewName, model: role);
     }
 }

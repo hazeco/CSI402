@@ -1,0 +1,214 @@
+@{
+    ViewData["Title"] = "แคตตาล็อกแลกแต้มสะสม — FriendHouse";
+
+    // Top-of-file Media & Content Configuration
+    var userPoints = 2450;
+
+    var rewardCategories = new[] {
+        new { Label = "ทั้งหมด", IsActive = true },
+        new { Label = "ฟิกเกอร์ (Figures)", IsActive = false },
+        new { Label = "พรีเมียมกิ๊ฟ (Merchandise)", IsActive = false },
+        new { Label = "แลกได้ทันที", IsActive = false }
+    };
+
+    var rewards = new[] {
+        new {
+            Id = 301,
+            Title = "พวงกุญแจอะคริลิก ดาบพิฆาตอสูร Special Ver.",
+            Brand = "Banpresto",
+            Points = 350,
+            PointsText = "350 แต้ม",
+            Tag = "Limited",
+            Available = true,
+            ImageUrl = "~/media/images/tanjiro_kamado.png"
+        },
+        new {
+            Id = 302,
+            Title = "โปสเตอร์ผ้าวันพีซ ฟิล์มเรด ลิขสิทธิ์แท้",
+            Brand = "Toei Animation",
+            Points = 600,
+            PointsText = "600 แต้ม",
+            Tag = "ยอดนิยม",
+            Available = true,
+            ImageUrl = "~/media/images/luffy_gear5.png"
+        },
+        new {
+            Id = 303,
+            Title = "แก้วมัคเซรามิก FriendHouse Original 2026",
+            Brand = "FriendHouse Studio",
+            Points = 850,
+            PointsText = "850 แต้ม",
+            Tag = "Exclusive",
+            Available = true,
+            ImageUrl = "~/media/images/cloud_bear_plush.png"
+        },
+        new {
+            Id = 304,
+            Title = "มินิฟิกเกอร์ เนซึโกะ กล่องไม้ ลิมิเต็ด",
+            Brand = "Good Smile Company",
+            Points = 1800,
+            PointsText = "1,800 แต้ม",
+            Tag = "จำนวนจำกัด",
+            Available = true,
+            ImageUrl = "~/media/images/naruto_hero_fig.png"
+        }
+    };
+
+    var queryRole = Context.Request.Query["role"].ToString();
+    bool isCustomer = string.Equals(queryRole, "customer", StringComparison.OrdinalIgnoreCase) || 
+                      string.Equals(ViewData["Role"]?.ToString(), "customer", StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-white">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium" aria-label="แถบนำทาง">
+        <a asp-controller="Home" asp-action="@(isCustomer ? "Customer" : "Index")" class="hover:text-primary transition-colors">หน้าแรก</a>
+        <span>/</span>
+        <span class="text-text font-semibold">แคตตาล็อกแลกแต้มสะสม</span>
+    </nav>
+
+    @if (!isCustomer)
+    {
+        <!-- Guest Gate / Member-only Notification -->
+        <div class="rounded-3xl border border-slate-200/80 bg-white p-8 sm:p-12 text-center shadow-xs max-w-2xl mx-auto space-y-6">
+            <div class="mx-auto flex size-20 items-center justify-center rounded-3xl bg-secondary/30 text-primary shadow-sm">
+                <svg class="size-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            <div class="space-y-2">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-text">สิทธิพิเศษสำหรับสมาชิก FriendHouse</h1>
+                <p class="text-sm text-slate-500 leading-relaxed max-w-md mx-auto">
+                    หน้าแคตตาล็อกแลกแต้มสะสมเปิดให้เฉพาะสมาชิกเท่านั้น กรุณาเข้าสู่ระบบเพื่อตรวจสอบแต้มสะสมและแลกรับของรางวัลพรีเมียมลิขสิทธิ์แท้
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                <a asp-controller="Account" asp-action="Login"
+                   class="w-full sm:w-auto rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-xs hover:opacity-90 transition-opacity text-center">
+                    เข้าสู่ระบบเพื่อแลกแต้ม
+                </a>
+                <a asp-controller="Account" asp-action="Register"
+                   class="w-full sm:w-auto rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors text-center">
+                    สมัครสมาชิกใหม่
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Points Summary Card Banner (Figma Node 60:4) -->
+        <div class="relative overflow-hidden rounded-3xl border border-primary/15 bg-gradient-to-r from-blue-50 via-indigo-50/70 to-secondary/15 p-6 sm:p-8 shadow-xs">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <!-- Points Info -->
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-primary font-bold text-sm">
+                        <div class="flex size-7 items-center justify-center rounded-full bg-primary text-white">
+                            <svg class="size-4 fill-current" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                        </div>
+                        <span>คะแนนสะสมของคุณ</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-4xl sm:text-5xl font-extrabold text-primary">@userPoints.ToString("N0")</span>
+                        <span class="text-sm sm:text-base font-bold text-primary/70 uppercase">Points</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-600">คุณสามารถใช้แต้มเพื่อแลกรับสินค้าสุดพิเศษและของพรีเมียมได้ที่นี่</p>
+                </div>
+
+                <!-- History Button -->
+                <div>
+                    <button type="button" class="rounded-xl border border-primary/30 bg-white px-5 py-3 text-xs sm:text-sm font-bold text-primary shadow-xs transition-colors hover:bg-slate-50 cursor-pointer">
+                        ประวัติการแลกแต้ม
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filters and Sorting -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+            <!-- Filter Tabs -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                @foreach (var cat in rewardCategories)
+                {
+                    if (cat.IsActive)
+                    {
+                        <button type="button" class="rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-white shadow-xs cursor-pointer">
+                            @cat.Label
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer whitespace-nowrap">
+                            @cat.Label
+                        </button>
+                    }
+                }
+            </div>
+
+            <!-- Sorting -->
+            <div class="flex items-center gap-2 text-xs text-slate-500 self-end sm:self-auto">
+                <span>เรียงตาม:</span>
+                <select class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-text focus:border-primary focus:outline-none">
+                    <option selected>แต้มน้อยไปมาก</option>
+                    <option>แต้มมากไปน้อย</option>
+                    <option>ของใหม่ล่าสุด</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Rewards Grid (Figma Node 60:42) - Identical Navigation to Collection Page -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            @foreach (var item in rewards)
+            {
+                <div class="group flex flex-col justify-between rounded-3xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all hover:-translate-y-1 hover:shadow-lg">
+                    <div>
+                        <!-- Thumbnail with Tag (Edge-to-edge, click to product detail with ID) -->
+                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id"
+                           class="relative block aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-100">
+                            <span class="absolute top-3 left-3 z-10 rounded-md bg-primary px-2.5 py-1 text-[10px] font-bold text-white shadow-xs backdrop-blur-xs">
+                                @item.Tag
+                            </span>
+
+                            <img src="@Url.Content(item.ImageUrl)" alt="@item.Title"
+                                 class="size-full object-cover"
+                                 loading="lazy" />
+                        </a>
+
+                        <!-- Details (Title links to ProductDetail) -->
+                        <div class="mt-4 space-y-1">
+                            <span class="text-[11px] font-semibold text-primary">@item.Brand</span>
+                            <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id" class="block">
+                                <h3 class="text-sm font-bold text-text leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                                    @item.Title
+                                </h3>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Points & 2 Action Buttons (ดูรายละเอียด + แลกของรางวัล) - Identical to Collection Page -->
+                    <div class="mt-5 pt-3 border-t border-slate-100 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-semibold text-slate-400">ใช้แต้ม</span>
+                            <span class="text-base font-extrabold text-primary">@item.PointsText</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <!-- Button 1: ดูรายละเอียด -->
+                            <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id"
+                               class="flex items-center justify-center rounded-xl border border-slate-200 bg-white py-2.5 px-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer text-center">
+                                ดูรายละเอียด
+                            </a>
+                            <!-- Button 2: แลกของรางวัล -->
+                            <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id"
+                               class="flex items-center justify-center rounded-xl bg-accent py-2.5 px-2 text-xs font-bold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer text-center">
+                                แลกของรางวัล
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

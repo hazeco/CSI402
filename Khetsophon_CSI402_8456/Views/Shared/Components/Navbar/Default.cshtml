@@ -1,72 +1,151 @@
-<nav class="border-b border-gray-200 bg-background">
-  <div class="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:min-h-20 sm:gap-4 sm:px-6 lg:px-8">
-    <a class="flex shrink-0 items-center gap-2 text-base font-bold text-text sm:text-lg lg:text-xl" asp-area=""
-       asp-controller="Home" asp-action="Index" aria-label="FriendHouse หน้าหลัก">
-      <span class="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-white">FH</span>
-      <span>FriendHouse</span>
+@model string
+@{
+    var brand = new {
+        LogoUrl = "~/logo/logo.png",
+        Name = "FriendHouse",
+        AriaLabel = "FriendHouse หน้าหลัก",
+        Points = "1,250 แต้ม",
+        CartCount = 3,
+        SearchPlaceholder = "ค้นหาฟิกเกอร์, โมเดล, สินค้าพรีออเดอร์..."
+    };
+
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Home";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    bool isCustomer = string.Equals(Model, "customer", StringComparison.OrdinalIgnoreCase);
+    bool isHome = currentController.Equals("Home", StringComparison.OrdinalIgnoreCase) &&
+                  (currentAction.Equals("Index", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("Customer", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(currentAction));
+    string homeAction = isCustomer ? "Customer" : "Index";
+}
+
+<nav class="border-b border-slate-200/80 bg-white sticky top-0 z-50">
+  <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <!-- Brand Logo & Name -->
+    <a class="flex shrink-0 items-center gap-3 text-base font-bold text-text sm:text-lg lg:text-xl"
+       href="@(isHome ? "#hero" : Url.Action(homeAction, "Home") + "#hero")" aria-label="@brand.AriaLabel">
+      <div class="flex size-10 items-center justify-center overflow-hidden rounded-xl border border-primary/20 bg-white shadow-xs">
+        <img src="@Url.Content(brand.LogoUrl)" alt="@brand.Name" class="size-full object-cover" />
+      </div>
+      <div class="flex flex-col leading-none">
+        <span>@brand.Name</span>
+        <span class="text-[10px] font-normal text-slate-400">ร้านโมเดลและฟิกเกอร์แท้</span>
+      </div>
     </a>
 
-    <div class="hidden items-center gap-7 md:flex">
-      <a class="text-sm text-text transition-colors hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Index">หน้าแรก</a>
-      <a class="text-sm text-text transition-colors hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Lab2">คอลเลกชัน</a>
-      <a class="text-sm text-text transition-colors hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Privacy">โปรโมชั่น</a>
-      <a class="text-sm text-text transition-colors hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Lab4">ติดต่อร้าน</a>
+    <!-- Center Search Bar (Figma Style) -->
+    <div class="hidden max-w-md flex-1 md:block">
+      <label class="relative block" aria-label="ค้นหาสินค้า">
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" placeholder="@brand.SearchPlaceholder"
+               class="w-full rounded-full border border-slate-200 bg-slate-100/80 py-2.5 pl-11 pr-4 text-sm text-text placeholder:text-slate-400 transition-all focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20" />
+      </label>
     </div>
 
-    <div class="flex items-center gap-1.5 sm:gap-3">
-      <label class="relative hidden shrink-0 sm:block" aria-label="ค้นหา">
-        <svg class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <circle cx="11" cy="11" r="6.5" />
-          <path d="m16 16 4.5 4.5" stroke-linecap="round" />
+    <!-- Center Navigation Links (Smooth slide to sections on Index) -->
+    <div class="hidden items-center gap-8 lg:flex">
+      <a class="text-sm font-semibold text-slate-700 transition-colors hover:text-primary cursor-pointer"
+         href="@(isHome ? "#hero" : Url.Action(homeAction, "Home") + "#hero")">หน้าแรก</a>
+      <a class="text-sm font-semibold text-slate-700 transition-colors hover:text-primary cursor-pointer"
+         href="@(isHome ? "#promotions" : Url.Action(homeAction, "Home") + "#promotions")">โปรโมชั่น</a>
+      <a class="text-sm font-semibold text-slate-700 transition-colors hover:text-primary cursor-pointer"
+         href="@(isHome ? "#collection" : Url.Action(homeAction, "Home") + "#collection")">คอลเลกชัน</a>
+      <a class="text-sm font-semibold text-slate-700 transition-colors hover:text-primary cursor-pointer"
+         href="@(isHome ? "#footer" : Url.Action(homeAction, "Home") + "#footer")">ติดต่อ</a>
+    </div>
+
+    <!-- Right Actions: Points, Cart, Auth Buttons -->
+    <div class="flex items-center gap-2.5 sm:gap-4">
+      @if (isCustomer)
+      {
+        <!-- Member Points Badge (Shown ONLY for logged in customer) -->
+        <a asp-controller="Home" asp-action="Rewards" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary/25 text-primary text-xs font-semibold transition-colors hover:bg-secondary/40 cursor-pointer">
+          <svg class="size-3.5 fill-primary text-primary" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+          </svg>
+          <span>@brand.Points</span>
+        </a>
+      }
+
+      <!-- Shopping Cart Link -->
+      <a asp-controller="Home" asp-action="Cart" class="relative flex size-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 transition-colors hover:border-primary hover:text-primary hover:bg-slate-50 cursor-pointer" aria-label="ตะกร้าสินค้า">
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        <input type="search" placeholder="ค้นหา"
-               class="w-32 rounded-full border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm text-text placeholder:text-slate-400 transition-colors focus:border-primary focus:outline-none md:w-44 lg:w-56" />
-      </label>
-      <button type="button" class="flex size-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-primary transition-colors hover:border-primary hover:bg-white sm:size-10" aria-label="ตะกร้าสินค้า">
-        <svg class="size-5 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <path d="M3.5 5h2l1.5 10.5h10.5L20 8H6" stroke-linecap="round" stroke-linejoin="round" />
-          <circle cx="9" cy="19" r="1" />
-          <circle cx="17" cy="19" r="1" />
-        </svg>
-      </button>
-      <a class="hidden rounded-xl border border-primary px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-white sm:block lg:px-4"
-         asp-controller="Account" asp-action="Login">เข้าสู่ระบบ</a>
-      <a class="hidden rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent sm:block lg:px-4"
-        asp-controller="Account" asp-action="Register">ลงทะเบียน</a>
-      <button id="nav-toggle" type="button" class="flex size-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-primary sm:size-10 md:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="เปิดเมนู">
-        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
+        @if (isCustomer)
+        {
+          <!-- Cart Badge: Shown ONLY when logged in -->
+          <span class="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white shadow-xs">@brand.CartCount</span>
+        }
+      </a>
+
+      <!-- Auth Links / Profile -->
+      @if (isCustomer)
+      {
+        <div class="hidden items-center gap-3 sm:flex">
+          <a asp-controller="Account" asp-action="Profile" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-1.5 text-xs font-bold text-text hover:border-primary transition-colors cursor-pointer">
+            <div class="flex size-6 items-center justify-center rounded-full bg-primary text-white text-[10px] font-bold">K</div>
+            <span>โปรไฟล์ของฉัน</span>
+          </a>
+          <a asp-controller="Home" asp-action="Index" class="text-xs font-semibold text-slate-400 hover:text-rose-600 transition-colors">
+            ออกจากระบบ
+          </a>
+        </div>
+      }
+      else
+      {
+        <!-- Guest Auth Links -->
+        <div class="hidden items-center gap-2 sm:flex">
+          <a class="rounded-xl px-3.5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/5 cursor-pointer"
+             asp-controller="Account" asp-action="Login">เข้าสู่ระบบ</a>
+          <a class="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer"
+             asp-controller="Account" asp-action="Register">ลงทะเบียน</a>
+        </div>
+      }
+
+      <!-- Mobile Hamburger Button -->
+      <button id="nav-toggle" type="button" class="flex size-10 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-700 lg:hidden cursor-pointer" aria-controls="mobile-menu" aria-expanded="false" aria-label="เปิดเมนู">
+        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
         </svg>
       </button>
     </div>
   </div>
 
-  <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white md:hidden">
-    <div class="mx-auto max-w-7xl space-y-1 px-4 py-3 sm:px-6">
-      <label class="relative mb-2 block sm:hidden" aria-label="ค้นหา">
-        <svg class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <circle cx="11" cy="11" r="6.5" />
-          <path d="m16 16 4.5 4.5" stroke-linecap="round" />
+  <!-- Mobile Menu Dropdown -->
+  <div id="mobile-menu" class="hidden border-t border-slate-200 bg-white lg:hidden">
+    <div class="mx-auto max-w-7xl space-y-2 px-4 py-3 sm:px-6">
+      <label class="relative block md:hidden" aria-label="ค้นหา">
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="search" placeholder="ค้นหา"
-               class="w-full rounded-full border border-slate-200 bg-background py-2 pl-9 pr-3 text-sm text-text placeholder:text-slate-400 transition-colors focus:border-primary focus:outline-none" />
+        <input type="search" placeholder="@brand.SearchPlaceholder"
+               class="w-full rounded-full border border-slate-200 bg-slate-100 py-2 pl-10 pr-4 text-sm text-text placeholder:text-slate-400 transition-colors focus:border-primary focus:bg-white focus:outline-none" />
       </label>
-      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-text hover:bg-background hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Index">หน้าแรก</a>
-      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-text hover:bg-background hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Lab2">คอลเลกชัน</a>
-      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-text hover:bg-background hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Privacy">โปรโมชั่น</a>
-      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-text hover:bg-background hover:text-primary" asp-area=""
-         asp-controller="Home" asp-action="Lab4">ติดต่อร้าน</a>
-      <a class="mt-2 block rounded-lg bg-primary px-3 py-2 text-center text-sm font-semibold text-white sm:hidden" asp-area=""
-         asp-controller="Account" asp-action="index">เข้าสู่ระบบ</a>
-      <a class="block rounded-lg border border-primary px-3 py-2 text-center text-sm font-semibold text-primary hover:bg-background sm:hidden" asp-area=""
-        asp-controller="Account" asp-action="Register">ลงทะเบียน</a>
+      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
+         href="@(isHome ? "#hero" : Url.Action(homeAction, "Home") + "#hero")">หน้าแรก</a>
+      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
+         href="@(isHome ? "#collection" : Url.Action(homeAction, "Home") + "#collection")">คอลเลกชัน</a>
+      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
+         href="@(isHome ? "#promotions" : Url.Action(homeAction, "Home") + "#promotions")">โปรโมชั่น</a>
+      <div class="pt-2 border-t border-slate-100 flex items-center gap-2 sm:hidden">
+        @if (isCustomer)
+        {
+          <a class="flex-1 rounded-xl bg-primary py-2 text-center text-sm font-semibold text-white" asp-controller="Account" asp-action="Profile">โปรไฟล์ของฉัน</a>
+          <a class="rounded-xl border border-slate-200 px-3 py-2 text-center text-xs font-semibold text-slate-500" asp-controller="Home" asp-action="Index">ออก</a>
+        }
+        else
+        {
+          <a class="flex-1 rounded-xl border border-primary py-2 text-center text-sm font-semibold text-primary" asp-controller="Account" asp-action="Login">เข้าสู่ระบบ</a>
+          <a class="flex-1 rounded-xl bg-primary py-2 text-center text-sm font-semibold text-white" asp-controller="Account" asp-action="Register">ลงทะเบียน</a>
+        }
+      </div>
     </div>
   </div>
 </nav>

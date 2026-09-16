@@ -1,0 +1,337 @@
+@{
+    ViewData["Title"] = "โปรไฟล์ของฉัน — FriendHouse";
+
+    // Top-of-file Media & Content Configuration
+    var defaultUser = new {
+        Name = "เขมิกา วัฒนกุล",
+        Email = "thunderwolf2209@gmail.com",
+        Phone = "081-234-5678",
+        Points = "1,250 แต้ม",
+        PendingOrders = "คุณมีพรีออเดอร์ที่รอดำเนินการอยู่ 1 รายการ",
+        DefaultAvatar = "~/logo/logo.png"
+    };
+}
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 bg-white">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium mb-8" aria-label="แถบนำทาง">
+        <a asp-controller="Home" asp-action="Customer" class="hover:text-primary transition-colors">หน้าแรก</a>
+        <span>/</span>
+        <span class="text-text font-semibold">โปรไฟล์ของฉัน</span>
+    </nav>
+
+    <!-- Centered Profile Layout (Exact Figma Node 60:1174, 576px wide) -->
+    <div class="mx-auto max-w-[576px] space-y-5">
+        <!-- Header with Avatar & Title -->
+        <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <!-- Avatar with Edit Badge -->
+                <div class="relative group cursor-pointer" id="btn-avatar-trigger" title="คลิกเพื่อเปลี่ยนรูปโปรไฟล์">
+                    <div class="flex size-16 items-center justify-center overflow-hidden rounded-full border-2 border-primary/20 bg-slate-100 shadow-sm">
+                        <img id="userAvatarImg" src="@Url.Content(defaultUser.DefaultAvatar)" alt="รูปโปรไฟล์"
+                             class="size-full object-cover" />
+                    </div>
+                    <div class="absolute bottom-0 right-0 flex size-5 items-center justify-center rounded-full bg-primary text-white shadow-xs">
+                        <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Titles -->
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-text flex items-center gap-2">
+                        <span id="userNameDisplay">@defaultUser.Name</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 mt-0.5">ข้อมูลบัญชีสมาชิก FriendHouse</p>
+                </div>
+            </div>
+
+            <!-- Edit Button -->
+            <button type="button" id="btn-open-edit-profile"
+                    class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 hover:bg-slate-50 transition-colors cursor-pointer">
+                <svg class="size-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span>แก้ไขข้อมูล</span>
+            </button>
+        </div>
+
+        <!-- Yellow Pending Pre-order Alert Banner (Figma Node 60:1219) -->
+        <div class="flex items-center justify-between rounded-xl border border-[#FDE8B0] bg-[#FFFBE8] px-4 py-3 text-xs text-[#995204] shadow-2xs">
+            <div class="flex items-center gap-2 font-medium">
+                <svg class="size-4 shrink-0 text-[#995204]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+                <span>@defaultUser.PendingOrders</span>
+            </div>
+            <a asp-controller="Home" asp-action="PreorderStatus" class="shrink-0 font-semibold hover:underline">
+                ดูสถานะ &rarr;
+            </a>
+        </div>
+
+        <!-- Info Card (Figma Node 60:1226) -->
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+            <!-- Row 1: Email -->
+            <div class="flex items-center gap-4 px-5 py-4">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <span class="block text-[11px] text-slate-400 font-medium">อีเมล</span>
+                    <span id="userEmailDisplay" class="text-sm font-semibold text-text truncate">@defaultUser.Email</span>
+                </div>
+            </div>
+
+            <div class="h-px w-full bg-slate-100"></div>
+
+            <!-- Row 2: Phone -->
+            <div class="flex items-center gap-4 px-5 py-4">
+                <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <span class="block text-[11px] text-slate-400 font-medium">เบอร์โทรศัพท์</span>
+                    <span id="userPhoneDisplay" class="text-sm font-semibold text-text">@defaultUser.Phone</span>
+                </div>
+            </div>
+
+            <div class="h-px w-full bg-slate-100"></div>
+
+            <!-- Row 3: Points + Action -->
+            <div class="flex items-center justify-between gap-4 px-5 py-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600">
+                        <svg class="size-4 fill-current" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="block text-[11px] text-slate-400 font-medium">แต้มสะสม</span>
+                        <span class="text-sm font-semibold text-text">@defaultUser.Points</span>
+                    </div>
+                </div>
+
+                <a asp-controller="Home" asp-action="Rewards" asp-route-role="customer"
+                   class="rounded-lg bg-accent px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer">
+                    แลกแต้ม
+                </a>
+            </div>
+        </div>
+
+        <!-- Links Card (Figma Node 60:1252) -->
+        <div class="rounded-2xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+            <!-- Link 1: เปลี่ยนรหัสผ่าน -->
+            <a asp-controller="Account" asp-action="ResetPassword"
+               class="flex items-center justify-between px-5 py-4 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer group">
+                <div class="flex items-center gap-3">
+                    <svg class="size-4 text-slate-400 group-hover:text-primary transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    <span class="text-sm font-medium text-text group-hover:text-primary transition-colors">เปลี่ยนรหัสผ่าน</span>
+                </div>
+                <svg class="size-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+
+            <div class="h-px w-full bg-slate-100"></div>
+
+            <!-- Link 2: พรีออเดอร์ของฉัน -->
+            <a asp-controller="Home" asp-action="PreorderStatus"
+               class="flex items-center justify-between px-5 py-4 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer group">
+                <div class="flex items-center gap-3">
+                    <svg class="size-4 text-slate-400 group-hover:text-primary transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    <span class="text-sm font-medium text-text group-hover:text-primary transition-colors">พรีออเดอร์ของฉัน</span>
+                </div>
+                <svg class="size-4 text-slate-300 group-hover:text-primary group-hover:translate-x-0.5 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Logout Button (Figma Node 60:1270) -->
+        <a asp-controller="Home" asp-action="Index"
+           class="block w-full rounded-xl border border-red-300 bg-white py-3 text-center text-sm font-semibold text-red-500 shadow-2xs hover:bg-red-50 transition-colors cursor-pointer">
+            ออกจากระบบ
+        </a>
+    </div>
+</div>
+
+<!-- EDIT PROFILE MODAL (Allows saving name and uploading/changing profile photo) -->
+<div id="edit-profile-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4 backdrop-blur-xs">
+    <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-base font-bold text-text">แก้ไขข้อมูลโปรไฟล์</h3>
+            <button type="button" id="btn-close-edit-modal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <form id="editProfileForm" class="space-y-4">
+            <!-- Profile Photo Upload -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5">รูปโปรไฟล์</label>
+                <div class="flex items-center gap-3">
+                    <div class="size-14 rounded-full overflow-hidden border border-slate-200 bg-slate-50 shrink-0">
+                        <img id="modalAvatarPreview" src="@Url.Content(defaultUser.DefaultAvatar)" class="size-full object-cover" />
+                    </div>
+                    <input type="file" id="avatarFileInput" accept="image/*" class="text-xs text-slate-500 file:mr-2.5 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-primary hover:file:bg-primary/20 cursor-pointer" />
+                </div>
+            </div>
+
+            <!-- Full Name -->
+            <div>
+                <label for="editFullName" class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-นามสกุล</label>
+                <input type="text" id="editFullName" value="@defaultUser.Name"
+                       class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-text focus:border-primary focus:outline-none" />
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="editEmail" class="block text-xs font-semibold text-slate-700 mb-1">อีเมล</label>
+                <input type="email" id="editEmail" value="@defaultUser.Email"
+                       class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-text focus:border-primary focus:outline-none" />
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label for="editPhone" class="block text-xs font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์</label>
+                <input type="tel" id="editPhone" value="@defaultUser.Phone"
+                       class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-text focus:border-primary focus:outline-none" />
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <button type="button" id="btn-cancel-edit" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">
+                    ยกเลิก
+                </button>
+                <button type="submit" class="rounded-xl bg-primary px-5 py-2 text-xs font-bold text-white shadow-xs hover:opacity-90">
+                    บันทึกข้อมูล
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var modal = document.getElementById('edit-profile-modal');
+        var openBtn = document.getElementById('btn-open-edit-profile');
+        var avatarTrigger = document.getElementById('btn-avatar-trigger');
+        var closeBtn = document.getElementById('btn-close-edit-modal');
+        var cancelBtn = document.getElementById('btn-cancel-edit');
+        var form = document.getElementById('editProfileForm');
+
+        var nameDisplay = document.getElementById('userNameDisplay');
+        var emailDisplay = document.getElementById('userEmailDisplay');
+        var phoneDisplay = document.getElementById('userPhoneDisplay');
+        var avatarImg = document.getElementById('userAvatarImg');
+        var modalAvatarPreview = document.getElementById('modalAvatarPreview');
+        var avatarFileInput = document.getElementById('avatarFileInput');
+
+        var inputName = document.getElementById('editFullName');
+        var inputEmail = document.getElementById('editEmail');
+        var inputPhone = document.getElementById('editPhone');
+
+        // Load saved profile data from localStorage if available
+        var savedName = localStorage.getItem('friendhouse_user_name');
+        var savedEmail = localStorage.getItem('friendhouse_user_email');
+        var savedPhone = localStorage.getItem('friendhouse_user_phone');
+        var savedAvatar = localStorage.getItem('friendhouse_user_avatar');
+
+        if (savedName) {
+            nameDisplay.textContent = savedName;
+            inputName.value = savedName;
+        }
+        if (savedEmail) {
+            emailDisplay.textContent = savedEmail;
+            inputEmail.value = savedEmail;
+        }
+        if (savedPhone) {
+            phoneDisplay.textContent = savedPhone;
+            inputPhone.value = savedPhone;
+        }
+        if (savedAvatar) {
+            avatarImg.src = savedAvatar;
+            modalAvatarPreview.src = savedAvatar;
+        }
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        if (openBtn) openBtn.addEventListener('click', openModal);
+        if (avatarTrigger) avatarTrigger.addEventListener('click', openModal);
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+
+        // Preview uploaded avatar
+        if (avatarFileInput) {
+            avatarFileInput.addEventListener('change', function (e) {
+                var file = e.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (evt) {
+                        modalAvatarPreview.src = evt.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Save profile
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var newName = inputName.value.trim();
+                var newEmail = inputEmail.value.trim();
+                var newPhone = inputPhone.value.trim();
+
+                if (newName) {
+                    localStorage.setItem('friendhouse_user_name', newName);
+                    nameDisplay.textContent = newName;
+                }
+                if (newEmail) {
+                    localStorage.setItem('friendhouse_user_email', newEmail);
+                    emailDisplay.textContent = newEmail;
+                }
+                if (newPhone) {
+                    localStorage.setItem('friendhouse_user_phone', newPhone);
+                    phoneDisplay.textContent = newPhone;
+                }
+                if (modalAvatarPreview.src) {
+                    localStorage.setItem('friendhouse_user_avatar', modalAvatarPreview.src);
+                    avatarImg.src = modalAvatarPreview.src;
+                }
+
+                closeModal();
+            });
+        }
+    });
+</script>
+}

@@ -1,23 +1,51 @@
-﻿@using Khetsophon_CSI402_8456.Controllers
+@using Khetsophon_CSI402_8456.Controllers
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th" class="scroll-smooth">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Khetsophon_CSI402_8456</title>
-    <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Khetsophon_CSI402_8456.styles.css" asp-append-version="true" />
 </head>
-<body class="flex  flex-col bg-gray-50 text-gray-900">
-    <header>
-        @await Component.InvokeAsync("Navbar", new { role = "guest" })
+@{
+    var routeAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var routeCtrl = ViewContext.RouteData.Values["controller"]?.ToString();
+    var queryRole = Context.Request.Query["role"].ToString();
+    
+    string userRole = "guest";
+    if (!string.IsNullOrEmpty(queryRole))
+    {
+        userRole = queryRole.ToLowerInvariant();
+    }
+    else if (string.Equals(routeCtrl, "Staff", StringComparison.OrdinalIgnoreCase))
+    {
+        userRole = "staff";
+    }
+    else if (string.Equals(routeCtrl, "Owner", StringComparison.OrdinalIgnoreCase))
+    {
+        userRole = "owner";
+    }
+    else if (string.Equals(routeAction, "Customer", StringComparison.OrdinalIgnoreCase))
+    {
+        userRole = "customer";
+    }
+    else if (ViewData["Role"] is string explicitRole)
+    {
+        userRole = explicitRole.ToLowerInvariant();
+    }
+}
+<body class="flex min-h-screen flex-col bg-background text-text bg-white">
+    <header class="sticky top-0 z-50 w-full bg-white">
+        @await Component.InvokeAsync("Navbar", new { role = userRole })
     </header>
-    <div class="mx-auto w-full max-w-6xl flex-1 sm:px-6">
-        <main role="main" class="min-h-dvh">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="flex-1 w-full">
+        @RenderBody()
+    </main>
     @await Component.InvokeAsync("Footer")
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

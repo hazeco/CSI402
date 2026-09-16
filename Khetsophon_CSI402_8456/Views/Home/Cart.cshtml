@@ -1,0 +1,189 @@
+@{
+    ViewData["Title"] = "ตะกร้าสินค้าพรีออเดอร์ — FriendHouse";
+
+    // Top-of-file Media & Content Configuration
+    var cartMedia = new {
+        EmptyCartSvg = "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+    };
+
+    var cartItems = new[] {
+        new {
+            Id = 101,
+            Title = "Hatsune Miku - Magical Mirai 2024 Ver.",
+            Schedule = "กำหนดเข้าร้าน: ไตรมาส 4 ปี 2569",
+            PricePerUnit = "฿4,200",
+            RawPrice = 4200,
+            Quantity = 1,
+            Total = "฿4,200",
+            ImageUrl = "~/media/images/hatsune_miku_magical.png"
+        },
+        new {
+            Id = 102,
+            Title = "Genshin Impact - Raiden Shogun 1/7 Scale Figure",
+            Schedule = "กำหนดเข้าร้าน: ไตรมาส 1 ปี 2570",
+            PricePerUnit = "฿5,690",
+            RawPrice = 5690,
+            Quantity = 1,
+            Total = "฿5,690",
+            ImageUrl = "~/media/images/raiden_shogun.png"
+        },
+        new {
+            Id = 103,
+            Title = "Anya Forger & Bond - Spy x Family",
+            Schedule = "กำหนดเข้าร้าน: สินค้ากำลังจะเข้าร้านเร็วๆ นี้",
+            PricePerUnit = "฿1,850",
+            RawPrice = 1850,
+            Quantity = 2,
+            Total = "฿3,700",
+            ImageUrl = "~/media/images/anya_forger.png"
+        }
+    };
+
+    var summary = new {
+        Subtotal = "฿19,100",
+        TotalItems = 4,
+        PlatformFee = "ฟรี (฿0)",
+        EstimatedTotal = "฿19,100",
+        StoreNoticeTitle = "รับและชำระเงินที่หน้าร้านเท่านั้น",
+        StoreNoticeDesc = "การสั่งจองพรีออเดอร์ไม่ต้องชำระเงินออนไลน์ ชำระยอดเต็มหรือมัดจำเมื่อมารับสินค้าที่สาขา FriendHouse HQ"
+    };
+}
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-white">
+    <!-- Breadcrumb Navigation -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium" aria-label="แถบนำทาง">
+        <a asp-controller="Home" asp-action="Index" class="hover:text-primary transition-colors">หน้าแรก</a>
+        <span>/</span>
+        <span class="text-text font-semibold">ตะกร้าสินค้าพรีออเดอร์</span>
+    </nav>
+
+    <!-- Page Title -->
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">ตะกร้าสั่งจองสินค้าพรีออเดอร์</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">ตรวจสอบรายการฟิกเกอร์ที่ท่านต้องการสั่งจองล่วงหน้า</p>
+    </div>
+
+    <!-- Main Cart Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left Column: Item List -->
+        <div class="lg:col-span-8 space-y-4">
+            <!-- Header Bar (Select All & Clear) -->
+            <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                <label class="flex items-center gap-2.5 cursor-pointer text-sm font-semibold text-text">
+                    <input type="checkbox" checked class="size-4.5 rounded-md border-slate-300 text-primary focus:ring-primary" />
+                    <span>เลือกทั้งหมด (@cartItems.Length รายการ / @summary.TotalItems ชิ้น)</span>
+                </label>
+                <button type="button" class="text-xs font-semibold text-rose-500 hover:text-rose-600 transition-colors cursor-pointer">
+                    ล้างตะกร้า
+                </button>
+            </div>
+
+            <!-- Cart Items Loop -->
+            <div class="space-y-4">
+                @foreach (var item in cartItems)
+                {
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-2xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs transition-all hover:border-primary/30">
+                        <!-- Checkbox -->
+                        <input type="checkbox" checked class="size-4.5 rounded-md border-slate-300 text-primary focus:ring-primary self-center sm:self-auto shrink-0" />
+
+                        <!-- Thumbnail with Real Image -->
+                        <div class="size-20 sm:size-24 shrink-0 rounded-2xl border border-slate-200/80 overflow-hidden bg-slate-100 shadow-xs">
+                            <img src="@Url.Content(item.ImageUrl)" alt="@item.Title" class="size-full object-cover" loading="lazy" />
+                        </div>
+
+                        <!-- Item Details -->
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <h3 class="text-sm sm:text-base font-bold text-text leading-snug truncate">
+                                @item.Title
+                            </h3>
+                            <span class="inline-block text-[11px] font-semibold text-primary bg-primary/10 rounded-md px-2 py-0.5">
+                                @item.Schedule
+                            </span>
+                            <div class="text-xs text-slate-500">
+                                ราคาต่อชิ้น: <span class="font-medium text-text">@item.PricePerUnit</span>
+                            </div>
+                        </div>
+
+                        <!-- Quantity and Subtotal Controls -->
+                        <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                            <!-- Quantity Counter -->
+                            <div class="flex items-center rounded-lg border border-slate-200 bg-white">
+                                <button type="button" class="flex size-7 items-center justify-center text-slate-500 hover:bg-slate-100 cursor-pointer rounded-l-lg" aria-label="ลดจำนวน">
+                                    -
+                                </button>
+                                <span class="w-8 text-center text-xs font-bold text-text">@item.Quantity</span>
+                                <button type="button" class="flex size-7 items-center justify-center text-slate-500 hover:bg-slate-100 cursor-pointer rounded-r-lg" aria-label="เพิ่มจำนวน">
+                                    +
+                                </button>
+                            </div>
+
+                            <!-- Total -->
+                            <div class="text-right">
+                                <span class="text-base sm:text-lg font-extrabold text-primary">@item.Total</span>
+                            </div>
+
+                            <!-- Remove Button -->
+                            <button type="button" class="text-slate-400 hover:text-rose-500 transition-colors cursor-pointer" aria-label="ลบรายการ">
+                                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Back to Browsing -->
+            <div class="pt-4">
+                <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+                    <svg class="size-4" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>เลือกดูสินค้าอื่นเพิ่มเติม</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Column: Summary Card -->
+        <div class="lg:col-span-4">
+            <div class="sticky top-24 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm space-y-6">
+                <h2 class="text-lg font-bold text-text border-b border-slate-100 pb-3">สรุปคำสั่งจองพรีออเดอร์</h2>
+
+                <!-- Subtotals -->
+                <div class="space-y-3 text-sm">
+                    <div class="flex items-center justify-between text-slate-500">
+                        <span>ยอดรวมสินค้า (@summary.TotalItems ชิ้น)</span>
+                        <span class="font-bold text-text">@summary.Subtotal</span>
+                    </div>
+                    <div class="flex items-center justify-between text-slate-500">
+                        <span>ค่าธรรมเนียมบริการ</span>
+                        <span class="font-bold text-emerald-600">@summary.PlatformFee</span>
+                    </div>
+                    <div class="border-t border-slate-100 pt-3 flex items-center justify-between">
+                        <span class="text-base font-bold text-text">ยอดรวมที่ต้องชำระหน้าร้าน</span>
+                        <span class="text-2xl font-extrabold text-primary">@summary.EstimatedTotal</span>
+                    </div>
+                </div>
+
+                <!-- Store Pickup Notice -->
+                <div class="rounded-2xl border border-primary/15 bg-primary/5 p-4 flex gap-3 items-start text-xs text-slate-600">
+                    <svg class="size-5 shrink-0 text-primary mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <div>
+                        <span class="font-bold text-text block text-xs">@summary.StoreNoticeTitle</span>
+                        <span class="leading-relaxed mt-0.5 block">@summary.StoreNoticeDesc</span>
+                    </div>
+                </div>
+
+                <!-- Confirm Order Action (No method attribute as per rule) -->
+                <a asp-controller="Home" asp-action="PreorderStatus"
+                   class="block w-full rounded-xl bg-accent py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-accent/25 transition-all hover:bg-accent/90 hover:-translate-y-0.5 cursor-pointer">
+                    ดำเนินการยืนยันการจองสินค้า
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

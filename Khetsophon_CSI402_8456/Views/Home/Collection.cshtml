@@ -1,0 +1,374 @@
+@{
+    ViewData["Title"] = "คอลเลกชันฟิกเกอร์ทั้งหมด — FriendHouse";
+
+    // Top-of-file Media & Content Configuration
+    var pageMedia = new
+    {
+        Filters = new
+        {
+            Categories = new[] { "ทั้งหมด", "สเกลฟิกเกอร์", "แอคชั่นฟิกเกอร์", "ตุ๊กตาผ้า", "ของสะสมลิมิเต็ด" },
+            Series = new[] { "ทั้งหมด", "Naruto Shippuden", "Demon Slayer", "Vocaloid", "One Piece", "Jujutsu Kaisen", "Spy x Family", "Genshin Impact" },
+            Statuses = new[] { "มีสินค้า", "ทั้งหมด" },
+            PriceRanges = new[] { "ทั้งหมด", "฿0 - ฿1,000", "฿1,001 - ฿3,000", "฿3,001 - ฿5,000", "มากกว่า ฿5,000" },
+            TotalCountText = "แสดงสินค้าทั้งหมด 120 รายการ"
+        },
+        Figures = new[] {
+            new {
+                Id = 201,
+                Series = "Naruto Shippuden",
+                Title = "Naruto Uzumaki - Vibration Stars (Special Ver.)",
+                Price = "฿1,200",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/8 Scale",
+                ImageUrl = "~/media/images/naruto_vibration_stars.png",
+                Brand = "Banpresto"
+            },
+            new {
+                Id = 202,
+                Series = "Demon Slayer",
+                Title = "Tanjiro Kamado - Hinokami Kagura Dance",
+                Price = "฿2,450",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "Non-scale",
+                ImageUrl = "~/media/images/tanjiro_kamado.png",
+                Brand = "Good Smile Company"
+            },
+            new {
+                Id = 203,
+                Series = "Vocaloid",
+                Title = "Hatsune Miku - Magical Mirai 2024 Ver.",
+                Price = "฿4,200",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/hatsune_miku_magical.png",
+                Brand = "Good Smile Company"
+            },
+            new {
+                Id = 204,
+                Series = "One Piece",
+                Title = "Monkey D. Luffy - Gear 5 King of Artist",
+                Price = "฿950",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "16 ซม.",
+                ImageUrl = "~/media/images/luffy_gear5.png",
+                Brand = "Bandai Spirits"
+            },
+            new {
+                Id = 205,
+                Series = "Jujutsu Kaisen",
+                Title = "Gojo Satoru - Shibuya Incident Ver.",
+                Price = "฿3,800",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/gojo_satoru.png",
+                Brand = "Megahouse"
+            },
+            new {
+                Id = 206,
+                Series = "FriendHouse Studio",
+                Title = "Cloud Bear ตุ๊กตาหมีเมฆ (สีฟ้าพาสเทล)",
+                Price = "฿590",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "28 ซม.",
+                ImageUrl = "~/media/images/cloud_bear_plush.png",
+                Brand = "FriendHouse Studio"
+            },
+            new {
+                Id = 207,
+                Series = "Genshin Impact",
+                Title = "Raiden Shogun - Plane of Euthymia Ver.",
+                Price = "฿5,690",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/raiden_shogun.png",
+                Brand = "Good Smile Company"
+            },
+            new {
+                Id = 208,
+                Series = "Spy x Family",
+                Title = "Anya Forger & Bond - Going Out Ver.",
+                Price = "฿1,850",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/anya_forger.png",
+                Brand = "Megahouse"
+            },
+            new {
+                Id = 209,
+                Series = "Naruto Shippuden",
+                Title = "Naruto Uzumaki - Rasengan Hero Collection",
+                Price = "฿1,490",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "20 ซม.",
+                ImageUrl = "~/media/images/naruto_hero_fig.png",
+                Brand = "Banpresto"
+            },
+            new {
+                Id = 210,
+                Series = "Demon Slayer",
+                Title = "Tanjiro Kamado - Water Breathing Form",
+                Price = "฿1,950",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/8 Scale",
+                ImageUrl = "~/media/images/tanjiro_kamado.png",
+                Brand = "Good Smile Company"
+            },
+            new {
+                Id = 211,
+                Series = "One Piece",
+                Title = "Luffy Gear 5 - Giant Lightning Attack",
+                Price = "฿2,890",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "22 ซม.",
+                ImageUrl = "~/media/images/luffy_gear5.png",
+                Brand = "Bandai Spirits"
+            },
+            new {
+                Id = 212,
+                Series = "Vocaloid",
+                Title = "Hatsune Miku - Concert Spotlight Deluxe",
+                Price = "฿3,650",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/hatsune_miku_magical.png",
+                Brand = "Good Smile Company"
+            },
+            new {
+                Id = 213,
+                Series = "Jujutsu Kaisen",
+                Title = "Gojo Satoru - Domain Expansion Infinite Void",
+                Price = "฿4,500",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/gojo_satoru.png",
+                Brand = "Megahouse"
+            },
+            new {
+                Id = 214,
+                Series = "Genshin Impact",
+                Title = "Raiden Shogun - Musou no Hitotachi Strike",
+                Price = "฿6,200",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "1/7 Scale",
+                ImageUrl = "~/media/images/raiden_shogun.png",
+                Brand = "Good Smile Company"
+            },
+            new {
+                Id = 215,
+                Series = "Spy x Family",
+                Title = "Anya Forger - Stella Star Academy Uniform",
+                Price = "฿1,250",
+                Status = "มีสินค้า",
+                BadgeClass = "bg-emerald-100 text-emerald-700",
+                Scale = "14 ซม.",
+                ImageUrl = "~/media/images/anya_forger.png",
+                Brand = "Bandai Spirits"
+            }
+        }
+    };
+}
+
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-4 bg-white">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500 font-medium" aria-label="แถบนำทาง">
+        <a asp-controller="Home" asp-action="Index" class="hover:text-primary transition-colors">หน้าแรก</a>
+        <span>/</span>
+        <span class="text-text font-semibold">สินค้าทั้งหมด</span>
+    </nav>
+
+    <!-- Page Title & Header -->
+    @* <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-text tracking-tight">คอลเลกชันฟิกเกอร์และโมเดล</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">สำรวจฟิกเกอร์ลิขสิทธิ์แท้ 100% มีสินค้าพร้อมส่งมอบและสั่งจองรับหน้าร้าน</p>
+        </div>
+    </div> *@
+
+    <div class="flex justify-between">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+            <!-- Filter 1: หมวดหมู่ -->
+            <div
+                class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
+                <span class="text-slate-400 font-medium">หมวดหมู่:</span>
+                <select
+                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none">
+                    @foreach (var c in pageMedia.Filters.Categories)
+                    {
+                        <option value="@c">@c</option>
+                    }
+                </select>
+                <svg class="pointer-events-none absolute right-2.5 size-3.5 text-slate-400" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+
+            <!-- Filter 2: ซีรีส์ -->
+            <div
+                class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
+                <span class="text-slate-400 font-medium">ซีรีส์:</span>
+                <select
+                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none">
+                    @foreach (var s in pageMedia.Filters.Series)
+                    {
+                        <option value="@s">@s</option>
+                    }
+                </select>
+                <svg class="pointer-events-none absolute right-2.5 size-3.5 text-slate-400" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+
+            <!-- Filter 3: สถานะ -->
+            <div
+                class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
+                <span class="text-slate-400 font-medium">สถานะ:</span>
+                <select
+                    class="bg-transparent font-bold text-emerald-700 focus:outline-none cursor-pointer pr-4 appearance-none">
+                    @foreach (var st in pageMedia.Filters.Statuses)
+                    {
+                        <option value="@st">@st</option>
+                    }
+                </select>
+                <svg class="pointer-events-none absolute right-2.5 size-3.5 text-slate-400" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+
+            <!-- Filter 4: ช่วงราคา -->
+            <div
+                class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
+                <span class="text-slate-400 font-medium">ช่วงราคา:</span>
+                <select
+                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none">
+                    @foreach (var p in pageMedia.Filters.PriceRanges)
+                    {
+                        <option value="@p">@p</option>
+                    }
+                </select>
+                <svg class="pointer-events-none absolute right-2.5 size-3.5 text-slate-400" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Result count text (Figma Node 60:2118) -->
+        <div class="text-xs font-medium text-slate-400 px-2 py-1">
+            @pageMedia.Filters.TotalCountText
+        </div>
+    </div>
+
+    <!-- Horizontal Filter Bar (Figma Node 60:2083) -->
+    @* <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200/80 bg-white p-3 shadow-xs">
+    </div> *@
+
+    <!-- Product Grid: 1 row 5 cards, 15 cards total (3 rows x 5 cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        @foreach (var item in pageMedia.Figures)
+        {
+            <div
+                class="group flex flex-col justify-between rounded-3xl border border-slate-200/80 bg-white p-4 shadow-xs transition-all hover:-translate-y-1 hover:shadow-lg">
+                <div>
+                    <!-- Real Figure Image with Badge (Edge-to-edge, click to product detail with ID) -->
+                    <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id"
+                       class="relative block aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-100">
+                        <span
+                            class="absolute top-2.5 left-2.5 z-10 rounded-md @item.BadgeClass px-2 py-0.5 text-[10px] font-bold shadow-xs backdrop-blur-xs">
+                            @item.Status
+                        </span>
+
+                        <img src="@Url.Content(item.ImageUrl)" alt="@item.Title" class="size-full object-cover"
+                             loading="lazy" />
+                    </a>
+
+                    <!-- Info -->
+                    <div class="mt-3 space-y-1">
+                        <div class="flex items-center justify-between text-[10px]">
+                            <span class="font-bold text-primary uppercase tracking-wide truncate">@item.Series</span>
+                            <span class="text-slate-400 shrink-0">@item.Scale</span>
+                        </div>
+                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id" class="block">
+                            <h3
+                                class="text-xs font-bold text-text leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                                @item.Title
+                            </h3>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Price & 2 Buttons (Cart + พรีออเดอร์สินค้านี้) -->
+                <div class="mt-4 pt-2.5 border-t border-slate-100 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] text-slate-400">ราคา</span>
+                        <span class="text-base font-extrabold text-primary">@item.Price</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <!-- Button 1: ตะกร้า (Add to cart) -->
+                        <a asp-controller="Home" asp-action="Cart"
+                           class="flex items-center justify-center gap-1 rounded-xl border border-primary/20 bg-primary/5 py-2 text-[11px] font-bold text-primary transition-colors hover:bg-primary/15 cursor-pointer">
+                            <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                            </svg>
+                            <span>ตะกร้า</span>
+                        </a>
+
+                        <!-- Button 2: พรีออเดอร์สินค้านี้ -->
+                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="@item.Id"
+                           class="flex items-center justify-center rounded-xl bg-accent py-2 px-1 text-[11px] font-bold text-white shadow-xs transition-opacity hover:opacity-90 cursor-pointer text-center leading-tight">
+                            สั่งจองสินค้านี้
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Bottom Pagination (Figma Node 60:2068) -->
+    <div class="flex items-center justify-center gap-2 pt-6 pb-2">
+        <button type="button"
+                class="flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer">
+            Previous
+        </button>
+        <button type="button"
+                class="flex size-10 items-center justify-center rounded-xl bg-primary text-xs font-bold text-white shadow-xs cursor-pointer">
+            1
+        </button>
+        <button type="button"
+                class="flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
+            2
+        </button>
+        <button type="button"
+                class="flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
+            3
+        </button>
+        <span class="flex size-10 items-center justify-center text-xs font-bold text-slate-400">...</span>
+        <button type="button"
+                class="flex size-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
+            8
+        </button>
+        <button type="button"
+                class="flex h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer">
+            Next
+        </button>
+    </div>
+</div>
