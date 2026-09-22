@@ -1,0 +1,21 @@
+@model IEnumerable<Khetsophon_CSI402_8456.ViewModels.Lab5ViewModel>;
+
+<div>
+    <table>
+        <thead>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.UserId</td>
+                    <td>@item.Password</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
