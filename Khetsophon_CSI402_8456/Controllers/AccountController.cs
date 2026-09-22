@@ -8,12 +8,6 @@ namespace Khetsophon_CSI402_8456.Controllers;
 
 public class AccountController : Controller
 {
-
-    public IActionResult Login()
-    {
-        return View();
-    }
-
     public IActionResult Register()
     {
         return View();
@@ -21,9 +15,24 @@ public class AccountController : Controller
     [HttpPost]
     public IActionResult Register(RegisterViewModel data)
     {
-        var Data = new RegisterViewModel();
-        return RedirectToAction("Login","Account", Data);
+        //send data to login page by viewbag
+        return RedirectToAction("Login","Account", data);
     }
+    public IActionResult Login(RegisterViewModel data)
+    {
+        // recive data from register page by viewbag
+        ViewBag.Email = data.Email;
+        ViewBag.Phone = data.Phone;
+        ViewBag.Password = data.Password;
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Login(LoginViewModel data) {
+        //send data to home page by viewbag
+        return RedirectToAction("Index", "Home", data);
+    }
+
 
     public IActionResult ResetPassword()
     {
@@ -33,47 +42,5 @@ public class AccountController : Controller
     public IActionResult Profile()
     {
         return View();
-    }
-
-    public IActionResult Lab5()
-    {
-        var Data = new Lab5ViewModel();
-        Data.UserId = "linganguliguliguli wacha lingangu lingangu";
-        Data.Password = "You're phon ringing!";
-        Data.Address = "WAnkanda";
-        Data.Age = 60;
-        Data.Height = 1230;
-        Data.Weight = 1567;
-
-        return View(Data);
-    }
-
-    public IActionResult Lab5_2()
-    {
-    //     var Data = new List<Lab5ViewModel>
-    //     {
-    //         new Lab5ViewModel{UserId = "h1", Password = "B"},
-    //         new Lab5ViewModel{UserId = "h2", Password = "D"},
-    //         new Lab5ViewModel{UserId = "h3", Password = "D"},
-    //     };
-    // return View(Data);
-    return View();
-    }
-
-    public IActionResult Lab5_3()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    public IActionResult Lab5_3(Lab5ViewModel data)
-    {
-        string A, B, C;
-        A = data.Name;
-        B = data.Password;
-        ViewBag.Name = data.Name;
-        ViewBag.Password = data.Password;
-
-        return View(data);
     }
 }

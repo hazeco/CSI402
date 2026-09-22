@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "หน้าแรก — FriendHouse";
 
     // Top-of-file Media and Content Configuration
@@ -135,6 +135,10 @@
 }
 
 <div class="space-y-12 pb-16 bg-white">
+    <div>
+        @ViewBag.Email
+        @ViewBag.Password
+    </div>
     <!-- HERO SECTION WITH 3D MODEL -->
     <section id="hero" class="relative overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 lg:pt-14 lg:pb-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

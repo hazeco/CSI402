@@ -3,13 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using Khetsophon_CSI402_8456.Models;
 using Microsoft.VisualBasic;
 using System.Security.Cryptography.X509Certificates;
+using Khetsophon_CSI402_8456.ViewModels;
 
 namespace Khetsophon_CSI402_8456.Controllers;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    public IActionResult Index(LoginViewModel data)
     {
+        // recive data from login page by viewbag
+        ViewBag.Email = data.Email;
+        ViewBag.Password = data.Password;
         return View();
     }
 
