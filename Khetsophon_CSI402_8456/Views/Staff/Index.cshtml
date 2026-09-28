@@ -1,132 +1,373 @@
 @{
     ViewData["Title"] = "สต็อกสินค้า";
     Layout = "_StaffLayout";
+
+    // Top-of-file Media & Content Configuration (Rule-compliant)
+    var pageHeader = new {
+        Title = "สต็อกสินค้า",
+        Subtitle = "ภาพรวมคงเหลือทั้งหมดในร้าน อัปเดตอัตโนมัติทุกครั้งที่รับเข้า/ขายออก",
+        ScanButtonText = "สแกนรับสินค้า",
+        ScanAction = "ScanReceive",
+        ScanController = "Staff"
+    };
+
+    var alerts = new[] {
+        new { Name = "ตุ๊กตาหมี Baba (สีชมพู)", Sku = "SKU-BB-1042", Status = "หมด · 0 ชิ้น", Class = "bg-[#FEE2E2] text-[#DC2626]" },
+        new { Name = "กล่องสุ่ม Mystery Box S2", Sku = "SKU-MB-2201", Status = "ใกล้หมด · 2 ชิ้น", Class = "bg-[#FEF3C7] text-[#D97706]" },
+        new { Name = "พวงกุญแจแมวส้ม", Sku = "SKU-KC-0087", Status = "ใกล้หมด · 3 ชิ้น", Class = "bg-[#FEF3C7] text-[#D97706]" }
+    };
+
+    var categories = new[] {
+        "ทุกหมวดหมู่",
+        "ตุ๊กตา & ของสะสม",
+        "กล่องสุ่ม Mystery Box",
+        "พวงกุญแจ & อุปกรณ์",
+        "เครื่องเขียน & สมุด",
+        "เสื้อผ้า & เครื่องแต่งกาย"
+    };
+
+    var stockItems = new[] {
+        new {
+            Id = 1,
+            Name = "ตุ๊กตาหมี Baba (สีชมพู)",
+            Sku = "SKU-BB-1042",
+            Category = "ตุ๊กตา & ของสะสม",
+            Stock = 0,
+            Status = "หมด",
+            StatusClass = "bg-[#FEE2E2] text-[#DC2626]",
+            StockClass = "text-[#DC2626]",
+            Date = "28 ส.ค. 2569",
+            IconType = "bear"
+        },
+        new {
+            Id = 2,
+            Name = "กล่องสุ่ม Mystery Box S2",
+            Sku = "SKU-MB-2201",
+            Category = "กล่องสุ่ม Mystery Box",
+            Stock = 2,
+            Status = "ใกล้หมด",
+            StatusClass = "bg-[#FEF3C7] text-[#D97706]",
+            StockClass = "text-[#D97706]",
+            Date = "2 ก.ย. 2569",
+            IconType = "box"
+        },
+        new {
+            Id = 3,
+            Name = "พวงกุญแจแมวส้ม",
+            Sku = "SKU-KC-0087",
+            Category = "พวงกุญแจ & อุปกรณ์",
+            Stock = 3,
+            Status = "ใกล้หมด",
+            StatusClass = "bg-[#FEF3C7] text-[#D97706]",
+            StockClass = "text-[#D97706]",
+            Date = "30 ส.ค. 2569",
+            IconType = "key"
+        },
+        new {
+            Id = 4,
+            Name = "การ์ดสะสมชุด Sakura Vol.4",
+            Sku = "SKU-CD-3390",
+            Category = "ตุ๊กตา & ของสะสม",
+            Stock = 48,
+            Status = "ปกติ",
+            StatusClass = "bg-[#DCFCE7] text-[#16A34A]",
+            StockClass = "text-[#050315]",
+            Date = "5 ก.ย. 2569",
+            IconType = "card"
+        },
+        new {
+            Id = 5,
+            Name = "สมุดโน้ตลายดอกไม้ A5",
+            Sku = "SKU-NB-0512",
+            Category = "เครื่องเขียน & สมุด",
+            Stock = 64,
+            Status = "ปกติ",
+            StatusClass = "bg-[#DCFCE7] text-[#16A34A]",
+            StockClass = "text-[#050315]",
+            Date = "4 ก.ย. 2569",
+            IconType = "notebook"
+        },
+        new {
+            Id = 6,
+            Name = "เสื้อยืดลาย FriendHouse Classic",
+            Sku = "SKU-TS-7710",
+            Category = "เสื้อผ้า & เครื่องแต่งกาย",
+            Stock = 21,
+            Status = "ปกติ",
+            StatusClass = "bg-[#DCFCE7] text-[#16A34A]",
+            StockClass = "text-[#050315]",
+            Date = "1 ก.ย. 2569",
+            IconType = "tshirt"
+        }
+    };
 }
 
-<div class="min-h-[600px] bg-paper flex flex-col">
-<div>
-    @ViewBag.ReservationNumber
-</div>
-    <!-- MAIN -->
-    <main class="flex-1 px-6 py-6 space-y-5">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-xl font-bold text-slate">สต็อกสินค้า</h1>
-                <p class="text-sm text-slate/55 mt-0.5">ภาพรวมคงเหลือทั้งหมดในร้าน อัปเดตอัตโนมัติทุกครั้งที่รับเข้า/ขายออก</p>
-            </div>
-            <a asp-controller="Staff" asp-action="ScanReceive" class="shrink-0 flex items-center gap-2 bg-accent hover:bg-accent/90 text-white font-semibold px-5 py-2.5 rounded-xl shadow-sm shadow-accent/30 text-sm">
-                <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 12h18"/></svg>
-                สแกนรับสินค้า
-            </a>
+<div class="space-y-6">
+    <!-- Title & Action Button -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-[#050315]">@pageHeader.Title</h1>
+            <p class="text-sm text-gray-500 mt-1">@pageHeader.Subtitle</p>
+        </div>
+        <a asp-controller="@pageHeader.ScanController" asp-action="@pageHeader.ScanAction"
+           class="inline-flex items-center gap-2 bg-[#3027FF] hover:bg-[#261ECC] text-white font-medium px-5 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer text-sm">
+            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>@pageHeader.ScanButtonText</span>
+        </a>
+    </div>
+
+    <!-- Alert Banner (Matching frame_9_3.png) -->
+    <div class="rounded-2xl border border-[#FCA5A5]/70 bg-[#FFF5F5] p-4 space-y-3">
+        <div class="flex items-center gap-2 text-[#DC2626]">
+            <svg class="size-4.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span class="text-xs sm:text-sm font-bold">แจ้งเตือนสต็อก — มีสินค้าใกล้หมด/หมดสต็อก 3 รายการ ต้องดำเนินการ</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            @foreach (var alert in alerts)
+            {
+                <div class="bg-white rounded-xl p-3.5 border border-red-100/80 flex items-center justify-between shadow-2xs">
+                    <div>
+                        <div class="text-sm font-bold text-[#050315]">@alert.Name</div>
+                        <div class="text-xs text-gray-400 font-mono mt-0.5">@alert.Sku</div>
+                    </div>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 @alert.Class">
+                        @alert.Status
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Search & Filter Bar (Matching frame_9_3.png) -->
+    @* Form Parameters expected by Controller:
+       [SearchQuery: string, Category: string, StockStatus: string]
+    *@
+    <div class="flex flex-wrap items-center gap-3">
+        <!-- Search Input -->
+        <div class="relative flex-1 min-w-[260px]">
+            <svg class="size-4.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="stockSearch" placeholder="ค้นหาชื่อสินค้าหรือ SKU..."
+                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20 focus:border-[#2F39A9] shadow-2xs" />
         </div>
 
-        <!-- ALERT BANNER -->
-        <div class="rounded-2xl border border-red-200 bg-red-50 overflow-hidden">
-            <div class="flex items-center gap-2 px-4 py-2.5 bg-red-100/70 border-b border-red-200">
-                <svg class="w-4.5 h-4.5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="text-sm font-bold text-red-700">แจ้งเตือนสต็อก — มีสินค้าใกล้หมด/หมดสต็อก 3 รายการ ต้องดำเนินการ</span>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3">
-                <div class="flex items-center justify-between bg-white rounded-xl border border-red-100 px-3.5 py-2.5">
-                    <div>
-                        <div class="text-sm font-semibold text-slate">ตุ๊กตาหมี Baba (สีชมพู)</div>
-                        <div class="text-[11px] text-slate/45 font-mono">SKU-BB-1042</div>
-                    </div>
-                    <span class="text-[11px] font-bold bg-red-100 text-red-700 px-2.5 py-1 rounded-full shrink-0">หมด · 0 ชิ้น</span>
-                </div>
-                <div class="flex items-center justify-between bg-white rounded-xl border border-amber-100 px-3.5 py-2.5">
-                    <div>
-                        <div class="text-sm font-semibold text-slate">กล่องสุ่ม Mystery Box S2</div>
-                        <div class="text-[11px] text-slate/45 font-mono">SKU-MB-2201</div>
-                    </div>
-                    <span class="text-[11px] font-bold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full shrink-0">ใกล้หมด · 2 ชิ้น</span>
-                </div>
-                <div class="flex items-center justify-between bg-white rounded-xl border border-amber-100 px-3.5 py-2.5">
-                    <div>
-                        <div class="text-sm font-semibold text-slate">พวงกุญแจแมวส้ม</div>
-                        <div class="text-[11px] text-slate/45 font-mono">SKU-KC-0087</div>
-                    </div>
-                    <span class="text-[11px] font-bold bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full shrink-0">ใกล้หมด · 3 ชิ้น</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- SEARCH / FILTER BAR -->
-        <div class="flex flex-wrap items-center gap-2.5 bg-white rounded-2xl border border-black/5 shadow-sm px-4 py-3">
-            <div class="relative flex-1 min-w-[220px]">
-                <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate/35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-                <input type="text" placeholder="ค้นหาชื่อสินค้าหรือ SKU..." class="w-full pl-9 pr-3 py-2 rounded-xl border border-black/10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
-            </div>
-            <select class="text-sm border border-black/10 rounded-xl px-3 py-2 text-slate/70 bg-white">
-                <option>ทุกหมวดหมู่</option>
-                <option>ตุ๊กตา &amp; ของสะสม</option>
-                <option>เครื่องเขียน</option>
-                <option>เสื้อผ้า/แอคเซสซอรี่</option>
+        <!-- Category Dropdown -->
+        <div class="relative">
+            <select id="stockCategoryFilter" class="appearance-none pr-9 pl-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 shadow-2xs focus:outline-none focus:border-[#2F39A9]">
+                @foreach (var c in categories)
+                {
+                    <option value="@c">@c</option>
+                }
             </select>
-            <div class="flex items-center gap-1.5 text-xs font-medium">
-                <button class="px-3 py-2 rounded-xl bg-primary text-white">ทั้งหมด 32</button>
-                <button class="px-3 py-2 rounded-xl bg-black/5 text-slate/60 hover:bg-black/10">ปกติ 27</button>
-                <button class="px-3 py-2 rounded-xl bg-amber-100 text-amber-700 hover:bg-amber-200">ใกล้หมด 4</button>
-                <button class="px-3 py-2 rounded-xl bg-red-100 text-red-700 hover:bg-red-200">หมด 1</button>
-            </div>
+            <svg class="size-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
         </div>
 
-        <!-- STOCK TABLE -->
-        <div class="bg-white rounded-2xl border border-black/5 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="bg-slate/[0.03] text-slate/50 text-xs uppercase tracking-wide">
-                            <th class="text-left font-semibold px-4 py-3">สินค้า</th>
-                            <th class="text-left font-semibold px-4 py-3">SKU</th>
-                            <th class="text-center font-semibold px-4 py-3">คงเหลือ</th>
-                            <th class="text-center font-semibold px-4 py-3">สถานะ</th>
-                            <th class="text-left font-semibold px-4 py-3">รับเข้าล่าสุด</th>
+        <!-- Status Filter Tabs (Figma Buttons) -->
+        <div class="flex items-center gap-1.5" id="stockStatusButtons">
+            <button type="button" onclick="filterStockStatus('all')" class="status-tab px-4 py-2 rounded-xl bg-[#2F39A9] text-white text-sm font-semibold transition cursor-pointer">
+                ทั้งหมด 32
+            </button>
+            <button type="button" onclick="filterStockStatus('ปกติ')" class="status-tab px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium transition cursor-pointer shadow-2xs">
+                ปกติ 27
+            </button>
+            <button type="button" onclick="filterStockStatus('ใกล้หมด')" class="status-tab px-4 py-2 rounded-xl bg-white border border-[#FDE68A] text-[#D97706] hover:bg-amber-50 text-sm font-medium transition cursor-pointer shadow-2xs">
+                ใกล้หมด 4
+            </button>
+            <button type="button" onclick="filterStockStatus('หมด')" class="status-tab px-4 py-2 rounded-xl bg-white border border-[#FECACA] text-[#DC2626] hover:bg-red-50 text-sm font-medium transition cursor-pointer shadow-2xs">
+                หมด 1
+            </button>
+        </div>
+    </div>
+
+    <!-- Stock Table Card (Exact 5 Columns from Figma frame_9_3.png) -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[620px]" id="stockTable">
+                <thead>
+                    <tr class="border-b border-gray-100 text-left text-xs font-semibold text-gray-400">
+                        <th class="py-4 px-6">สินค้า</th>
+                        <th class="py-4 px-6">SKU</th>
+                        <th class="py-4 px-6 text-center">คงเหลือ</th>
+                        <th class="py-4 px-6 text-center">สถานะ</th>
+                        <th class="py-4 px-6 text-left">รับเข้าล่าสุด</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach (var item in stockItems)
+                    {
+                        <tr class="hover:bg-gray-50/70 transition-colors stock-row" data-category="@item.Category" data-status="@item.Status">
+                            <!-- Product Name & SVG Icon -->
+                            <td class="py-4 px-6 flex items-center gap-3.5">
+                                <div class="size-8 rounded-lg bg-[#92EEFF]/25 text-[#2F39A9] flex items-center justify-center shrink-0">
+                                    @if (item.IconType == "bear")
+                                    {
+                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="14" r="7"></circle>
+                                            <circle cx="7" cy="8" r="3"></circle>
+                                            <circle cx="17" cy="8" r="3"></circle>
+                                            <circle cx="10" cy="13" r="1" fill="currentColor"></circle>
+                                            <circle cx="14" cy="13" r="1" fill="currentColor"></circle>
+                                            <path d="M11 16c.6.4 1.4.4 2 0"></path>
+                                        </svg>
+                                    }
+                                    else if (item.IconType == "box")
+                                    {
+                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                        </svg>
+                                    }
+                                    else if (item.IconType == "key")
+                                    {
+                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="7.5" cy="15.5" r="4.5"></circle>
+                                            <path d="M21 3l-9.5 9.5"></path>
+                                            <path d="M15 4l3 3"></path>
+                                            <path d="M18 7l1.5-1.5"></path>
+                                        </svg>
+                                    }
+                                    else if (item.IconType == "card")
+                                    {
+                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="12" cy="12" r="4"></circle>
+                                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                                        </svg>
+                                    }
+                                    else if (item.IconType == "notebook")
+                                    {
+                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                            <line x1="8" y1="7" x2="16" y2="7"></line>
+                                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                                        </svg>
+                                    }
+                                    else
+                                    {
+                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+                                        </svg>
+                                    }
+                                </div>
+                                <span class="font-medium text-[#050315]">@item.Name</span>
+                            </td>
+
+                            <!-- SKU -->
+                            <td class="py-4 px-6 text-gray-500 font-mono text-xs">
+                                @item.Sku
+                            </td>
+
+                            <!-- Stock Count (Centered, Bold) -->
+                            <td class="py-4 px-6 text-center font-bold text-base @item.StockClass">
+                                @item.Stock
+                            </td>
+
+                            <!-- Status Pill (Centered) -->
+                            <td class="py-4 px-6 text-center">
+                                <span class="text-xs font-semibold px-3 py-1 rounded-full @item.StatusClass">
+                                    @item.Status
+                                </span>
+                            </td>
+
+                            <!-- Last Restocked Date -->
+                            <td class="py-4 px-6 text-gray-500 text-xs">
+                                @item.Date
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y divide-black/5">
-                        @foreach (var item in new[] {
-                            new { Icon = "🧸", Name = "ตุ๊กตาหมี Baba (สีชมพู)", Sku = "SKU-BB-1042", Stock = 0, Status = "หมด", Date = "28 ส.ค. 2569" },
-                            new { Icon = "📦", Name = "กล่องสุ่ม Mystery Box S2", Sku = "SKU-MB-2201", Stock = 2, Status = "ใกล้หมด", Date = "2 ก.ย. 2569" },
-                            new { Icon = "🔑", Name = "พวงกุญแจแมวส้ม", Sku = "SKU-KC-0087", Stock = 3, Status = "ใกล้หมด", Date = "30 ส.ค. 2569" },
-                            new { Icon = "🃏", Name = "การ์ดสะสมชุด Sakura Vol.4", Sku = "SKU-CD-3390", Stock = 48, Status = "ปกติ", Date = "5 ก.ย. 2569" },
-                            new { Icon = "📓", Name = "สมุดโน้ตลายดอกไม้ A5", Sku = "SKU-NB-0512", Stock = 64, Status = "ปกติ", Date = "4 ก.ย. 2569" },
-                            new { Icon = "👕", Name = "เสื้อยืดลาย FriendHouse Classic", Sku = "SKU-TS-7710", Stock = 21, Status = "ปกติ", Date = "1 ก.ย. 2569" },
-                            new { Icon = "🥤", Name = "แก้วน้ำลาย Bunny Cafe", Sku = "SKU-CP-4456", Stock = 15, Status = "ปกติ", Date = "29 ส.ค. 2569" },
-                            new { Icon = "✉️", Name = "โปสการ์ดชุดเมืองไทย 6 ใบ", Sku = "SKU-PC-0921", Stock = 37, Status = "ปกติ", Date = "27 ส.ค. 2569" },
-                            new { Icon = "🐱", Name = "ตุ๊กตาแมวส้ม ไซส์ M", Sku = "SKU-CT-1875", Stock = 12, Status = "ปกติ", Date = "22 ส.ค. 2569" }
-                        })
-                        {
-                            var isOutOfStock = item.Status == "หมด";
-                            var isLowStock = item.Status == "ใกล้หมด";
-                            <tr class="hover:bg-secondary/10">
-                                <td class="px-4 py-3 font-medium text-slate flex items-center gap-2.5"><span class="w-8 h-8 rounded-lg bg-secondary/30 flex items-center justify-center text-sm">@item.Icon</span>@item.Name</td>
-                                <td class="px-4 py-3 font-mono text-xs text-slate/50">@item.Sku</td>
-                                <td class="px-4 py-3 text-center font-bold @(isOutOfStock ? "text-red-600" : isLowStock ? "text-amber-600" : "text-slate")">@item.Stock</td>
-                                <td class="px-4 py-3 text-center"><span class="text-[11px] font-bold @(isOutOfStock ? "bg-red-100 text-red-700" : isLowStock ? "bg-amber-100 text-amber-700" : "bg-green-100 text-green-700") px-2.5 py-1 rounded-full">@item.Status</span></td>
-                                <td class="px-4 py-3 text-slate/50">@item.Date</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div class="flex items-center justify-between px-4 py-3 border-t border-black/5 text-xs text-slate/45">
-                <span>แสดง 9 จาก 32 รายการ</span>
-                <div class="flex items-center gap-1">
-                    <button class="px-2.5 py-1.5 rounded-lg border border-black/10">ก่อนหน้า</button>
-                    <button class="px-2.5 py-1.5 rounded-lg bg-primary text-white">1</button>
-                    <button class="px-2.5 py-1.5 rounded-lg border border-black/10">2</button>
-                    <button class="px-2.5 py-1.5 rounded-lg border border-black/10">3</button>
-                    <button class="px-2.5 py-1.5 rounded-lg border border-black/10">ถัดไป</button>
-                </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination (Exact from Figma frame_9_3.png) -->
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between flex-wrap gap-4 text-sm">
+            <span class="text-xs text-gray-500">แสดง 6 จาก 32 รายการ</span>
+            <div class="flex items-center gap-1.5">
+                <button type="button" class="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium cursor-pointer">
+                    ก่อนหน้า
+                </button>
+                <button type="button" class="size-8 rounded-lg bg-[#2F39A9] text-white text-xs font-bold flex items-center justify-center">
+                    1
+                </button>
+                <button type="button" class="size-8 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium flex items-center justify-center cursor-pointer">
+                    2
+                </button>
+                <button type="button" class="size-8 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium flex items-center justify-center cursor-pointer">
+                    3
+                </button>
+                <button type="button" class="px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium cursor-pointer">
+                    ถัดไป
+                </button>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- FOOTER -->
-    <footer class="shrink-0 px-6 py-3 border-t border-black/5 bg-white flex items-center justify-between text-[11px] text-slate/40">
-        <span>FriendHouse Staff Console · เข้าสู่ระบบเป็น ณัฐชา ใจดี (พนักงานสต็อก) · กะ 09:00–18:00</span>
-        <span>อัปเดตล่าสุด 09 ก.ย. 2569 · 14:22 น.</span>
-    </footer>
-
+    <!-- Staff Console Shift Footer (Matching Figma frame_9_3.png) -->
+    <div class="pt-6 border-t border-gray-200/60 flex items-center justify-between flex-wrap gap-2 text-xs text-gray-400">
+        <div>
+            FriendHouse Staff Console · เข้าสู่ระบบเป็น ณัฐชา ใจดี (พนักงานสต็อก) · กะ 09:00–18:00
+        </div>
+        <div>
+            อัปเดตล่าสุด 09 ก.ย. 2569 · 14:22 น.
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        function filterStockStatus(status) {
+            const rows = document.querySelectorAll('.stock-row');
+            const buttons = document.querySelectorAll('.status-tab');
+
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(status === 'all' ? 'ทั้งหมด' : status)) {
+                    btn.className = 'status-tab px-4 py-2 rounded-xl bg-[#2F39A9] text-white text-sm font-semibold transition cursor-pointer';
+                } else {
+                    btn.className = 'status-tab px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium transition cursor-pointer shadow-2xs';
+                }
+            });
+
+            rows.forEach(r => {
+                if (status === 'all' || r.getAttribute('data-status') === status) {
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+        }
+
+        document.getElementById('stockSearch')?.addEventListener('input', function (e) {
+            const q = e.target.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('.stock-row');
+            rows.forEach(r => {
+                const text = r.innerText.toLowerCase();
+                r.style.display = text.includes(q) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('stockCategoryFilter')?.addEventListener('change', function (e) {
+            const cat = e.target.value;
+            const rows = document.querySelectorAll('.stock-row');
+            rows.forEach(r => {
+                if (cat === 'ทุกหมวดหมู่' || r.getAttribute('data-category') === cat) {
+                    r.style.display = '';
+                } else {
+                    r.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

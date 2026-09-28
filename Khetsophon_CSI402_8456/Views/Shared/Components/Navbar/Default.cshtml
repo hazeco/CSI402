@@ -128,12 +128,31 @@
         <input type="search" placeholder="@brand.SearchPlaceholder"
                class="w-full rounded-full border border-slate-200 bg-slate-100 py-2 pl-10 pr-4 text-sm text-text placeholder:text-slate-400 transition-colors focus:border-primary focus:bg-white focus:outline-none" />
       </label>
+
+      @if (isCustomer)
+      {
+        <div class="flex items-center justify-between rounded-xl bg-secondary/20 p-2.5 text-xs text-primary font-semibold">
+          <div class="flex items-center gap-1.5">
+            <svg class="size-3.5 fill-primary text-primary" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+            </svg>
+            <span>คะแนนสะสมของคุณ</span>
+          </div>
+          <span class="font-bold">@brand.Points</span>
+        </div>
+      }
+
       <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
          href="@(isHome ? "#hero" : Url.Action(homeAction, "Home") + "#hero")">หน้าแรก</a>
       <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
          href="@(isHome ? "#collection" : Url.Action(homeAction, "Home") + "#collection")">คอลเลกชัน</a>
       <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
          href="@(isHome ? "#promotions" : Url.Action(homeAction, "Home") + "#promotions")">โปรโมชั่น</a>
+      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
+         asp-controller="Home" asp-action="Rewards">แคตตาล็อกแลกแต้ม</a>
+      <a class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:text-primary"
+         asp-controller="Home" asp-action="PreorderStatus">สถานะพรีออเดอร์</a>
+
       <div class="pt-2 border-t border-slate-100 flex items-center gap-2 sm:hidden">
         @if (isCustomer)
         {

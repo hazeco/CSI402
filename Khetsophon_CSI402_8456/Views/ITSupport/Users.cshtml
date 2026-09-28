@@ -1,0 +1,473 @@
+@{
+    ViewData["Title"] = "บัญชีผู้ใช้งาน";
+    Layout = "_ITSupportLayout";
+
+    // Top-of-file Media & Content Configuration
+    var pageHeader = new {
+        Title = "บัญชีผู้ใช้งาน",
+        Subtitle = "สำหรับตรวจสอบและช่วยวินิจฉัยปัญหาการเข้าสู่ระบบของลูกค้า/พนักงานเท่านั้น",
+        InfoBanner = "หน้านี้ใช้สำหรับ ดูข้อมูลและช่วยเหลือเรื่องรหัสผ่าน แก้ไขข้อมูลบัญชี ลบบัญชี หรือเปลี่ยนสิทธิ์ผู้ใช้จากหน้านี้"
+    };
+
+    var users = new[] {
+        new { Email = "sarah.p@email.com", Phone = "081-234-5678", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "12 ม.ค. 2568", LastLogin = "วันนี้ 09:14 น." },
+        new { Email = "kittipat.w@email.com", Phone = "089-555-1023", Status = "ถูกล็อก", StatusClass = "bg-[#FEE2E2] text-[#DC2626]", RegDate = "03 มี.ค. 2568", LastLogin = "เมื่อวาน 20:41 น." },
+        new { Email = "nattapong.b@email.com", Phone = "062-778-4410", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "28 พ.ย. 2567", LastLogin = "3 วันที่แล้ว" },
+        new { Email = "pimchanok.s@email.com", Phone = "095-102-3344", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "19 ก.พ. 2569", LastLogin = "วันนี้ 07:52 น." },
+        new { Email = "arthit.k@email.com", Phone = "086-321-9087", Status = "ถูกล็อก", StatusClass = "bg-[#FEE2E2] text-[#DC2626]", RegDate = "05 ก.ค. 2567", LastLogin = "7 วันที่แล้ว" },
+        new { Email = "chayanit.r@email.com", Phone = "090-447-2201", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "30 ส.ค. 2568", LastLogin = "วันนี้ 11:03 น." },
+        new { Email = "teerapat.staff@friendhouse.local", Phone = "081-990-1122", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "10 ม.ค. 2567", LastLogin = "วันนี้ 08:30 น." },
+        new { Email = "wanida.c@email.com", Phone = "092-664-7789", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "22 เม.ย. 2568", LastLogin = "2 สัปดาห์ที่แล้ว" }
+    };
+}
+
+<div class="space-y-6">
+    <!-- Header Row (frame_9_20.png) -->
+    <div>
+        <h1 class="text-2xl font-bold text-[#050315]">@pageHeader.Title</h1>
+        <p class="text-sm text-gray-500 mt-1">@pageHeader.Subtitle</p>
+    </div>
+
+    <!-- Blue Info Banner (frame_9_20.png) -->
+    <div class="rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] p-4 flex items-center gap-3 text-xs text-[#1E40AF]">
+        <svg class="size-4.5 shrink-0 text-[#2563EB]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <span class="font-medium">@pageHeader.InfoBanner</span>
+    </div>
+
+    <!-- Search & Filter Controls (frame_9_20.png) -->
+    @* Form Parameters expected by Controller:
+       [SearchQuery: string, StatusFilter: string]
+    *@
+    <div class="flex flex-wrap items-center gap-3">
+        <div class="relative flex-1 min-w-[320px]">
+            <svg class="size-4.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="userSearch" placeholder="ค้นหาด้วยอีเมลหรือเบอร์โทร เช่น sarah@email.com หรือ 081-234-5678"
+                   class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+        </div>
+
+        <div class="relative">
+            <select id="userStatusFilter" class="appearance-none pr-9 pl-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 shadow-2xs focus:outline-none">
+                <option value="all">สถานะบัญชีทั้งหมด</option>
+                <option value="ปกติ">ปกติ</option>
+                <option value="ถูกล็อก">ถูกล็อก</option>
+            </select>
+            <svg class="size-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+
+        <button type="button" onclick="searchUsers()" class="px-5 py-2.5 rounded-xl bg-[#2F39A9] hover:bg-[#242D87] text-white font-bold text-sm shadow-xs transition-colors cursor-pointer">
+            ค้นหา
+        </button>
+
+        <button type="button" onclick="openAddUserModal()" class="px-5 py-2.5 rounded-xl bg-[#2F39A9] hover:bg-[#242D87] text-white font-bold text-sm shadow-xs transition-colors cursor-pointer ml-auto">
+            เพิ่มผู้ใช้งาน
+        </button>
+    </div>
+
+    <!-- Users Table (frame_9_20.png) -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm min-w-[760px]" id="usersTable">
+                <thead>
+                    <tr class="border-b border-gray-100 text-left text-xs font-semibold text-gray-400 bg-[#FBFBFE]">
+                        <th class="py-4 px-6">อีเมล</th>
+                        <th class="py-4 px-6">เบอร์โทร</th>
+                        <th class="py-4 px-6 text-center">สถานะบัญชี</th>
+                        <th class="py-4 px-6">วันที่สมัคร</th>
+                        <th class="py-4 px-6">เข้าสู่ระบบล่าสุด</th>
+                        <th class="py-4 px-6 text-center">จัดการบัญชี</th>
+                        <th class="py-4 px-6 text-right">การช่วยเหลือ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach (var u in users)
+                    {
+                        <tr class="hover:bg-gray-50/70 transition-colors user-row" data-status="@u.Status">
+                            <!-- Email -->
+                            <td class="py-4 px-6 font-semibold text-[#050315]">
+                                @u.Email
+                            </td>
+
+                            <!-- Phone -->
+                            <td class="py-4 px-6 text-gray-500 font-mono text-xs">
+                                @u.Phone
+                            </td>
+
+                            <!-- Status Badge -->
+                            <td class="py-4 px-6 text-center">
+                                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full @u.StatusClass">
+                                    <span class="size-1.5 rounded-full currentColor bg-current"></span>
+                                    @u.Status
+                                </span>
+                            </td>
+
+                            <!-- Registration Date -->
+                            <td class="py-4 px-6 text-gray-500 text-xs">
+                                @u.RegDate
+                            </td>
+
+                            <!-- Last Login -->
+                            <td class="py-4 px-6 text-gray-500 text-xs">
+                                @u.LastLogin
+                            </td>
+
+                            <!-- Management Icons: Edit & Delete -->
+                            <td class="py-4 px-6 text-center">
+                                <div class="inline-flex items-center gap-1.5">
+                                    <button type="button" onclick="openEditUserModal('@u.Email', '@u.Phone')"
+                                            class="size-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#2563EB] flex items-center justify-center transition cursor-pointer" title="แก้ไขข้อมูล">
+                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M12 20h9"></path>
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
+                                        </svg>
+                                    </button>
+                                    <button type="button" onclick="openDeleteUserModal('@u.Email')"
+                                            class="size-8 rounded-lg bg-red-50 hover:bg-red-100 text-[#DC2626] flex items-center justify-center transition cursor-pointer" title="ลบบัญชี">
+                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+
+                            <!-- Support Action: Reset Password Button -->
+                            <td class="py-4 px-6 text-right">
+                                <button type="button" onclick="openResetPasswordModal('@u.Email')"
+                                        class="px-3.5 py-1.5 rounded-lg bg-[#EFF6FF] hover:bg-blue-100 text-[#2563EB] text-xs font-semibold transition cursor-pointer">
+                                    ช่วยรีเซ็ตรหัสผ่าน
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination (frame_9_20.png) -->
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+            <span>แสดง 8 จาก 214 บัญชี</span>
+            <div class="flex items-center gap-2">
+                <button type="button" class="px-4 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-semibold cursor-pointer">
+                    ก่อนหน้า
+                </button>
+                <button type="button" class="px-4 py-1.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-semibold cursor-pointer">
+                    ถัดไป
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODALS [64:2775] ==================== -->
+
+<!-- 1. Add User Modal -->
+<div id="addUserModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-scale-up">
+        <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-[#050315]">เพิ่มผู้ใช้งานใหม่</h3>
+            <button type="button" onclick="closeAllModals()" class="text-gray-400 hover:text-gray-600 cursor-pointer">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">บทบาท (Role)</label>
+                <select id="newUserRole" onchange="toggleAvatarUpload(this.value)" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]">
+                    <option value="Customer">Customer (ลูกค้า)</option>
+                    <option value="Staff">Staff (พนักงานหน้าร้าน)</option>
+                    <option value="Owner">Owner (เจ้าของร้าน)</option>
+                    <option value="ITSupport">IT Support (ไอทีซัพพอร์ต)</option>
+                    <option value="Accountant">Accountant (คนทำบัญชี)</option>
+                </select>
+            </div>
+            <div id="nameFieldContainer" class="hidden">
+                <label class="text-xs font-bold text-gray-700 block mb-1">ชื่อ-นามสกุล</label>
+                <input type="text" placeholder="ชื่อ-นามสกุลเจ้าหน้าที่" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">อีเมล</label>
+                <input type="email" placeholder="example@email.com" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">เบอร์โทรศัพท์</label>
+                <input type="tel" placeholder="08X-XXX-XXXX" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">รหัสผ่านเริ่มต้น</label>
+                <input type="password" placeholder="ตั้งรหัสผ่านชั่วคราว" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+            </div>
+            <div id="avatarUploadContainer" class="hidden">
+                <label class="text-xs font-bold text-gray-700 block mb-1">รูปประจำตัว (สำหรับเจ้าหน้าที่)</label>
+                <input type="file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100" />
+            </div>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="submitNewUser()" class="flex-1 bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                สร้างบัญชี
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Edit User Modal -->
+<div id="editUserModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-scale-up">
+        <h3 class="text-base font-bold text-[#050315]">แก้ไขข้อมูลบัญชีผู้ใช้</h3>
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">อีเมล</label>
+                <input type="email" id="editUserEmail" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs bg-gray-50" readonly />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">เบอร์โทรศัพท์</label>
+                <input type="tel" id="editUserPhone" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">สถานะบัญชี</label>
+                <select class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]">
+                    <option value="Active">ปกติ</option>
+                    <option value="Locked">ถูกล็อก</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="submitEditUser()" class="flex-1 bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                บันทึกการแก้ไข
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Reset Password Confirmation / Validation Modal -->
+<div id="resetPasswordModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl space-y-4 animate-scale-up text-center border border-slate-100">
+        <div class="size-14 rounded-full bg-amber-50 text-amber-500 mx-auto flex items-center justify-center">
+            <svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-[#050315]">ยืนยันการรีเซ็ตรหัสผ่าน</h3>
+            <p class="text-xs font-mono font-bold text-[#2F39A9] mt-1 bg-indigo-50 py-1 px-3 rounded-lg inline-block" id="resetTargetEmail"></p>
+            <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตรหัสผ่านสำหรับบัญชีนี้? ระบบจะสร้างรหัสผ่านชั่วคราวใหม่บนหน้าจอทันที เพื่อให้เจ้าหน้าที่นำไปส่งมอบให้แก่ผู้ใช้งานด้วยตนเอง
+            </p>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="confirmResetPassword()" class="flex-1 bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                ยืนยันสร้างรหัส
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 3.1 Generated Password Display Modal (พอยืนยันเสร็จก็เจนรหัสเลย) -->
+<div id="passwordGeneratedModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl space-y-4 animate-scale-up text-center border border-slate-100">
+        <div class="size-14 rounded-full bg-emerald-50 text-emerald-500 mx-auto flex items-center justify-center">
+            <svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-[#050315]">สร้างรหัสผ่านชั่วคราวสำเร็จ!</h3>
+            <p class="text-xs text-slate-500 mt-1">
+                สำหรับผู้ใช้งาน: <span class="font-bold text-[#050315]" id="genUserEmailDisplay"></span>
+            </p>
+        </div>
+
+        <!-- Generated Password Box with Copy Button -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-4 space-y-2">
+            <div class="text-[11px] font-semibold text-slate-400">รหัสผ่านชั่วคราวใหม่</div>
+            <div class="flex items-center justify-center gap-3">
+                <span class="font-mono text-xl font-black text-[#2F39A9] tracking-wider select-all" id="generatedPasswordBox">
+                    FH-Temp-8456
+                </span>
+                <button type="button" onclick="copyGeneratedPassword()" id="btnCopyPass"
+                        class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs transition cursor-pointer">
+                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span id="copyPassLabel">คัดลอก</span>
+                </button>
+            </div>
+            <p class="text-[11px] text-slate-400">คลิกปุ่มเพื่อคัดลอกรหัสผ่านไปส่งมอบให้ผู้ใช้งาน</p>
+        </div>
+
+        <div class="bg-blue-50/70 border border-blue-100 rounded-xl p-3 text-left flex items-start gap-2.5">
+            <svg class="size-4 text-[#2F39A9] mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <p class="text-[11px] text-slate-600 leading-tight">
+                กรุณาส่งมอบรหัสนี้ให้ผู้ใช้งานโดยตรง และแจ้งให้ผู้ใช้เปลี่ยนรหัสผ่านทันทีเมื่อเข้าสู่ระบบสำเร็จ
+            </p>
+        </div>
+
+        <div class="pt-2">
+            <button type="button" onclick="closeAllModals()" class="w-full bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                เสร็จสิ้น / ปิดหน้าต่าง
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Delete Confirmation Modal -->
+<div id="deleteUserModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-4 animate-scale-up text-center">
+        <div class="size-12 rounded-full bg-red-100 text-[#DC2626] mx-auto flex items-center justify-center">
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]">คุณแน่ใจว่าจะลบบัญชีนี้?</h3>
+            <p class="text-xs font-mono text-gray-400 mt-1" id="deleteTargetEmail"></p>
+            <p class="text-xs text-gray-500 mt-2">การลบบัญชีจะไม่สามารถกู้คืนได้ และประวัติที่เกี่ยวข้องจะถูกปิดการใช้งาน</p>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="confirmDeleteUser()" class="flex-1 bg-[#DC2626] hover:bg-[#B91C1C] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                ยืนยันลบ
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 5. Success Action Modal -->
+<div id="actionSuccessModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4 animate-scale-up">
+        <div class="size-14 rounded-full bg-[#DCFCE7] text-[#16A34A] mx-auto flex items-center justify-center">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]" id="successModalTitle">ทำรายการสำเร็จ</h3>
+            <p class="text-xs text-gray-500 mt-1" id="successModalDesc">ดำเนินการปรับปรุงข้อมูลเรียบร้อยแล้ว</p>
+        </div>
+        <button type="button" onclick="closeAllModals()" class="w-full bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-sm shadow-xs cursor-pointer">
+            ตกลง
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleAvatarUpload(role) {
+            const isCustomer = (role === 'Customer');
+            document.getElementById('nameFieldContainer').className = isCustomer ? 'hidden' : '';
+            document.getElementById('avatarUploadContainer').className = isCustomer ? 'hidden' : '';
+        }
+
+        function openAddUserModal() {
+            document.getElementById('addUserModal')?.classList.remove('hidden');
+        }
+
+        function submitNewUser() {
+            closeAllModals();
+            showSuccess('สร้างผู้ใช้ใหม่สำเร็จ', 'เพิ่มบัญชีผู้ใช้งานใหม่เข้าสู่ระบบเรียบร้อยแล้ว');
+        }
+
+        function openEditUserModal(email, phone) {
+            document.getElementById('editUserEmail').value = email;
+            document.getElementById('editUserPhone').value = phone;
+            document.getElementById('editUserModal')?.classList.remove('hidden');
+        }
+
+        function submitEditUser() {
+            closeAllModals();
+            showSuccess('แก้ไขสำเร็จ', 'บันทึกการแก้ไขข้อมูลบัญชีผู้ใช้เรียบร้อยแล้ว');
+        }
+
+        function openResetPasswordModal(email) {
+            document.getElementById('resetTargetEmail').innerText = email;
+            document.getElementById('resetPasswordModal')?.classList.remove('hidden');
+        }
+
+        function confirmResetPassword() {
+            const targetEmail = document.getElementById('resetTargetEmail').innerText;
+            closeAllModals();
+
+            // Generate a secure temporary password
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+            const tempPass = `FH-Pass-${randomCode}`;
+
+            document.getElementById('genUserEmailDisplay').innerText = targetEmail;
+            document.getElementById('generatedPasswordBox').innerText = tempPass;
+            document.getElementById('copyPassLabel').innerText = 'คัดลอก';
+
+            document.getElementById('passwordGeneratedModal')?.classList.remove('hidden');
+        }
+
+        function copyGeneratedPassword() {
+            const pass = document.getElementById('generatedPasswordBox').innerText.trim();
+            navigator.clipboard.writeText(pass).then(() => {
+                document.getElementById('copyPassLabel').innerText = 'คัดลอกแล้ว!';
+                setTimeout(() => {
+                    document.getElementById('copyPassLabel').innerText = 'คัดลอก';
+                }, 2000);
+            });
+        }
+
+        function openDeleteUserModal(email) {
+            document.getElementById('deleteTargetEmail').innerText = email;
+            document.getElementById('deleteUserModal')?.classList.remove('hidden');
+        }
+
+        function confirmDeleteUser() {
+            closeAllModals();
+            showSuccess('ลบสำเร็จ', 'ลบบัญชีผู้ใช้งานออกจากระบบเรียบร้อยแล้ว');
+        }
+
+        function showSuccess(title, desc) {
+            document.getElementById('successModalTitle').innerText = title;
+            document.getElementById('successModalDesc').innerText = desc;
+            document.getElementById('actionSuccessModal')?.classList.remove('hidden');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('[id$="Modal"]').forEach(m => m.classList.add('hidden'));
+        }
+
+        function searchUsers() {
+            const q = document.getElementById('userSearch')?.value.toLowerCase().trim();
+            const status = document.getElementById('userStatusFilter')?.value;
+            const rows = document.querySelectorAll('.user-row');
+
+            rows.forEach(r => {
+                const text = r.innerText.toLowerCase();
+                const matchesQ = !q || text.includes(q);
+                const matchesStatus = (status === 'all' || r.getAttribute('data-status') === status);
+                r.style.display = (matchesQ && matchesStatus) ? '' : 'none';
+            });
+        }
+    </script>
+}

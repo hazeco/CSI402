@@ -198,14 +198,14 @@
         </div>
     </div> *@
 
-    <div class="flex justify-between">
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
             <!-- Filter 1: หมวดหมู่ -->
             <div
                 class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
-                <span class="text-slate-400 font-medium">หมวดหมู่:</span>
+                <span class="text-slate-400 font-medium shrink-0">หมวดหมู่:</span>
                 <select
-                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none">
+                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none w-full truncate">
                     @foreach (var c in pageMedia.Filters.Categories)
                     {
                         <option value="@c">@c</option>
@@ -220,9 +220,9 @@
             <!-- Filter 2: ซีรีส์ -->
             <div
                 class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
-                <span class="text-slate-400 font-medium">ซีรีส์:</span>
+                <span class="text-slate-400 font-medium shrink-0">ซีรีส์:</span>
                 <select
-                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none">
+                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none w-full truncate">
                     @foreach (var s in pageMedia.Filters.Series)
                     {
                         <option value="@s">@s</option>
@@ -237,9 +237,9 @@
             <!-- Filter 3: สถานะ -->
             <div
                 class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
-                <span class="text-slate-400 font-medium">สถานะ:</span>
+                <span class="text-slate-400 font-medium shrink-0">สถานะ:</span>
                 <select
-                    class="bg-transparent font-bold text-emerald-700 focus:outline-none cursor-pointer pr-4 appearance-none">
+                    class="bg-transparent font-bold text-emerald-700 focus:outline-none cursor-pointer pr-4 appearance-none w-full truncate">
                     @foreach (var st in pageMedia.Filters.Statuses)
                     {
                         <option value="@st">@st</option>
@@ -254,9 +254,9 @@
             <!-- Filter 4: ช่วงราคา -->
             <div
                 class="relative flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs font-semibold text-text shadow-2xs hover:border-primary/40 transition-colors">
-                <span class="text-slate-400 font-medium">ช่วงราคา:</span>
+                <span class="text-slate-400 font-medium shrink-0">ช่วงราคา:</span>
                 <select
-                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none">
+                    class="bg-transparent font-bold text-text focus:outline-none cursor-pointer pr-4 appearance-none w-full truncate">
                     @foreach (var p in pageMedia.Filters.PriceRanges)
                     {
                         <option value="@p">@p</option>
@@ -270,7 +270,7 @@
         </div>
 
         <!-- Result count text (Figma Node 60:2118) -->
-        <div class="text-xs font-medium text-slate-400 px-2 py-1">
+        <div class="text-xs font-medium text-slate-400 px-1 sm:px-2 py-1 text-right sm:text-left shrink-0">
             @pageMedia.Filters.TotalCountText
         </div>
     </div>

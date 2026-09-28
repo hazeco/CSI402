@@ -4,7 +4,7 @@
     Layout = "_AccountLayout";
 }
 
-<div class="h-dvh flex-1 flex items-center justify-center px-4 py-8 bg-white">
+<div class="min-h-dvh flex-1 flex items-center justify-center px-4 py-8 sm:py-12 bg-white">
         <div class="w-full max-w-sm">
           <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
             <div class="flex flex-col items-center text-center mb-6">
@@ -15,6 +15,9 @@
               <p class="text-sm text-slate-500 mt-1">สมัครเพื่อพรีออเดอร์และสะสมแต้ม</p>
             </div>
 
+            @* Form Parameters expected by Controller:
+               [Email: string, Phone: string, Password: string]
+            *@
             <form class="space-y-3.5" asp-controller="Account" asp-action="Register">
               <div>
                 <label class="block text-xs font-medium text-slate-500 mb-1.5">อีเมล</label>

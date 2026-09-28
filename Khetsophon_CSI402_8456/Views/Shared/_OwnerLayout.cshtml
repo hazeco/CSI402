@@ -1,0 +1,41 @@
+@using Khetsophon_CSI402_8456.Controllers
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ระบบจัดการเจ้าของร้าน FriendHouse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Khetsophon_CSI402_8456.styles.css" asp-append-version="true" />
+</head>
+<body class="min-h-screen flex flex-col bg-[#F8F9FD] text-[#050315] antialiased font-sans">
+    <!-- Owner Header -->
+    <header class="sticky top-0 z-50 w-full shadow-sm">
+        @await Component.InvokeAsync("Navbar", new { role = "owner" })
+    </header>
+
+    <!-- Main Content -->
+    <main role="main" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        @RenderBody()
+    </main>
+
+    <!-- Footer matching Figma frame_9_7.png -->
+    <footer class="mt-auto border-t border-gray-200/60 bg-white py-4 text-xs text-gray-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between flex-wrap gap-2">
+            <div>
+                © 2569 FriendHouse — ระบบจัดการสต็อกและโปรโมชั่นหน้าร้าน
+            </div>
+            <div>
+                อัปเดตล่าสุด: 9 ก.ย. 2569, 09:12 น.
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,504 @@
+@* Form Parameters: [StartDate: string (dd/MM/yyyy), EndDate: string (dd/MM/yyyy), SearchTerm: string, PaymentMethod: string, ExportRange: string] *@
+@{
+    ViewData["Title"] = "ประวัติใบเสร็จ / ธุรกรรม";
+    Layout = "_AccountantLayout";
+
+    // Media & Content Configuration (Top of File)
+    var pageHeader = new {
+        Title = "ประวัติใบเสร็จ / ธุรกรรม",
+        Subtitle = "รายการซื้อขายหน้าร้านและการรับสินค้าพรีออเดอร์ทั้งหมด สำหรับตรวจสอบและกระทบยอด",
+        StoreName = "FriendHouse Shop",
+        TaxId = "0-1055-67890-12-3",
+        StoreAddress = "123 อาคารฟิกเกอร์สตรีท ชั้น 2 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310"
+    };
+
+    var receipts = new[] {
+        new {
+            ReceiptNo = "RC-25690909-0024",
+            Date = "09 ก.ย. 2569",
+            Time = "14:32 น.",
+            CustomerPhone = "081-xxx-4521",
+            CustomerType = "สมาชิก",
+            CustomerName = "คุณสมชาย อัศวรุ่งเรือง",
+            Items = "เสื้อยืดลายกราฟฟิก x2, กางเกงยีนส์ x1",
+            Total = "฿1,790",
+            RawTotal = 1790,
+            Promotion = "ซื้อ 1 แถม 1",
+            Status = "สำเร็จ",
+            PaymentMethod = "เงินสดหน้าร้าน",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿117.10"
+        },
+        new {
+            ReceiptNo = "RC-25690909-0023",
+            Date = "09 ก.ย. 2569",
+            Time = "13:05 น.",
+            CustomerPhone = "",
+            CustomerType = "ลูกค้าทั่วไป",
+            CustomerName = "ลูกค้าทั่วไป",
+            Items = "รองเท้าผ้าใบ x1",
+            Total = "฿1,290",
+            RawTotal = 1290,
+            Promotion = "—",
+            Status = "สำเร็จ",
+            PaymentMethod = "QR PromptPay ธนาคาร",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿84.39"
+        },
+        new {
+            ReceiptNo = "RC-25690909-0022",
+            Date = "09 ก.ย. 2569",
+            Time = "11:47 น.",
+            CustomerPhone = "089-xxx-7788",
+            CustomerType = "สมาชิก",
+            CustomerName = "คุณวีรภัทร ชาญวิทย์",
+            Items = "กระเป๋าสะพาย x1 (พรีออเดอร์)",
+            Total = "฿2,450",
+            RawTotal = 2450,
+            Promotion = "พรีออเดอร์",
+            Status = "สำเร็จ",
+            PaymentMethod = "QR PromptPay ธนาคาร",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿160.28"
+        },
+        new {
+            ReceiptNo = "RC-25690831-0021",
+            Date = "31 ส.ค. 2569",
+            Time = "18:20 น.",
+            CustomerPhone = "092-xxx-3310",
+            CustomerType = "สมาชิก",
+            CustomerName = "คุณสุดารัตน์ พิมล",
+            Items = "เซ็ตของขวัญ (บันเดิล) x1",
+            Total = "฿890",
+            RawTotal = 890,
+            Promotion = "ราคาบันเดิล",
+            Status = "สำเร็จ",
+            PaymentMethod = "เงินสดหน้าร้าน",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿58.22"
+        },
+        new {
+            ReceiptNo = "RC-25690831-0020",
+            Date = "31 ส.ค. 2569",
+            Time = "16:55 น.",
+            CustomerPhone = "",
+            CustomerType = "ลูกค้าทั่วไป",
+            CustomerName = "ลูกค้าทั่วไป",
+            Items = "เสื้อแจ็คเก็ต x1",
+            Total = "฿1,590",
+            RawTotal = 1590,
+            Promotion = "เคลียร์สต๊อก -30%",
+            Status = "สำเร็จ",
+            PaymentMethod = "บัตรเครดิต",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿104.02"
+        },
+        new {
+            ReceiptNo = "RC-25690831-0019",
+            Date = "31 ส.ค. 2569",
+            Time = "15:10 น.",
+            CustomerPhone = "086-xxx-2290",
+            CustomerType = "สมาชิก",
+            CustomerName = "คุณธนพล ศิริชัย",
+            Items = "สินค้าแลกแต้มสะสม x1",
+            Total = "฿0",
+            RawTotal = 0,
+            Promotion = "แลกแต้ม 500 คะแนน",
+            Status = "สำเร็จ",
+            PaymentMethod = "แต้มสะสมสมาชิก",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿0.00"
+        },
+        new {
+            ReceiptNo = "RC-25690830-0018",
+            Date = "30 ส.ค. 2569",
+            Time = "12:15 น.",
+            CustomerPhone = "",
+            CustomerType = "ลูกค้าทั่วไป",
+            CustomerName = "ลูกค้าทั่วไป",
+            Items = "หมวกแก๊ป x1, ถุงเท้า x3",
+            Total = "฿650",
+            RawTotal = 650,
+            Promotion = "—",
+            Status = "สำเร็จ",
+            PaymentMethod = "เงินสดหน้าร้าน",
+            StaffName = "ณัฐชา ใจดี",
+            Vat = "฿42.52"
+        }
+    };
+}
+
+<div class="space-y-5">
+    <!-- Header: Title, Subtitle, and Export Button (Matching frame_9_25.png) -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h1 class="text-xl font-bold text-[#050315] tracking-tight">@pageHeader.Title</h1>
+            <p class="text-[13px] text-[#050315]/60 mt-1">@pageHeader.Subtitle</p>
+        </div>
+        <button type="button" onclick="openExportReceiptsModal()"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-[13px] font-medium text-white shadow-xs transition cursor-pointer self-start sm:self-auto">
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>ส่งออกเป็น Excel</span>
+        </button>
+    </div>
+
+    <!-- Filter Bar (Matching frame_9_25.png layout: ตั้งแต่วันที่, ถึงวันที่, ค้นหา, วิธีชำระเงิน) -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+            <!-- Start Date -->
+            <div class="lg:col-span-2">
+                <label class="block text-[11px] font-medium text-[#050315]/70 mb-1.5">ตั้งแต่วันที่</label>
+                <div class="relative">
+                    <input type="text" value="01/09/2569" id="filterStartDate"
+                           class="w-full px-3 py-2 text-[12px] rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20 bg-white text-[#050315]" />
+                </div>
+            </div>
+
+            <!-- End Date -->
+            <div class="lg:col-span-2">
+                <label class="block text-[11px] font-medium text-[#050315]/70 mb-1.5">ถึงวันที่</label>
+                <div class="relative">
+                    <input type="text" value="09/09/2569" id="filterEndDate"
+                           class="w-full px-3 py-2 text-[12px] rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20 bg-white text-[#050315]" />
+                </div>
+            </div>
+
+            <!-- Search Field -->
+            <div class="lg:col-span-6">
+                <label class="block text-[11px] font-medium text-[#050315]/70 mb-1.5">ค้นหา</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <input type="text" id="receiptSearch" placeholder="เลขที่ใบเสร็จ หรือเบอร์โทรลูกค้า"
+                           class="w-full pl-9 pr-3 py-2 text-[12px] rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20 bg-white text-[#050315] placeholder:text-[#050315]/40" />
+                </div>
+            </div>
+
+            <!-- Promo Filter Dropdown -->
+            <div class="lg:col-span-2">
+                <label class="block text-[11px] font-medium text-[#050315]/70 mb-1.5">โปรโมชั่นที่ใช้</label>
+                <div class="relative">
+                    <select id="promoFilter"
+                            class="w-full appearance-none px-3 py-2 pr-8 text-[12px] rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20 bg-white text-[#050315] cursor-pointer">
+                        <option value="">ทั้งหมด</option>
+                        <option value="ซื้อ 1 แถม 1">ซื้อ 1 แถม 1</option>
+                        <option value="พรีออเดอร์">พรีออเดอร์</option>
+                        <option value="ราคาบันเดิล">ราคาบันเดิล</option>
+                        <option value="เคลียร์สต๊อก -30%">เคลียร์สต๊อก -30%</option>
+                        <option value="แลกแต้ม 500 คะแนน">แลกแต้ม 500 คะแนน</option>
+                        <option value="—">ไม่มีโปรโมชั่น (—)</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipts Table (Matching frame_9_25.png) -->
+    <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[720px]" id="receiptsTable">
+                <thead>
+                    <tr class="border-b border-slate-100 text-[10px] font-medium text-slate-400">
+                        <th class="px-5 py-3.5 font-medium">วันที่/เวลา</th>
+                        <th class="px-4 py-3.5 font-medium">ลูกค้า</th>
+                        <th class="px-4 py-3.5 font-medium">รายการสินค้า</th>
+                        <th class="px-4 py-3.5 font-medium text-right">ยอดรวม</th>
+                        <th class="px-4 py-3.5 font-medium text-center">โปรโมชั่นที่ใช้</th>
+                        <th class="px-5 py-3.5 font-medium text-center">สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100/80 text-[11px] font-normal">
+                    @foreach (var r in receipts)
+                    {
+                        <tr class="hover:bg-slate-50/60 transition-colors receipt-row cursor-pointer"
+                            onclick="previewReceipt('@r.ReceiptNo', '@r.Date @r.Time', '@r.CustomerName', '@(string.IsNullOrEmpty(r.CustomerPhone) ? "ลูกค้าทั่วไป" : r.CustomerPhone)', '@r.Items', '@r.Total', '@r.Vat', '@r.PaymentMethod', '@r.StaffName', '@r.Promotion')">
+                            <!-- วันที่/เวลา -->
+                            <td class="px-5 py-3.5 whitespace-nowrap">
+                                <div class="text-[11px] text-[#050315]">@r.Date</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">@r.Time</div>
+                            </td>
+
+                            <!-- ลูกค้า -->
+                            <td class="px-4 py-3.5 whitespace-nowrap">
+                                @if (r.CustomerType == "สมาชิก")
+                                {
+                                    <div class="text-[11px] text-[#050315] font-mono">@r.CustomerPhone</div>
+                                    <div class="mt-0.5">
+                                        <span class="inline-block px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-600 text-[10px]">
+                                            @r.CustomerType
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-[11px] text-[#050315]">@r.CustomerType</span>
+                                }
+                            </td>
+
+                            <!-- รายการสินค้า -->
+                            <td class="px-4 py-3.5 text-[11px] text-[#050315]">
+                                @r.Items
+                            </td>
+
+                            <!-- ยอดรวม -->
+                            <td class="px-4 py-3.5 text-right whitespace-nowrap font-semibold text-[11px] text-[#050315]">
+                                @r.Total
+                            </td>
+
+                            <!-- โปรโมชั่นที่ใช้ -->
+                            <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                                @if (r.Promotion == "—")
+                                {
+                                    <span class="text-slate-400 text-[11px]">@r.Promotion</span>
+                                }
+                                else
+                                {
+                                    <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#E0F2FE] text-[#0284C7] text-[10px] font-normal">
+                                        @r.Promotion
+                                    </span>
+                                }
+                            </td>
+
+                            <!-- สถานะ -->
+                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
+                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-[10px] font-normal">
+                                    @r.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table Footer / Pagination (Matching frame_9_25.png) -->
+        <div class="px-5 py-3.5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[11px] text-slate-500">
+            <div>
+                แสดง 7 จาก 214 รายการ (1–9 ก.ย. 2569)
+            </div>
+            <div class="flex items-center gap-1 self-center sm:self-auto">
+                <button type="button" class="size-7 rounded-lg border border-slate-200 bg-white text-slate-400 flex items-center justify-center hover:bg-slate-50 cursor-pointer text-xs">
+                    ‹
+                </button>
+                <button type="button" class="size-7 rounded-lg bg-[#2F39A9] text-white font-medium flex items-center justify-center cursor-pointer text-xs">
+                    1
+                </button>
+                <button type="button" class="size-7 rounded-lg border border-slate-200 bg-white text-slate-600 flex items-center justify-center hover:bg-slate-50 cursor-pointer text-xs">
+                    2
+                </button>
+                <button type="button" class="size-7 rounded-lg border border-slate-200 bg-white text-slate-600 flex items-center justify-center hover:bg-slate-50 cursor-pointer text-xs">
+                    3
+                </button>
+                <button type="button" class="size-7 rounded-lg border border-slate-200 bg-white text-slate-600 flex items-center justify-center hover:bg-slate-50 cursor-pointer text-xs">
+                    ›
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1: ตัวอย่างใบเสร็จรับเงิน (Receipt Preview Modal) ตาม Figma Note [64:2938] -->
+<div id="receiptPreviewModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-200 my-8">
+        <!-- Close button & Title -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-5">
+            <span class="text-xs font-bold text-slate-400 tracking-wider">ตัวอย่างใบเสร็จรับเงิน (Official Receipt)</span>
+            <button type="button" onclick="closeReceiptPreview()" class="text-slate-400 hover:text-[#050315] cursor-pointer">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Receipt Content Wrapper -->
+        <div class="space-y-4 text-xs" id="printableReceiptArea">
+            <!-- Store Branding & Header -->
+            <div class="text-center space-y-1">
+                <div class="size-10 rounded-xl bg-[#2F39A9] text-white flex items-center justify-center font-bold text-sm mx-auto shadow-xs">
+                    FH
+                </div>
+                <h3 class="text-base font-bold text-[#050315]">@pageHeader.StoreName</h3>
+                <p class="text-[10px] text-slate-400">เลขประจำตัวผู้เสียภาษี: @pageHeader.TaxId</p>
+                <p class="text-[10px] text-slate-400 max-w-xs mx-auto leading-tight">@pageHeader.StoreAddress</p>
+            </div>
+
+            <div class="border-t border-b border-dashed border-slate-200 py-2.5 space-y-1 text-[11px]">
+                <div class="flex justify-between">
+                    <span class="text-slate-400">เลขที่ใบเสร็จ:</span>
+                    <span class="font-mono font-bold text-[#050315]" id="rcptNo">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">วันที่และเวลา:</span>
+                    <span class="text-[#050315]" id="rcptDateTime">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">ลูกค้า:</span>
+                    <span class="font-medium text-[#050315]" id="rcptCustomer">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-400">พนักงานขาย:</span>
+                    <span class="text-[#050315]" id="rcptStaff">-</span>
+                </div>
+            </div>
+
+            <!-- Items -->
+            <div>
+                <table class="w-full text-[11px]">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-slate-400 text-left">
+                            <th class="pb-1.5 font-normal">รายการ</th>
+                            <th class="pb-1.5 text-right font-normal">ยอดรวม</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <tr>
+                            <td class="py-2 text-[#050315]" id="rcptItemName">-</td>
+                            <td class="py-2 text-right font-semibold text-[#050315]" id="rcptItemTotal">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Promotion & Calculation -->
+            <div class="border-t border-slate-100 pt-2.5 space-y-1 text-[11px]">
+                <div class="flex justify-between text-slate-400">
+                    <span>โปรโมชั่นที่ใช้:</span>
+                    <span class="font-medium text-[#0284C7]" id="rcptPromo">-</span>
+                </div>
+                <div class="flex justify-between text-slate-400">
+                    <span>ภาษีมูลค่าเพิ่ม 7% (รวมในราคา):</span>
+                    <span class="font-mono text-[#050315]" id="rcptVat">-</span>
+                </div>
+                <div class="flex justify-between text-[13px] font-bold text-[#050315] border-t border-slate-100 pt-2">
+                    <span>ยอดชำระสุทธิ</span>
+                    <span class="text-sm text-[#2F39A9] font-bold" id="rcptFinalTotal">-</span>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-400 pt-0.5">
+                    <span>วิธีการชำระ:</span>
+                    <span class="font-medium text-[#050315]" id="rcptMethod">-</span>
+                </div>
+            </div>
+
+            <!-- Barcode & Notice -->
+            <div class="text-center pt-2 border-t border-dashed border-slate-200 space-y-1.5">
+                <div class="inline-block py-1 px-4 bg-slate-50 border border-slate-100 rounded-md">
+                    <span class="font-mono text-[11px] tracking-widest text-slate-600 font-bold" id="rcptBarcode">||| ||||||| ||||||| ||||</span>
+                </div>
+                <p class="text-[10px] text-slate-400">ขอบคุณที่อุดหนุน FriendHouse · สินค้าและโมเดลแท้ 100%</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-5 flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+            <button type="button" onclick="closeReceiptPreview()" class="px-4 py-2 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 cursor-pointer">
+                ปิด
+            </button>
+            <button type="button" onclick="window.print()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#2F39A9] text-white text-xs font-medium shadow-xs hover:bg-[#2F39A9]/90 transition cursor-pointer">
+                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span>พิมพ์ใบเสร็จ</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: ส่งออก Excel (Export Excel Modal with Hours, Days, Months filter) ตาม Figma note [64:2938] -->
+<div id="exportReceiptsModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-sm rounded-2xl bg-white p-5 shadow-2xl border border-slate-200">
+        <h3 class="text-base font-bold text-[#050315] mb-3">ส่งออกประวัติใบเสร็จ Excel</h3>
+        <div class="space-y-3.5">
+            <div>
+                <label class="block text-[11px] font-medium text-slate-500 mb-1">ช่วงเวลาที่ต้องการส่งออก</label>
+                <select class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-[#050315] focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20">
+                    <option>ย้อนหลัง 24 ชั่วโมง (วันนี้)</option>
+                    <option>ย้อนหลัง 7 วันล่าสุด</option>
+                    <option selected>ย้อนหลัง 30 วัน (1 เดือน)</option>
+                    <option>ไตรมาส 3 (3 เดือนล่าสุด)</option>
+                    <option>ประวัติทั้งหมดตั้งแต่เปิดร้าน</option>
+                </select>
+            </div>
+            <div class="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+                <button type="button" onclick="closeExportReceiptsModal()" class="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-50 cursor-pointer">ยกเลิก</button>
+                <button type="button" onclick="executeExportReceipts()" class="px-4 py-1.5 rounded-xl bg-[#2F39A9] text-white text-xs font-medium cursor-pointer">ยืนยันส่งออก .xlsx</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 3: แจ้งส่งออกสำเร็จ -->
+<div id="exportReceiptsSuccessModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-xs rounded-2xl bg-white p-5 shadow-2xl border border-slate-200 text-center">
+        <div class="size-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2.5 mx-auto">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+        </div>
+        <h3 class="text-sm font-bold text-[#050315]">ส่งออก Excel สำเร็จ!</h3>
+        <p class="text-[11px] text-slate-500 mt-0.5">ไฟล์ receipts_2569.xlsx ถูกดาวน์โหลดแล้ว</p>
+        <button type="button" onclick="closeExportReceiptsSuccessModal()" class="mt-4 w-full py-2 px-3 rounded-xl bg-[#2F39A9] text-xs font-medium text-white cursor-pointer">ตกลง</button>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function previewReceipt(no, time, customer, phone, item, total, vat, method, staff, promo) {
+        document.getElementById('rcptNo').innerText = no;
+        document.getElementById('rcptDateTime').innerText = time;
+        document.getElementById('rcptCustomer').innerText = phone ? `${customer} (${phone})` : customer;
+        document.getElementById('rcptStaff').innerText = staff;
+        document.getElementById('rcptItemName').innerText = item;
+        document.getElementById('rcptItemTotal').innerText = total;
+        document.getElementById('rcptVat').innerText = vat;
+        document.getElementById('rcptPromo').innerText = promo;
+        document.getElementById('rcptFinalTotal').innerText = total;
+        document.getElementById('rcptMethod').innerText = method;
+        document.getElementById('rcptBarcode').innerText = `*${no}*`;
+
+        document.getElementById('receiptPreviewModal').classList.remove('hidden');
+    }
+
+    function closeReceiptPreview() {
+        document.getElementById('receiptPreviewModal').classList.add('hidden');
+    }
+
+    function openExportReceiptsModal() { document.getElementById('exportReceiptsModal').classList.remove('hidden'); }
+    function closeExportReceiptsModal() { document.getElementById('exportReceiptsModal').classList.add('hidden'); }
+    function executeExportReceipts() {
+        closeExportReceiptsModal();
+        document.getElementById('exportReceiptsSuccessModal').classList.remove('hidden');
+    }
+    function closeExportReceiptsSuccessModal() { document.getElementById('exportReceiptsSuccessModal').classList.add('hidden'); }
+
+    // Combined search and promo filter
+    function applyReceiptFilters() {
+        const query = document.getElementById('receiptSearch')?.value.toLowerCase().trim() || '';
+        const promo = document.getElementById('promoFilter')?.value.trim() || '';
+        const rows = document.querySelectorAll('.receipt-row');
+        
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            const matchesQuery = !query || text.includes(query);
+            const matchesPromo = !promo || text.includes(promo.toLowerCase());
+            row.style.display = (matchesQuery && matchesPromo) ? '' : 'none';
+        });
+    }
+
+    document.getElementById('receiptSearch')?.addEventListener('input', applyReceiptFilters);
+    document.getElementById('promoFilter')?.addEventListener('change', applyReceiptFilters);
+</script>
+}

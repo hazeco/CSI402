@@ -4,7 +4,7 @@
     Layout = "_AccountLayout";
 }
 
-<div class="h-dvh flex-1 flex items-center justify-center px-4 py-10 bg-white">
+<div class="min-h-dvh flex-1 flex items-center justify-center px-4 py-8 sm:py-12 bg-white">
     <div class="w-full max-w-sm">
         <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-8">
             <div class="flex flex-col items-center text-center mb-6">
@@ -15,6 +15,9 @@
                 <p class="text-sm text-slate-500 mt-1">เข้าสู่ระบบเพื่อสั่งพรีออเดอร์และสะสมแต้ม</p>
             </div>
 
+            @* Form Parameters expected by Controller:
+               [Email: string, Password: string]
+            *@
             <form class="space-y-4" asp-controller="Account" asp-action="Login">
               <div>
                 <label class="block text-xs font-medium text-slate-700 mb-1.5">อีเมล</label>
@@ -48,9 +51,9 @@
               <!-- Mock Fast Login for Demo -->
               <div class="pt-2 border-t border-slate-100 space-y-2">
                   <span class="block text-[11px] font-bold text-slate-400 text-center uppercase tracking-wider">เข้าสู่ระบบด่วน (Mock Fast Login)</span>
-                  <div class="grid grid-cols-1 gap-2">
+                  <div class="grid grid-cols-2 gap-2">
                       <a asp-controller="Home" asp-action="Customer"
-                         class="flex items-center justify-center gap-2 rounded-xl bg-secondary/25 py-2 px-3 text-xs font-bold text-primary hover:bg-secondary/40 transition-colors cursor-pointer">
+                         class="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-secondary/25 py-2 px-3 text-xs font-bold text-primary hover:bg-secondary/40 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                               <circle cx="12" cy="7" r="4"></circle>
@@ -58,19 +61,37 @@
                           <span>ลูกค้าทั่วไป (Customer View)</span>
                       </a>
                       <a asp-controller="Staff" asp-action="Index"
-                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
+                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                               <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                           </svg>
-                          <span>พนักงานหน้าร้าน (Staff View)</span>
+                          <span>พนักงาน (Staff)</span>
                       </a>
-                      <a asp-controller="Owner" asp-action="Index"
-                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-3 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
+                      <a asp-controller="Owner" asp-action="Promotions"
+                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                           </svg>
-                          <span>เจ้าของร้าน (Owner View)</span>
+                          <span>เจ้าของร้าน (Owner)</span>
+                      </a>
+                      <a asp-controller="ITSupport" asp-action="Dashboard"
+                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
+                          <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <rect x="3" y="3" width="7" height="7"></rect>
+                              <rect x="14" y="3" width="7" height="7"></rect>
+                              <rect x="14" y="14" width="7" height="7"></rect>
+                              <rect x="3" y="14" width="7" height="7"></rect>
+                          </svg>
+                          <span>ไอที (IT Support)</span>
+                      </a>
+                      <a asp-controller="Accountant" asp-action="Index"
+                         class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
+                          <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <line x1="12" y1="1" x2="12" y2="23"></line>
+                              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                          </svg>
+                          <span>คนทำบัญชี (Account)</span>
                       </a>
                   </div>
               </div>

@@ -502,7 +502,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
         <!-- Left: Product Media Gallery (Edge-to-edge, full cover image stretching to match right column height) -->
         <div class="lg:col-span-6 flex flex-col h-full">
-            <div class="relative aspect-square sm:aspect-4/3 lg:aspect-auto w-full h-full min-h-[360px] sm:min-h-[440px] lg:min-h-0 flex-1 rounded-3xl border border-slate-200/80 bg-slate-100 overflow-hidden shadow-xs">
+            <div class="relative aspect-square sm:aspect-4/3 lg:aspect-auto w-full h-full min-h-[260px] sm:min-h-[400px] lg:min-h-0 flex-1 rounded-3xl border border-slate-200/80 bg-slate-100 overflow-hidden shadow-xs">
                 <!-- Status Badge -->
                 <div class="absolute top-4 left-4 z-10 rounded-full bg-emerald-100 px-3.5 py-1 text-xs font-bold text-emerald-700 shadow-xs flex items-center gap-1.5 backdrop-blur-xs">
                     <span class="size-2 rounded-full bg-emerald-500"></span>
@@ -539,11 +539,11 @@
                 }
             </div>
 
-            <!-- Action Buttons: พรีออเดอร์สินค้านี้ หรือ แลกของรางวัลนี้ -->
-            <div class="flex flex-wrap items-center gap-4 pt-2">
+            <!-- Action Buttons: พรีออเดอร์สินค้านี้ หรือ แลกของรางวัลนี้ (Responsive stacked/inline) -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
                 <!-- Open Pre-order / Redeem Modal Button -->
                 <button type="button" id="btn-open-preorder-modal"
-                        class="flex-1 min-w-[200px] rounded-xl bg-accent px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-accent/25 transition-all hover:bg-accent/90 hover:-translate-y-0.5 cursor-pointer">
+                        class="flex-1 w-full sm:w-auto rounded-xl bg-accent px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-accent/25 transition-all hover:bg-accent/90 hover:-translate-y-0.5 cursor-pointer">
                     @(isRewardItem ? "แลกของรางวัลนี้" : "สั่งจองสินค้านี้")
                 </button>
 
@@ -551,7 +551,7 @@
                 {
                     <!-- Back to Rewards Link -->
                     <a asp-controller="Home" asp-action="Rewards"
-                       class="rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-text shadow-xs transition-colors hover:bg-slate-50 cursor-pointer">
+                       class="w-full sm:w-auto text-center rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-text shadow-xs transition-colors hover:bg-slate-50 cursor-pointer">
                         ดูของรางวัลอื่น
                     </a>
                 }
@@ -559,7 +559,7 @@
                 {
                     <!-- Add to Cart Link -->
                     <a asp-controller="Home" asp-action="Cart"
-                       class="rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-text shadow-xs transition-colors hover:bg-slate-50 cursor-pointer">
+                       class="w-full sm:w-auto text-center rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-text shadow-xs transition-colors hover:bg-slate-50 cursor-pointer">
                         เพิ่มลงตะกร้า
                     </a>
                 }
@@ -584,7 +584,7 @@
 
 <!-- PRE-ORDER / REDEEM CONFIRMATION MODAL -->
 <div id="preorder-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl space-y-6">
+    <div class="relative w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
         <!-- Modal Header -->
         <div>
             <h2 id="modal-title" class="text-xl sm:text-2xl font-extrabold text-text">
@@ -606,6 +606,9 @@
         </div>
 
         <!-- Appointment Form (No method attribute per rule) -->
+        @* Form Parameters expected by Controller:
+           [PickupDate: DateTime, ContactPhone: string, ProductId: int, Quantity: int]
+        *@
         <form asp-controller="Home" asp-action="PreorderStatus" class="space-y-4">
             <div>
                 <label for="pickupDate" class="block text-xs font-bold text-slate-700 mb-1">วันที่สะดวกเข้ารับสินค้าโดยประมาณ</label>

@@ -1,0 +1,336 @@
+@{
+    ViewData["Title"] = "บันทึกรายรับ-รายจ่าย";
+    Layout = "_AccountantLayout";
+
+    // Top-of-file Media & Content Configuration
+    var pageHeader = new {
+        Title = "บันทึกรายรับ-รายจ่าย",
+        Subtitle = "สำหรับค่าใช้จ่ายที่ต้องกรอกเอง เช่น ค่าเช่า ค่าน้ำค่าไฟ — ยอดขายหน้าร้านระบบบันทึกให้อัตโนมัติแล้ว ไม่ต้องกรอกซ้ำ",
+        SelectedMonth = "กันยายน 2569"
+    };
+
+    var ledgerStats = new {
+        Income = "฿2,500",
+        Expense = "฿79,200",
+        Net = "-฿76,700"
+    };
+
+    var ledgerEntries = new[] {
+        new { Date = "01/09/2569", Category = "ค่าเช่าร้าน", Note = "ค่าเช่าร้านประจำเดือน ก.ย.", Amount = "-฿25,000", Class = "text-[#DC2626]" },
+        new { Date = "03/09/2569", Category = "ค่าน้ำค่าไฟ", Note = "บิลค่าน้ำ-ไฟ เดือน ส.ค.", Amount = "-฿4,850", Class = "text-[#DC2626]" },
+        new { Date = "05/09/2569", Category = "ค่าขนส่งสินค้าเข้า", Note = "ค่าขนส่งล็อตใหม่จากซัพพลายเออร์", Amount = "-฿3,200", Class = "text-[#DC2626]" },
+        new { Date = "10/09/2569", Category = "เงินเดือนพนักงาน", Note = "เงินเดือนพนักงานขาย 3 คน (งวดต้นเดือน)", Amount = "-฿45,000", Class = "text-[#DC2626]" },
+        new { Date = "15/09/2569", Category = "รายได้อื่นๆ", Note = "ค่าเช่าพื้นที่วางสินค้าฝากขาย", Amount = "+฿2,500", Class = "text-[#16A34A]" },
+        new { Date = "20/09/2569", Category = "อื่นๆ", Note = "ค่าวัสดุบรรจุภัณฑ์/ถุงกระดาษ", Amount = "-฿1,150", Class = "text-[#DC2626]" }
+    };
+}
+
+<div class="space-y-6">
+    <!-- Header Row & Month Picker (frame_9_24.png) -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-[#050315]">@pageHeader.Title</h1>
+            <p class="text-sm text-gray-500 mt-1">@pageHeader.Subtitle</p>
+        </div>
+
+        <div class="relative">
+            <select class="appearance-none pr-8 pl-4 py-2 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-[#050315] shadow-2xs focus:outline-none">
+                <option>@pageHeader.SelectedMonth</option>
+                <option>สิงหาคม 2569</option>
+                <option>กรกฎาคม 2569</option>
+            </select>
+            <svg class="size-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 3 Stat Cards in a row (frame_9_24.png) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Income -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-xs text-gray-400 font-medium">รายรับ (บันทึกเอง) เดือนนี้</span>
+                <div class="text-3xl font-extrabold text-[#16A34A]">@ledgerStats.Income</div>
+            </div>
+            <span class="size-9 rounded-xl bg-green-50 text-[#16A34A] text-sm font-bold flex items-center justify-center">▲</span>
+        </div>
+
+        <!-- Expense -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-xs text-gray-400 font-medium">รายจ่ายรวมเดือนนี้</span>
+                <div class="text-3xl font-extrabold text-[#DC2626]">@ledgerStats.Expense</div>
+            </div>
+            <span class="size-9 rounded-xl bg-red-50 text-[#DC2626] text-sm font-bold flex items-center justify-center">▼</span>
+        </div>
+
+        <!-- Net Balance -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 flex items-center justify-between">
+            <div class="space-y-1">
+                <span class="text-xs text-gray-400 font-medium">คงเหลือสุทธิ (รายการที่บันทึกเอง)</span>
+                <div class="text-3xl font-extrabold text-[#050315]">@ledgerStats.Net</div>
+            </div>
+            <span class="size-9 rounded-xl bg-gray-100 text-gray-600 text-sm font-bold flex items-center justify-center">=</span>
+        </div>
+    </div>
+
+    <!-- 2 Columns: Add Form & Monthly Records Table (frame_9_24.png) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left 1 Col: + บันทึกรายการใหม่ -->
+        @* Form Parameters expected by Controller:
+           [EntryType: string, Category: string, Amount: decimal, EntryDate: DateTime, Note: string]
+        *@
+        <form asp-controller="Accountant" asp-action="Ledger" class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 space-y-4 flex flex-col justify-between">
+            <div class="space-y-4">
+                <h2 class="text-sm font-bold text-[#050315] flex items-center gap-2">
+                    <span class="text-base text-[#2F39A9]">+</span>
+                    <span>บันทึกรายการใหม่</span>
+                </h2>
+
+                <!-- Entry Type Buttons -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">ประเภทรายการ</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" id="btnIncome" onclick="selectEntryType('income')"
+                                class="py-2.5 rounded-xl border-2 border-[#16A34A] text-[#16A34A] bg-[#DCFCE7]/20 text-xs font-bold transition cursor-pointer">
+                            รายรับ
+                        </button>
+                        <button type="button" id="btnExpense" onclick="selectEntryType('expense')"
+                                class="py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium transition cursor-pointer">
+                            รายจ่าย
+                        </button>
+                    </div>
+                    <input type="hidden" name="EntryType" id="entryTypeInput" value="income" />
+                </div>
+
+                <!-- Category Dropdown -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">หมวดหมู่</label>
+                    <div class="relative">
+                        <select name="Category" class="appearance-none w-full pr-8 pl-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs font-semibold text-gray-700 shadow-2xs focus:outline-none">
+                            <option>รายได้อื่นๆ / อื่นๆ</option>
+                            <option>ค่าเช่าร้าน</option>
+                            <option>ค่าน้ำค่าไฟ</option>
+                            <option>ค่าขนส่งสินค้าเข้า</option>
+                            <option>เงินเดือนพนักงาน</option>
+                            <option>อื่นๆ</option>
+                        </select>
+                        <svg class="size-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Amount & Date Grid -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold text-gray-700 block mb-1.5">จำนวนเงิน (บาท)</label>
+                        <input type="text" name="Amount" value="2,500.00"
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-bold text-[#050315] focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-700 block mb-1.5">วันที่</label>
+                        <input type="text" name="EntryDate" value="15/09/2569"
+                               class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs font-medium text-gray-700 focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">หมายเหตุ</label>
+                    <textarea name="Note" rows="3"
+                              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9] shadow-2xs">ค่าเช่าพื้นที่วางสินค้าฝากขาย</textarea>
+                </div>
+            </div>
+
+            <!-- Submit & Reset Buttons -->
+            <div class="flex items-center gap-2 pt-4">
+                <button type="submit" class="flex-1 bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs shadow-xs transition cursor-pointer">
+                    บันทึกรายการ
+                </button>
+                <button type="reset" class="px-4 py-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-semibold text-xs cursor-pointer">
+                    ล้างข้อมูล
+                </button>
+            </div>
+        </form>
+
+        <!-- Right 2 Cols: รายการเดือนกันยายน 2569 -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden flex flex-col justify-between">
+            <div>
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-[#050315]">รายการเดือนกันยายน 2569</h2>
+                    <span class="text-xs text-gray-400">6 รายการ</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs min-w-[540px]">
+                        <thead>
+                            <tr class="border-b border-gray-100 text-left font-semibold text-gray-400 bg-[#FBFBFE]">
+                                <th class="py-3 px-5">วันที่</th>
+                                <th class="py-3 px-5">หมวดหมู่</th>
+                                <th class="py-3 px-5">หมายเหตุ</th>
+                                <th class="py-3 px-5 text-right">จำนวนเงิน</th>
+                                <th class="py-3 px-5 text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach (var entry in ledgerEntries)
+                            {
+                                <tr class="hover:bg-gray-50/70 transition-colors">
+                                    <td class="py-3.5 px-5 text-gray-500 font-mono">@entry.Date</td>
+                                    <td class="py-3.5 px-5 font-semibold text-[#050315]">@entry.Category</td>
+                                    <td class="py-3.5 px-5 text-gray-500">@entry.Note</td>
+                                    <td class="py-3.5 px-5 text-right font-bold @entry.Class">@entry.Amount</td>
+                                    <td class="py-3.5 px-5 text-center">
+                                        <div class="inline-flex items-center gap-1">
+                                            <button type="button" onclick="openEditLedgerModal('@entry.Category', '@entry.Amount')"
+                                                    class="size-7 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#2F39A9] flex items-center justify-center cursor-pointer">
+                                                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M12 20h9"></path>
+                                                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
+                                                </svg>
+                                            </button>
+                                            <button type="button" onclick="openDeleteLedgerModal('@entry.Category')"
+                                                    class="size-7 rounded-lg hover:bg-red-50 text-gray-400 hover:text-[#DC2626] flex items-center justify-center cursor-pointer">
+                                                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Total Net Balance Row (frame_9_24.png) -->
+            <div class="px-6 py-4 border-t border-gray-100 bg-[#FBFBFE] flex items-center justify-between">
+                <span class="text-xs font-bold text-[#050315]">ยอดรวมสุทธิ (บันทึกเอง เดือนนี้)</span>
+                <span class="text-base font-extrabold text-[#050315]">@ledgerStats.Net</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODALS [64:2938] ==================== -->
+
+<!-- 1. Edit Entry Modal -->
+<div id="editLedgerModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-scale-up">
+        <h3 class="text-base font-bold text-[#050315]">แก้ไขรายการบันทึก</h3>
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">หมวดหมู่</label>
+                <input type="text" id="editCategoryInput" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none" />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">จำนวนเงิน</label>
+                <input type="text" id="editAmountInput" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold focus:outline-none" />
+            </div>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="confirmEditLedger()" class="flex-1 bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                บันทึกการแก้ไข
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Delete Entry Modal -->
+<div id="deleteLedgerModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4 animate-scale-up">
+        <div class="size-12 rounded-full bg-red-100 text-[#DC2626] mx-auto flex items-center justify-center">
+            <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]">คุณแน่ใจว่าจะลบรายการนี้?</h3>
+            <p class="text-xs text-gray-500 mt-1" id="deleteEntryDesc"></p>
+        </div>
+        <div class="flex items-center gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="confirmDeleteLedger()" class="flex-1 bg-[#DC2626] hover:bg-[#B91C1C] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                ยืนยันลบ
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. Success Modal -->
+<div id="ledgerSuccessModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4 animate-scale-up">
+        <div class="size-14 rounded-full bg-[#DCFCE7] text-[#16A34A] mx-auto flex items-center justify-center">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]" id="ledgerSuccessTitle">สำเร็จ</h3>
+            <p class="text-xs text-gray-500 mt-1" id="ledgerSuccessDesc"></p>
+        </div>
+        <button type="button" onclick="closeAllModals()" class="w-full bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs shadow-xs cursor-pointer">
+            ตกลง
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function selectEntryType(type) {
+            document.getElementById('entryTypeInput').value = type;
+            const btnIncome = document.getElementById('btnIncome');
+            const btnExpense = document.getElementById('btnExpense');
+
+            if (type === 'income') {
+                btnIncome.className = 'py-2.5 rounded-xl border-2 border-[#16A34A] text-[#16A34A] bg-[#DCFCE7]/20 text-xs font-bold transition cursor-pointer';
+                btnExpense.className = 'py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium transition cursor-pointer';
+            } else {
+                btnExpense.className = 'py-2.5 rounded-xl border-2 border-[#DC2626] text-[#DC2626] bg-[#FEE2E2]/20 text-xs font-bold transition cursor-pointer';
+                btnIncome.className = 'py-2.5 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium transition cursor-pointer';
+            }
+        }
+
+        function openEditLedgerModal(cat, amount) {
+            document.getElementById('editCategoryInput').value = cat;
+            document.getElementById('editAmountInput').value = amount;
+            document.getElementById('editLedgerModal')?.classList.remove('hidden');
+        }
+
+        function confirmEditLedger() {
+            closeAllModals();
+            showLedgerSuccess('แก้ไขสำเร็จ', 'แก้ไข รายการบันทึกรายรับ/รายจ่ายสำเร็จ');
+        }
+
+        function openDeleteLedgerModal(cat) {
+            document.getElementById('deleteEntryDesc').innerText = `รายการ "${cat}" จะถูกลบออกจากสมุดรายวัน`;
+            document.getElementById('deleteLedgerModal')?.classList.remove('hidden');
+        }
+
+        function confirmDeleteLedger() {
+            closeAllModals();
+            showLedgerSuccess('ลบสำเร็จ', 'ลบรายการบันทึกรายรับ/รายจ่ายสำเร็จ');
+        }
+
+        function showLedgerSuccess(title, desc) {
+            document.getElementById('ledgerSuccessTitle').innerText = title;
+            document.getElementById('ledgerSuccessDesc').innerText = desc;
+            document.getElementById('ledgerSuccessModal')?.classList.remove('hidden');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('[id$="Modal"]').forEach(m => m.classList.add('hidden'));
+        }
+    </script>
+}

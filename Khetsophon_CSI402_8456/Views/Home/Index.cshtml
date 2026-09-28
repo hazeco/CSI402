@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "หน้าแรก — FriendHouse";
 
     // Top-of-file Media and Content Configuration
@@ -135,10 +135,6 @@
 }
 
 <div class="space-y-12 pb-16 bg-white">
-    <div>
-        @ViewBag.Email
-        @ViewBag.Password
-    </div>
     <!-- HERO SECTION WITH 3D MODEL -->
     <section id="hero" class="relative overflow-hidden pt-8 pb-12 sm:pt-12 sm:pb-16 lg:pt-14 lg:pb-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -174,34 +170,36 @@
                         }
                     </div>
 
-                    <!-- Pricing & CTA Buttons (Swapped: Button 1 = ใส่ตะกร้า, Button 2 = สั่งจอง) -->
-                    <div class="mt-8 flex flex-wrap items-center gap-4">
+                    <!-- Pricing & CTA Buttons (Responsive stacked/inline buttons) -->
+                    <div class="mt-8 flex flex-col sm:flex-row sm:items-center gap-4">
                         <div class="mr-2">
                             <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">@heroContent.PriceLabel</span>
                             <span class="text-3xl font-extrabold text-primary">@heroContent.Price</span>
                         </div>
 
-                        <!-- Button 1 (Left): ใส่ตะกร้า -->
-                        <a asp-controller="Home" asp-action="Cart"
-                           class="inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-white px-5 py-3.5 text-sm font-bold text-primary shadow-xs transition-all hover:bg-primary/5 cursor-pointer">
-                            <svg class="size-4.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="9" cy="21" r="1"></circle>
-                                <circle cx="20" cy="21" r="1"></circle>
-                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                            </svg>
-                            <span>ใส่ตะกร้า</span>
-                        </a>
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                            <!-- Button 1 (Left): ใส่ตะกร้า -->
+                            <a asp-controller="Home" asp-action="Cart"
+                               class="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-white px-5 py-3.5 text-sm font-bold text-primary shadow-xs transition-all hover:bg-primary/5 cursor-pointer w-full sm:w-auto">
+                                <svg class="size-4.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"></circle>
+                                    <circle cx="20" cy="21" r="1"></circle>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                </svg>
+                                <span>ใส่ตะกร้า</span>
+                            </a>
 
-                        <!-- Button 2 (Right): พรีออเดอร์สินค้านี้ -->
-                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="201"
-                           class="inline-flex items-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-accent/25 transition-all hover:bg-accent/90 hover:-translate-y-0.5 cursor-pointer">
-                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path>
-                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                            </svg>
-                            <span>สั่งจองสินค้านี้</span>
-                        </a>
+                            <!-- Button 2 (Right): พรีออเดอร์สินค้านี้ -->
+                            <a asp-controller="Home" asp-action="ProductDetail" asp-route-id="201"
+                               class="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-accent/25 transition-all hover:bg-accent/90 hover:-translate-y-0.5 cursor-pointer w-full sm:w-auto">
+                                <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                </svg>
+                                <span>สั่งจองสินค้านี้</span>
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Trust Note -->
@@ -213,7 +211,7 @@
 
                 <!-- Right: 3D Model Viewer Container -->
                 <div class="order-1 lg:order-2 lg:col-span-5 flex justify-center">
-                    <div class="relative w-full max-w-[500px] h-[500px] sm:h-[560px] lg:h-[620px] rounded-3xl p-2 sm:p-3">
+                    <div class="relative w-full max-w-[500px] h-[340px] sm:h-[480px] lg:h-[620px] rounded-3xl p-2 sm:p-3">
                         <!-- Glow Backdrop -->
                         <div class="absolute inset-4 rounded-full bg-gradient-to-tr from-secondary/40 via-accent/15 to-transparent blur-2xl pointer-events-none"></div>
 
@@ -270,7 +268,7 @@
     <!-- TRUST STRIP -->
     <div class="border-y border-slate-200/80 bg-white/60 backdrop-blur-xs py-4">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 @foreach (var item in trustItems)
                 {
                     <div class="flex items-center gap-3">

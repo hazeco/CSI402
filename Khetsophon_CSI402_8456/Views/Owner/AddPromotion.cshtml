@@ -1,0 +1,303 @@
+@{
+    ViewData["Title"] = "สร้างโปรโมชั่นใหม่";
+    Layout = "_OwnerLayout";
+
+    // Top-of-file Media & Content Configuration
+    var pageHeader = new {
+        Breadcrumb1 = "โปรโมชั่น",
+        Breadcrumb2 = "สร้างโปรโมชั่นใหม่",
+        Title = "สร้างโปรโมชั่นใหม่"
+    };
+}
+
+@* Form Parameters expected by Controller:
+   [Name: string, VoucherCode: string, PromoType: string, DiscountValue: decimal,
+    MinimumSpend: decimal, ApplicableScope: string, Terms: string,
+    StartDate: DateTime, EndDate: DateTime, UsageLimit: int?, IsActive: bool]
+*@
+<form asp-controller="Owner" asp-action="AddPromotion" class="space-y-6">
+    <!-- Breadcrumb & Back Header (frame_65_4088.png) -->
+    <div>
+        <div class="text-xs text-gray-400 font-medium flex items-center gap-1.5 mb-2">
+            <a asp-controller="Owner" asp-action="Promotions" class="hover:text-gray-600">@pageHeader.Breadcrumb1</a>
+            <span>/</span>
+            <span class="text-gray-600">@pageHeader.Breadcrumb2</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <a asp-controller="Owner" asp-action="Promotions"
+               class="size-9 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center text-gray-600 shadow-2xs transition-colors cursor-pointer">
+                <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
+            <h1 class="text-2xl font-bold text-[#050315]">@pageHeader.Title</h1>
+        </div>
+    </div>
+
+    <!-- 2 Columns Grid Layout (frame_65_4088.png) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- LEFT COLUMN (2 Cols) -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 space-y-5">
+                <h2 class="text-base font-bold text-[#050315]">ข้อมูลหลักโปรโมชั่น</h2>
+
+                <!-- Promo Name -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">ชื่อโปรโมชั่น</label>
+                    <input type="text" name="Name" placeholder="ระบุชื่อโปรโมชั่น (เช่น Flash Sale ประจำเดือน)" required
+                           class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                </div>
+
+                <!-- Voucher Code + Generator Button -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">รหัสโปรโมชั่น / Voucher Code</label>
+                    <div class="flex items-center gap-2">
+                        <input type="text" name="VoucherCode" id="voucherCodeInput" placeholder="ระบุโค้ด (เช่น FRIENDS20)" required
+                               class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm font-mono focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                        <button type="button" onclick="generateVoucherCode()"
+                                class="px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-xs font-bold text-gray-700 transition cursor-pointer shadow-2xs shrink-0">
+                            สร้างรหัสอัตโนมัติ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Discount Type Segmented Control -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">ประเภทส่วนลด</label>
+                    <div class="bg-gray-100 p-1 rounded-xl flex items-center gap-1">
+                        <button type="button" id="btnPercent" onclick="selectDiscountType('percent')"
+                                class="flex-1 py-2 rounded-lg text-xs font-bold text-[#050315] bg-white shadow-xs transition">
+                            ส่วนลดเปอร์เซ็นต์ %
+                        </button>
+                        <button type="button" id="btnFixed" onclick="selectDiscountType('fixed')"
+                                class="flex-1 py-2 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-800 transition">
+                            ส่วนลดคงที่ บาท
+                        </button>
+                    </div>
+                    <input type="hidden" name="PromoType" id="promoTypeInput" value="percent" />
+                </div>
+
+                <!-- Value & Minimum Spend -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-700 block mb-1.5" id="discountValueLabel">มูลค่าส่วนลด (%)</label>
+                        <input type="number" name="DiscountValue" value="0" min="0" step="0.01" required
+                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-700 block mb-1.5">ยอดสั่งซื้อขั้นต่ำ (฿)</label>
+                        <input type="number" name="MinimumSpend" value="0" min="0" step="0.01"
+                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                    </div>
+                </div>
+
+                <!-- Scope Pills -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-2">ขอบเขตการใช้งาน</label>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button type="button" onclick="selectScope(this, 'all')" class="scope-btn px-4 py-2 rounded-xl text-xs font-bold bg-[#2F39A9] text-white shadow-xs cursor-pointer">
+                            สินค้าทั้งหมด
+                        </button>
+                        <button type="button" onclick="selectScope(this, 'series')" class="scope-btn px-4 py-2 rounded-xl text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer">
+                            เฉพาะซีรีส์ฟิกเกอร์ที่กำหนด
+                        </button>
+                        <button type="button" onclick="selectScope(this, 'preorder')" class="scope-btn px-4 py-2 rounded-xl text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer">
+                            เฉพาะรายการ Pre-Order
+                        </button>
+                    </div>
+                    <input type="hidden" name="ApplicableScope" id="applicableScopeInput" value="all" />
+                </div>
+
+                <!-- Terms Textarea -->
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">เงื่อนไขและข้อกำหนด</label>
+                    <textarea name="Terms" rows="4" placeholder="ระบุเงื่อนไขเพิ่มเติมสำหรับการใช้งานโปรโมชั่นนี้..."
+                              class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#2F39A9] shadow-2xs"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN (1 Col) -->
+        <div class="space-y-6">
+            <!-- Status & Banner Dropzone Card -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-[#050315]">สถานะ</span>
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="IsActive" value="true" checked class="sr-only peer" />
+                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2F39A9]"></div>
+                    </label>
+                </div>
+
+                <div class="pt-2 border-t border-gray-100">
+                    <label class="text-xs font-bold text-gray-700 block mb-2">รูปภาพแบนเนอร์โปรโมชั่น</label>
+                    <div class="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:border-[#2F39A9] transition cursor-pointer">
+                        <svg class="size-8 text-gray-300 mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <div class="text-xs font-semibold text-gray-600">ลากและวางรูปภาพที่นี่</div>
+                        <div class="text-[11px] text-gray-400 mt-1">แนะนำขนาด 1200x400 px (สูงสุด 2MB)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Card -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 space-y-4">
+                <h3 class="text-sm font-bold text-[#050315]">ระยะเวลาโปรโมชั่น</h3>
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1">วันและเวลาเริ่ม</label>
+                    <div class="flex items-center border border-gray-200 rounded-xl px-3 py-2 bg-white shadow-2xs">
+                        <svg class="size-4 text-gray-400 mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <input type="datetime-local" name="StartDate" value="2026-10-01T00:00" class="text-xs font-medium text-gray-700 w-full focus:outline-none" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1">วันและเวลาสิ้นสุด</label>
+                    <div class="flex items-center border border-gray-200 rounded-xl px-3 py-2 bg-white shadow-2xs">
+                        <svg class="size-4 text-gray-400 mr-2 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <input type="datetime-local" name="EndDate" value="2026-10-31T23:59" class="text-xs font-medium text-gray-700 w-full focus:outline-none" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage Limits Card -->
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 space-y-4">
+                <h3 class="text-sm font-bold text-[#050315]">จำกัดการใช้งาน</h3>
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">สิทธิ์การใช้งานทั้งหมด (ครั้ง)</label>
+                    <input type="number" name="UsageLimit" placeholder="ไม่จำกัด"
+                           class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:border-[#2F39A9] shadow-2xs" />
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-700 block mb-1.5">จำกัดจำนวนครั้งต่อผู้ใช้</label>
+                    <div class="flex items-center gap-2">
+                        <input type="number" value="1" min="1"
+                               class="w-20 px-3 py-2 rounded-xl border border-gray-200 text-center text-sm font-bold focus:outline-none focus:border-[#2F39A9]" />
+                        <span class="text-xs text-gray-500 font-medium">ครั้ง / ผู้ใช้งาน</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Actions Row (frame_65_4088.png) -->
+    <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200/60">
+        <button type="reset" class="px-6 py-2.5 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-sm shadow-2xs cursor-pointer">
+            ล้างข้อมูล
+        </button>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#2F39A9] hover:bg-[#242D87] text-white font-bold text-sm shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+            <span>บันทึกและเปิดใช้งาน</span>
+            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </div>
+</form>
+
+<!-- Modal: สร้างโปรโมชั่นสำเร็จ! (Exact Figma Frame 65:4632) -->
+<div id="addPromoSuccessModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-8 text-center shadow-2xl border border-slate-100 animate-scale-up">
+        <!-- Success Icon -->
+        <div class="size-16 rounded-full bg-[#ECFDF5] text-[#10B981] mx-auto flex items-center justify-center mb-4">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <!-- Title -->
+        <h3 class="text-2xl font-bold text-[#050315] mb-5">สร้างโปรโมชั่นสำเร็จ!</h3>
+
+        <!-- Promo Details Card (Exact Figma Frame 65:4632) -->
+        <div class="bg-[#F8F9FC] rounded-2xl p-5 text-left border border-slate-100 mb-6 space-y-3">
+            <div>
+                <div class="text-[11px] font-semibold text-slate-400">ชื่อโปรโมชั่น</div>
+                <div id="successPromoName" class="text-sm font-bold text-[#050315] mt-0.5">Summer Sale 2026</div>
+            </div>
+            <div>
+                <div class="text-[11px] font-semibold text-slate-400">รหัสคูปอง</div>
+                <div class="mt-1">
+                    <span id="successPromoCode" class="inline-block px-3 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-xs font-mono font-bold text-[#2F39A9]">
+                        SUMMER2026
+                    </span>
+                </div>
+            </div>
+            <div>
+                <div class="text-[11px] font-semibold text-slate-400">ระยะเวลา</div>
+                <div class="flex items-center gap-1.5 text-xs text-slate-600 mt-1 font-medium">
+                    <svg class="size-3.5 text-slate-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span id="successPromoDates">1 June 2026 - 31 August 2026</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-3">
+            <button type="button" onclick="resetPromoForm()"
+                    class="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-[#050315] font-bold text-sm transition cursor-pointer">
+                สร้างโปรโมชั่นเพิ่ม
+            </button>
+            <a asp-controller="Owner" asp-action="Promotions"
+               class="block w-full py-3 px-4 rounded-xl bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-white font-bold text-sm shadow-md shadow-[#2F39A9]/20 transition cursor-pointer">
+                กลับสู่หน้าโปรโมชั่น
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function generateVoucherCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = 'FH-';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('voucherCodeInput').value = code;
+        }
+
+        function selectDiscountType(type) {
+            document.getElementById('promoTypeInput').value = type;
+            const btnPercent = document.getElementById('btnPercent');
+            const btnFixed = document.getElementById('btnFixed');
+            const label = document.getElementById('discountValueLabel');
+
+            if (type === 'percent') {
+                btnPercent.className = 'flex-1 py-2 rounded-lg text-xs font-bold text-[#050315] bg-white shadow-xs transition';
+                btnFixed.className = 'flex-1 py-2 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-800 transition';
+                if (label) label.innerText = 'มูลค่าส่วนลด (%)';
+            } else {
+                btnFixed.className = 'flex-1 py-2 rounded-lg text-xs font-bold text-[#050315] bg-white shadow-xs transition';
+                btnPercent.className = 'flex-1 py-2 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-800 transition';
+                if (label) label.innerText = 'มูลค่าส่วนลด (บาท)';
+            }
+        }
+
+        function selectScope(btn, val) {
+            document.getElementById('applicableScopeInput').value = val;
+            document.querySelectorAll('.scope-btn').forEach(b => {
+                b.className = 'scope-btn px-4 py-2 rounded-xl text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer';
+            });
+            btn.className = 'scope-btn px-4 py-2 rounded-xl text-xs font-bold bg-[#2F39A9] text-white shadow-xs cursor-pointer';
+        }
+    </script>
+}

@@ -2,98 +2,355 @@
 @{
     ViewData["Title"] = "เคาน์เตอร์พรีออเดอร์";
     Layout = "_StaffLayout";
+
+    // Top-of-file Media & Content Configuration
+    var pageHeader = new {
+        Title = "เคาน์เตอร์พรีออเดอร์",
+        Subtitle = "ค้นหาลูกค้าเพื่อเช็คสถานะรับสินค้าที่จองไว้",
+        DefaultSearch = "081-234-5xxx"
+    };
 }
 
-<main class="flex-1 px-6 py-6 flex flex-col items-center">
-        <div class="w-full max-w-2xl space-y-5">
+<div class="max-w-3xl mx-auto space-y-6">
+    <!-- Header Center (frame_9_5.png) -->
+    <div class="text-center space-y-1">
+        <h1 class="text-2xl font-bold text-[#050315]">@pageHeader.Title</h1>
+        <p class="text-sm text-gray-500">@pageHeader.Subtitle</p>
+    </div>
 
-          <div class="text-center">
-            <h1 class="text-xl font-bold text-slate">เคาน์เตอร์พรีออเดอร์</h1>
-            <p class="text-sm text-slate/55 mt-0.5">ค้นหาลูกค้าเพื่อเช็คสถานะรับสินค้าที่จองไว้</p>
-          </div>
-
-          <!-- BIG SEARCH BAR -->
-          <form asp-controller="Staff" asp-action="CounterPreorder">
-            <div class="bg-white rounded-2xl border border-black/5 shadow-md p-4">
-            <label class="text-xs font-bold text-slate/50 mb-2 block">ค้นหาด้วยเบอร์โทรสมาชิก หรือหมายเลขการจอง</label>
-            <div class="flex items-center gap-2.5">
-              <div class="relative flex-1">
-                <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-primary/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0122 16.92z"></path></svg>
-                <input asp-for="ReservationNumber" type="text" value="081-234-5000" placeholder="กรอกเบอร์โทรหรือหมายเลขการจอง" class="w-full pl-12 pr-4 py-4 rounded-xl border-2 border-primary/20 text-lg font-semibold tracking-wide focus:outline-none focus:ring-4 focus:ring-primary/15 focus:border-primary">
-              </div>
-              <button type="submit" class="shrink-0 flex items-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold px-6 py-4 rounded-xl text-base shadow-sm">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
-                ค้นหา
-              </button>
+    <!-- Search Card (frame_9_5.png) -->
+    @* Form Parameters expected by Controller:
+       [ReservationNumber: string (ค้นหาด้วยเบอร์โทรศัพท์ของลูกค้า หรือหมายเลขใบจองพรีออเดอร์)]
+    *@
+    <form asp-controller="Staff" asp-action="CounterPreorder" class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6">
+        <label class="text-xs font-bold text-[#050315] block mb-2">ค้นหาด้วยรหัสพรีออเดอร์ / รหัสแลกรางวัล / เบอร์โทร</label>
+        <div class="flex items-center gap-2.5">
+            <div class="relative flex-1">
+                <svg class="size-4.5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                <input asp-for="ReservationNumber" type="text" value="@pageHeader.DefaultSearch" placeholder="081-234-5xxx"
+                       class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-base font-semibold text-[#050315] focus:outline-none focus:border-[#2F39A9] focus:ring-1 focus:ring-[#2F39A9] shadow-2xs" />
             </div>
-            <p class="text-[11px] text-slate/35 mt-2">พิมพ์เบอร์โทรของสมาชิกที่ใช้ตอนสั่งพรีออเดอร์ หรือหมายเลขการจอง ระบบจะแสดงรายการที่ยังไม่มารับ</p>
-          </div>
-          </form>
-
-          <!-- FOUND RESULT CARD -->
-          <div class="bg-white rounded-2xl border-2 border-secondary shadow-lg overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-3 bg-secondary/25 border-b border-secondary/60">
-              <span class="flex items-center gap-2 text-sm font-bold text-primary">
-                <svg class="w-4.5 h-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
-                พบรายการพรีออเดอร์ 1 รายการ
-              </span>
-              <span class="text-[11px] font-bold bg-accent/15 text-text px-3 py-1 rounded-full">รอรับที่ร้าน</span>
-            </div>
-
-            <div class="p-5 space-y-4">
-              <div class="flex items-start gap-4">
-                <div class="w-16 h-16 rounded-xl bg-secondary/25 flex items-center justify-center text-3xl shrink-0">🧸</div>
-                <div class="flex-1 min-w-0">
-                  <div class="text-lg font-bold text-slate leading-snug">ตุ๊กตาหมี Baba รุ่นลิมิเต็ด (สีชมพู)</div>
-                  <div class="text-sm text-slate/50 mt-0.5">จำนวนที่จอง: 1 ชิ้น · มัดจำแล้ว 100 บาท</div>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="bg-slate/[0.03] rounded-xl px-4 py-3">
-                  <div class="text-[11px] font-semibold text-slate/40 mb-1">หมายเลขการจอง / เบอร์โทร</div>
-                  <div class="text-sm font-bold text-slate">DB0123456 · 081-234-5xxx</div>
-                </div>
-                <div class="bg-slate/[0.03] rounded-xl px-4 py-3">
-                  <div class="text-[11px] font-semibold text-slate/40 mb-1">แต้มสะสมปัจจุบัน</div>
-                  <div class="text-sm font-bold text-slate">180 แต้ม</div>
-                </div>
-                <div class="bg-slate/[0.03] rounded-xl px-4 py-3">
-                  <div class="text-[11px] font-semibold text-slate/40 mb-1">วันที่สั่งจอง</div>
-                  <div class="text-sm font-bold text-slate">28 ส.ค. 2569</div>
-                </div>
-                <div class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-                  <div class="text-[11px] font-semibold text-amber-700/70 mb-1">กำหนดมารับภายใน</div>
-                  <div class="text-sm font-bold text-amber-700">09 ก.ย. 2569 · ก่อน 20:00 น.</div>
-                </div>
-              </div>
-
-              <!-- BIG ACTION BUTTONS -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <button class="flex items-center justify-center gap-2.5 bg-green-600 hover:bg-green-700 text-white font-bold text-base py-5 rounded-2xl shadow-md shadow-green-600/25">
-                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
-                  มารับแล้ว / ชำระเงินแล้ว
-                </button>
-                <button class="flex items-center justify-center gap-2.5 bg-white border-2 border-red-400 text-red-500 hover:bg-red-50 font-bold text-base py-5 rounded-2xl">
-                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"></path><path d="M6 6l12 12"></path></svg>
-                  ไม่มารับ
-                </button>
-              </div>
-              <p class="text-[11px] text-slate/40 text-center flex items-center justify-center gap-1.5">
-                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-                เมื่อกด "มารับแล้ว" ระบบจะให้กรอกเบอร์โทรสมาชิกอีกครั้งเพื่อสะสมแต้ม และสถานะพรีออเดอร์ของลูกค้าจะถูกปิดโดยอัตโนมัติ
-              </p>
-            </div>
-          </div>
-
-          <!-- RECENT SEARCHES -->
-          <div class="bg-white rounded-2xl border border-black/5 shadow-sm p-4">
-            <div class="text-xs font-bold text-slate/40 mb-2">ค้นหาล่าสุดในกะนี้</div>
-            <div class="flex flex-wrap gap-2">
-              <span class="text-xs font-mono bg-slate/[0.04] text-slate/60 px-3 py-1.5 rounded-full">089-xxx-1120 · รับแล้ว</span>
-              <span class="text-xs font-mono bg-slate/[0.04] text-slate/60 px-3 py-1.5 rounded-full">062-xxx-8843 · รับแล้ว</span>
-              <span class="text-xs font-mono bg-red-50 text-red-500 px-3 py-1.5 rounded-full">095-xxx-2091 · ไม่มารับ</span>
-            </div>
-          </div>
+            <button type="submit" class="bg-[#2F39A9] hover:bg-[#232B80] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-xs flex items-center gap-2 transition-colors cursor-pointer shrink-0">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>ค้นหา</span>
+            </button>
         </div>
-      </main>
+        <p class="text-xs text-gray-400 mt-2.5">พิมพ์เบอร์โทรของสมาชิกที่แจ้งส่งพรีออเดอร์ ระบบจะแสดงรายการที่ยังไม่มารับ</p>
+    </form>
+
+    <!-- Found Result Card (frame_9_5.png) -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 space-y-5">
+        <!-- Top Status -->
+        <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2 text-sm font-bold text-[#050315]">
+                <svg class="size-5 text-[#16A34A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>พบรายการพรีออเดอร์ 1 รายการ</span>
+            </div>
+            <span class="text-xs font-semibold px-3 py-1 rounded-full bg-[#2F39A9] text-white">
+                รอรับที่ร้าน
+            </span>
+        </div>
+
+        <!-- Product Block -->
+        <div class="flex items-center gap-4">
+            <div class="size-14 rounded-2xl bg-[#BAF2FF]/40 text-[#2F39A9] flex items-center justify-center shrink-0">
+                <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="14" r="7"></circle>
+                    <circle cx="7" cy="8" r="3"></circle>
+                    <circle cx="17" cy="8" r="3"></circle>
+                    <circle cx="10" cy="13" r="1" fill="currentColor"></circle>
+                    <circle cx="14" cy="13" r="1" fill="currentColor"></circle>
+                    <path d="M11 16c.6.4 1.4.4 2 0"></path>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-[#050315]">ตุ๊กตาหมี Baba รุ่นลิมิเต็ด (สีชมพู)</h3>
+                <p class="text-xs text-gray-500 mt-0.5">จำนวนที่จอง: 1 ชิ้น · มัดจำแล้ว 100 บาท</p>
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 pt-2 border-t border-gray-100">
+            <div>
+                <div class="text-xs text-gray-400 font-medium">รหัสพรีออเดอร์ / รหัสแลกรางวัล / เบอร์โทร</div>
+                <div class="text-sm font-bold text-[#050315] mt-0.5">DB123456 · 081-234-5xxx</div>
+            </div>
+            <div>
+                <div class="text-xs text-gray-400 font-medium">แต้มสะสมปัจจุบัน</div>
+                <div class="text-sm font-bold text-[#050315] mt-0.5">180 แต้ม</div>
+            </div>
+            <div>
+                <div class="text-xs text-gray-400 font-medium">วันที่สั่งจอง</div>
+                <div class="text-sm font-bold text-[#050315] mt-0.5">28 ส.ค. 2569</div>
+            </div>
+            <div>
+                <div class="text-xs text-gray-400 font-medium">กำหนดมารับภายใน</div>
+                <div class="text-sm font-bold text-[#050315] mt-0.5">09 ก.ย. 2569 · ก่อน 20:00 น.</div>
+            </div>
+        </div>
+
+        <!-- 3 Action Buttons in single row (frame_9_5.png) -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-3">
+            <button type="button" onclick="openRejectReasonModal()" class="w-full sm:w-auto px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-bold text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs">
+                <svg class="size-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>ไม่รับสินค้า</span>
+            </button>
+            <button type="button" onclick="openConfirmNoShowModal()" class="w-full sm:w-auto px-4 py-3 rounded-xl border border-[#FCA5A5] bg-white hover:bg-red-50 text-[#DC2626] font-bold text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-2xs">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                <span>ไม่มารับสินค้า</span>
+            </button>
+            <button type="button" onclick="openMemberPointsModal()" class="w-full sm:flex-1 py-3 px-6 rounded-xl bg-[#16A34A] hover:bg-[#15803D] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer">
+                <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>มารับแล้ว / ชำระเงินแล้ว</span>
+            </button>
+        </div>
+
+        <!-- Explanatory Notes Below (frame_9_5.png) -->
+        <div class="space-y-1.5 text-xs text-gray-400 pt-1">
+            <div class="flex items-start gap-1.5">
+                <svg class="size-3.5 text-gray-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>เมื่อกด "มารับแล้ว" สถานะพรีออเดอร์ของลูกค้าจะถูกปิดโดยอัตโนมัติ และต้องกรอกเบอร์ลูกค้าเพื่อสะสมแต้ม แต่หากไม่เป็นสมาชิกกดปุ่มไม่ได้เป็นสมาชิก</span>
+            </div>
+            <div class="flex items-start gap-1.5">
+                <svg class="size-3.5 text-gray-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span>เมื่อกด "ไม่รับสินค้า" ระบบจะให้กรอกสาเหตุว่าทำไมถึงไม่รับ</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Searches Card (frame_9_5.png) -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5">
+        <h4 class="text-xs font-bold text-gray-400 mb-3">ค้นหาล่าสุด</h4>
+        <div class="flex items-center gap-2 flex-wrap">
+            <span class="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full border border-green-200 bg-green-50/50 text-[#16A34A]">
+                089-xxx-1120 · รับแล้ว
+            </span>
+            <span class="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full border border-green-200 bg-green-50/50 text-[#16A34A]">
+                062-xxx-8843 · รับแล้ว
+            </span>
+            <span class="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full border border-red-200 bg-red-50/50 text-[#DC2626]">
+                095-xxx-2091 · ไม่มารับ
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- 1. Member Points Modal [65:4007] -->
+<div id="memberPointsModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-scale-up">
+        <div class="text-center space-y-1">
+            <h3 class="text-lg font-bold text-[#050315]">สะสมแต้มสมาชิก</h3>
+            <p class="text-xs text-gray-500">กรอกหมายเลขโทรศัพท์ลูกค้า เพื่อนำยอดคำสั่งซื้อไปสะสมแต้มเข้าบัญชีสมาชิก</p>
+        </div>
+        <div>
+            <label class="text-xs font-bold text-gray-700 block mb-1">หมายเลขโทรศัพท์สมาชิก (Member Phone Number)</label>
+            <input type="text" id="memberPhoneInput" placeholder="ตัวอย่าง 08X-XXX-XXXX" value="081-234-5678"
+                   class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#2F39A9]" />
+        </div>
+        <div class="space-y-2 pt-2">
+            <button type="button" onclick="submitPointsAndComplete()" class="w-full bg-[#2F39A9] hover:bg-[#232B80] text-white py-2.5 rounded-xl font-bold text-sm shadow-xs cursor-pointer">
+                ยืนยันและสะสมแต้ม
+            </button>
+            <button type="button" onclick="skipPointsAndComplete()" class="w-full bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 py-2.5 rounded-xl font-semibold text-sm cursor-pointer">
+                ไม่ได้เป็นสมาชิก / ข้าม
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 2. Pickup Success Modal [65:3099] / [65:4060] -->
+<div id="pickupSuccessModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4 animate-scale-up">
+        <div class="size-14 rounded-full bg-[#DCFCE7] text-[#16A34A] mx-auto flex items-center justify-center">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]">ลูกค้าจ่ายเงินและมารับสินค้าเรียบร้อย</h3>
+            <p class="text-sm font-semibold text-gray-700 mt-1">จำนวนเงิน: ฿1,250.00</p>
+            <p class="text-xs text-[#16A34A] font-bold mt-1" id="pointsEarnedText">จำนวนแต้มที่ได้รับ: +150 คะแนน</p>
+        </div>
+        <button type="button" onclick="closeAllModals()" class="w-full bg-[#2F39A9] hover:bg-[#232B80] text-white py-2.5 rounded-xl font-bold text-sm shadow-xs cursor-pointer">
+            สำเร็จ
+        </button>
+    </div>
+</div>
+
+<!-- 3. Confirm No-Show Modal [65:3720] -->
+<div id="confirmNoShowModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-scale-up">
+        <div class="flex items-center gap-3">
+            <div class="size-10 rounded-full bg-red-100 text-[#DC2626] flex items-center justify-center shrink-0">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-[#050315]">คุณแน่ใจหรือไม่ว่าลูกค้าไม่มารับสินค้า</h3>
+                <p class="text-xs font-mono text-gray-400">Order #PO-2026-9912</p>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 leading-relaxed">
+            การทำเครื่องหมายคำสั่งซื้อนี้ว่า "ไม่มาตามนัด" จะยกเลิกการจองและคืนสินค้ากลับสู่สต็อกที่มีอยู่<br />
+            คุณแน่ใจหรือไม่ว่าต้องการดำเนินการต่อ?
+        </p>
+        <div class="flex items-center gap-2.5 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-sm cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="confirmNoShow()" class="flex-1 bg-[#DC2626] hover:bg-[#B91C1C] text-white py-2.5 rounded-xl font-bold text-sm cursor-pointer shadow-xs">
+                ยืนยัน
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 4. No-Show Success Modal [65:3082] -->
+<div id="noShowSuccessModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4 animate-scale-up">
+        <div class="size-14 rounded-full bg-red-100 text-[#DC2626] mx-auto flex items-center justify-center">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]">ลูกค้าไม่มารับสินค้า</h3>
+            <p class="text-xs font-mono text-gray-400 mt-1">Order ID: #ORD-7741</p>
+            <p class="text-xs text-gray-500 mt-2">สถานะของออเดอร์นี้ถูกปรับเป็นลูกค้าไม่มารับสินค้า และคืนสต็อกแล้ว</p>
+        </div>
+        <button type="button" onclick="closeAllModals()" class="w-full bg-[#2F39A9] hover:bg-[#232B80] text-white py-2.5 rounded-xl font-bold text-sm shadow-xs cursor-pointer">
+            สำเร็จ
+        </button>
+    </div>
+</div>
+
+<!-- 5. Reject Reason Modal [65:3348] -->
+<div id="rejectReasonModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-scale-up">
+        <div>
+            <h3 class="text-base font-bold text-[#050315]">เหตุผลการปฏิเสธรายการบันทึก</h3>
+            <p class="text-xs font-mono text-gray-400">Order #PO-2026-9912</p>
+        </div>
+        <div class="space-y-3">
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">เลือกเหตุผล</label>
+                <select id="rejectReasonSelect" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#2F39A9]">
+                    <option value="">Select a reason...</option>
+                    <option value="บรรจุภัณฑ์ชำรุดเสียหาย">บรรจุภัณฑ์ชำรุดเสียหาย</option>
+                    <option value="สินค้าไม่ตรงตามที่สั่งจอง">สินค้าไม่ตรงตามที่สั่งจอง</option>
+                    <option value="ลูกค้าเปลี่ยนใจ">ลูกค้าเปลี่ยนใจ</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-gray-700 block mb-1">
+                    รายละเอียดเพิ่มเติม <span class="text-gray-400 font-normal">(จำเป็นต้องระบุหากเลือก "อื่นๆ")</span>
+                </label>
+                <textarea id="rejectReasonRemark" rows="3" placeholder="โปรดระบุเหตุผลเฉพาะหรือหมายเหตุจากเจ้าหน้าที่ที่นี่..."
+                          class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#2F39A9]"></textarea>
+            </div>
+        </div>
+        <div class="flex items-center gap-2.5 pt-2">
+            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-sm cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="submitRejectReason()" class="flex-1 bg-[#2F39A9] hover:bg-[#232B80] text-white py-2.5 rounded-xl font-bold text-sm cursor-pointer shadow-xs">
+                บันทึก
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 6. Reject Success Modal [65:3065] -->
+<div id="rejectSuccessModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-xl space-y-4 animate-scale-up">
+        <div class="size-14 rounded-full bg-gray-100 text-gray-600 mx-auto flex items-center justify-center">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <div>
+            <h3 class="text-base font-bold text-[#050315]">ลูกค้าไม่รับสินค้า</h3>
+            <p class="text-xs font-mono text-gray-400 mt-1">Order ID: #ORD-8829</p>
+            <p class="text-xs text-gray-500 mt-2">รายละเอียดการปฏิเสธรับสินค้าของลูกค้าถูกบันทึกเรียบร้อย</p>
+        </div>
+        <button type="button" onclick="closeAllModals()" class="w-full bg-[#2F39A9] hover:bg-[#232B80] text-white py-2.5 rounded-xl font-bold text-sm shadow-xs cursor-pointer">
+            สำเร็จ
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openMemberPointsModal() {
+            document.getElementById('memberPointsModal')?.classList.remove('hidden');
+        }
+
+        function submitPointsAndComplete() {
+            document.getElementById('memberPointsModal')?.classList.add('hidden');
+            const pt = document.getElementById('pointsEarnedText');
+            if (pt) pt.innerText = 'จำนวนแต้มที่ได้รับ: +150 คะแนน';
+            document.getElementById('pickupSuccessModal')?.classList.remove('hidden');
+        }
+
+        function skipPointsAndComplete() {
+            document.getElementById('memberPointsModal')?.classList.add('hidden');
+            const pt = document.getElementById('pointsEarnedText');
+            if (pt) pt.innerText = 'ไม่ได้สะสมแต้มสมาชิก';
+            document.getElementById('pickupSuccessModal')?.classList.remove('hidden');
+        }
+
+        function openConfirmNoShowModal() {
+            document.getElementById('confirmNoShowModal')?.classList.remove('hidden');
+        }
+
+        function confirmNoShow() {
+            document.getElementById('confirmNoShowModal')?.classList.add('hidden');
+            document.getElementById('noShowSuccessModal')?.classList.remove('hidden');
+        }
+
+        function openRejectReasonModal() {
+            document.getElementById('rejectReasonModal')?.classList.remove('hidden');
+        }
+
+        function submitRejectReason() {
+            document.getElementById('rejectReasonModal')?.classList.add('hidden');
+            document.getElementById('rejectSuccessModal')?.classList.remove('hidden');
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('[id$="Modal"]').forEach(m => m.classList.add('hidden'));
+        }
+    </script>
+}

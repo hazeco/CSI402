@@ -1,0 +1,461 @@
+@* Form Parameters: [ReportFormat: string (Excel/PDF), PeriodType: string (Monthly/Quarterly), SelectedMonth: string, SelectedQuarter: string, IncludeSales: bool, IncludePreorder: bool, IncludeStockIn: bool] *@
+@{
+    ViewData["Title"] = "รายงานสรุปยอดประจำเดือน";
+    Layout = "_OwnerLayout";
+
+    // Media & Content Configuration (Top of File)
+    var pageHeader = new {
+        Breadcrumb = "รายงาน",
+        Title = "รายงานสรุปยอดประจำเดือน",
+        Subtitle = "ภาพรวมรายรับ สต็อกเข้า-ออก และพรีออเดอร์ รายเดือน",
+        SelectedMonth = "สิงหาคม 2569"
+    };
+
+    var stats = new {
+        Revenue = "฿268,400",
+        RevenueDelta = "↑ +21.8% จากเดือนก่อน",
+        StockIn = "1,240 ชิ้น",
+        StockInDelta = "↑ +180 ชิ้น",
+        StockOut = "1,065 ชิ้น",
+        StockOutDelta = "↓ -3.2% จากเดือนก่อน",
+        Preorder = "37 ออเดอร์",
+        PreorderDelta = "↑ +6 ออเดอร์"
+    };
+
+    var monthlyTrends = new[] {
+        new { Month = "มี.ค.", Value = "185K", HeightPct = "69%", IsCurrent = false },
+        new { Month = "เม.ย.", Value = "210K", HeightPct = "78%", IsCurrent = false },
+        new { Month = "พ.ค.", Value = "198K", HeightPct = "74%", IsCurrent = false },
+        new { Month = "มิ.ย.", Value = "235K", HeightPct = "88%", IsCurrent = false },
+        new { Month = "ก.ค.", Value = "220K", HeightPct = "82%", IsCurrent = false },
+        new { Month = "ส.ค.", Value = "268K", HeightPct = "100%", IsCurrent = true }
+    };
+
+    var tableRows = new[] {
+        new { Name = "สมุดปกแข็ง A5", Category = "เครื่องเขียน", InQty = 300, OutQty = 245, Remain = 55, InVal = "฿21,000", OutVal = "฿24,500" },
+        new { Name = "ปากกาเจลสีน้ำเงิน", Category = "เครื่องเขียน", InQty = 500, OutQty = 420, Remain = 80, InVal = "฿15,000", OutVal = "฿16,800" },
+        new { Name = "ตุ๊กตาผ้าไซส์ M", Category = "ของเล่น/ของสะสม", InQty = 150, OutQty = 130, Remain = 20, InVal = "฿45,000", OutVal = "฿52,000" },
+        new { Name = "กระเป๋าผ้าแคนวาส", Category = "ของใช้ทั่วไป", InQty = 120, OutQty = 95, Remain = 25, InVal = "฿18,000", OutVal = "฿19,000" },
+        new { Name = "สติกเกอร์ลายการ์ตูน", Category = "เครื่องเขียน", InQty = 400, OutQty = 380, Remain = 20, InVal = "฿8,000", OutVal = "฿9,500" },
+        new { Name = "แก้วเซรามิกเปรียวกราฟิก", Category = "ของใช้ทั่วไป", InQty = 90, OutQty = 78, Remain = 12, InVal = "฿27,000", OutVal = "฿31,200" }
+    };
+}
+
+<div class="space-y-6">
+    <!-- Breadcrumb, Header & Month Navigator (frame_9_9.png) -->
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <div class="text-xs text-slate-400 font-medium mb-1">@pageHeader.Breadcrumb</div>
+            <h1 class="text-2xl font-bold text-[#050315]">@pageHeader.Title</h1>
+            <p class="text-sm text-slate-500 mt-1">@pageHeader.Subtitle</p>
+        </div>
+
+        <!-- Month Navigation & Export Buttons (frame_9_9.png) -->
+        <div class="flex items-center gap-2">
+            <button type="button" class="size-9 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center text-sm font-bold shadow-2xs cursor-pointer">
+                ‹
+            </button>
+            <div class="relative">
+                <select class="appearance-none pr-8 pl-3.5 py-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-[#050315] shadow-2xs focus:outline-none">
+                    <option>@pageHeader.SelectedMonth</option>
+                    <option>กรกฎาคม 2569</option>
+                    <option>มิถุนายน 2569</option>
+                </select>
+                <svg class="size-4 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <button type="button" class="size-9 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center text-sm font-bold shadow-2xs cursor-pointer">
+                ›
+            </button>
+            <button type="button" onclick="openExportModal()" class="inline-flex items-center gap-1.5 bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-white font-bold px-4 py-2 rounded-xl shadow-xs transition-colors cursor-pointer text-sm ml-1">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16"></path>
+                </svg>
+                <span>ส่งออก</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 Stat Cards in a row (frame_9_9.png) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-xs p-5">
+            <div class="text-xs text-slate-400 font-medium">ยอดรายได้รวม</div>
+            <div class="text-3xl font-extrabold text-[#050315] mt-1.5">@stats.Revenue</div>
+            <div class="text-xs font-semibold text-[#16A34A] mt-2">@stats.RevenueDelta</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-xs p-5">
+            <div class="text-xs text-slate-400 font-medium">จำนวนสต็อกที่รับเข้า</div>
+            <div class="text-3xl font-extrabold text-[#050315] mt-1.5">@stats.StockIn</div>
+            <div class="text-xs font-semibold text-[#16A34A] mt-2">@stats.StockInDelta</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-xs p-5">
+            <div class="text-xs text-slate-400 font-medium">จำนวนสต็อกที่ขายออก</div>
+            <div class="text-3xl font-extrabold text-[#050315] mt-1.5">@stats.StockOut</div>
+            <div class="text-xs font-semibold text-[#DC2626] mt-2">@stats.StockOutDelta</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-xs p-5">
+            <div class="text-xs text-slate-400 font-medium">พรีออเดอร์ที่สำเร็จ</div>
+            <div class="text-3xl font-extrabold text-[#050315] mt-1.5">@stats.Preorder</div>
+            <div class="text-xs font-semibold text-[#16A34A] mt-2">@stats.PreorderDelta</div>
+        </div>
+    </div>
+
+    <!-- 6-Month Trend Bar Chart Card (Exact frame_9_9.png) -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-xs p-6 space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-[#050315]">แนวโน้มรายได้ 6 เดือนล่าสุด</h2>
+            <span class="text-xs text-slate-400">หน่วย: บาท</span>
+        </div>
+
+        <div class="pt-6 pb-2 h-64 flex items-end justify-between gap-4 max-w-4xl mx-auto px-4">
+            @foreach (var bar in monthlyTrends)
+            {
+                <div class="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
+                    <span class="text-xs font-semibold @(bar.IsCurrent ? "text-[#2F39A9] font-bold" : "text-slate-400")">
+                        @bar.Value
+                    </span>
+                    <div class="w-full max-w-[56px] rounded-t-xl transition-all duration-300 @(bar.IsCurrent ? "bg-[#2F39A9] shadow-xs" : "bg-[#BAF2FF]/70 hover:bg-[#BAF2FF]")"
+                         style="height: @bar.HeightPct;">
+                    </div>
+                    <span class="text-xs font-semibold mt-1 @(bar.IsCurrent ? "text-[#050315] font-bold" : "text-slate-500")">
+                        @bar.Month
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Detailed Stock Movement Table (Exact frame_9_9.png) -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-[#050315]">รายละเอียดสต็อกเข้า-ออก · สิงหาคม 2569</h2>
+            <span class="text-xs text-slate-400">6 รายการ</span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-slate-100 text-left text-xs font-semibold text-slate-400 bg-[#FBFBFE]">
+                        <th class="py-4 px-6">สินค้า</th>
+                        <th class="py-4 px-6">หมวดหมู่</th>
+                        <th class="py-4 px-6 text-center">รับเข้า</th>
+                        <th class="py-4 px-6 text-center">ขายออก</th>
+                        <th class="py-4 px-6 text-center">คงเหลือ</th>
+                        <th class="py-4 px-6 text-right">มูลค่ารับเข้า</th>
+                        <th class="py-4 px-6 text-right">มูลค่าขายออก</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach (var row in tableRows)
+                    {
+                        <tr class="hover:bg-slate-50/70 transition-colors">
+                            <td class="py-3.5 px-6 font-semibold text-[#050315]">@row.Name</td>
+                            <td class="py-3.5 px-6 text-slate-500 text-xs">@row.Category</td>
+                            <td class="py-3.5 px-6 text-center text-slate-600 font-medium">@row.InQty</td>
+                            <td class="py-3.5 px-6 text-center text-slate-600 font-medium">@row.OutQty</td>
+                            <td class="py-3.5 px-6 text-center text-slate-600 font-medium">@row.Remain</td>
+                            <td class="py-3.5 px-6 text-right text-slate-600 font-medium">@row.InVal</td>
+                            <td class="py-3.5 px-6 text-right font-bold text-[#050315]">@row.OutVal</td>
+                        </tr>
+                    }
+                    <!-- Total Row (frame_9_9.png) -->
+                    <tr class="bg-slate-50/80 font-bold text-[#050315]">
+                        <td class="py-4 px-6">รวมทั้งหมด</td>
+                        <td class="py-4 px-6"></td>
+                        <td class="py-4 px-6 text-center">1,560</td>
+                        <td class="py-4 px-6 text-center">1,348</td>
+                        <td class="py-4 px-6 text-center">212</td>
+                        <td class="py-4 px-6 text-right">฿134,000</td>
+                        <td class="py-4 px-6 text-right text-base text-[#2F39A9]">฿153,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 1: รายงานส่งออก (Exact Figma Frame 65:4704) -->
+<div id="exportModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-5 animate-scale-up">
+        <!-- Header -->
+        <div>
+            <h2 class="text-xl font-bold text-[#050315]">รายงานส่งออก</h2>
+            <p class="text-sm text-slate-500 mt-1">เลือกช่วงวันที่และขอบเขตข้อมูลเพื่อสร้างไฟล์</p>
+        </div>
+
+        <div class="space-y-4">
+            <!-- 1. รูปแบบไฟล์ (Excel / PDF) -->
+            <div>
+                <label class="text-[13px] font-semibold text-[#050315] block mb-2">รูปแบบไฟล์</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- Excel Option (Selected by default) -->
+                    <button type="button" id="btnFormatExcel" onclick="selectFormat('Excel')"
+                            class="p-4 rounded-2xl border-2 border-[#2F39A9] bg-white flex items-center gap-3 text-left transition cursor-pointer">
+                        <div class="size-10 rounded-xl bg-[#2F39A9] text-white flex items-center justify-center shrink-0">
+                            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="9.5" y1="12.5" x2="14.5" y2="17.5"></line>
+                                <line x1="14.5" y1="12.5" x2="9.5" y2="17.5"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-[#050315]">Excel</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">.xlsx file</div>
+                        </div>
+                    </button>
+
+                    <!-- PDF Option -->
+                    <button type="button" id="btnFormatPdf" onclick="selectFormat('PDF')"
+                            class="p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 flex items-center gap-3 text-left transition cursor-pointer">
+                        <div class="size-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0">
+                            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-[#050315]">PDF</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">.pdf document</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. ประเภทช่วงเวลา (Segmented Pill: รายเดือน / รายไตรมาส) -->
+            <div>
+                <label class="text-[13px] font-semibold text-[#050315] block mb-2">ประเภทช่วงเวลา</label>
+                <div class="bg-[#F1F3F9] p-1 rounded-2xl flex items-center">
+                    <button type="button" id="tabMonthly" onclick="selectPeriodType('month')"
+                            class="flex-1 py-2.5 rounded-xl text-xs font-medium text-center bg-white shadow-xs text-[#050315] transition cursor-pointer">
+                        รายงานรายเดือน
+                    </button>
+                    <button type="button" id="tabQuarterly" onclick="selectPeriodType('quarter')"
+                            class="flex-1 py-2.5 rounded-xl text-xs font-medium text-center text-slate-400 hover:text-slate-700 transition cursor-pointer">
+                        รายงานรายไตรมาส
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. เลือกเดือน / ไตรมาส Dropdown -->
+            <div>
+                <label id="periodSelectLabel" class="text-[13px] font-semibold text-[#050315] block mb-2">เลือกเดือน</label>
+                <div class="relative">
+                    <select id="periodSelect" class="w-full appearance-none px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-[#050315] bg-white focus:outline-none focus:ring-2 focus:ring-[#2F39A9]/20 cursor-pointer pr-10">
+                        <option value="สิงหาคม 2569">สิงหาคม 2569</option>
+                        <option value="กรกฎาคม 2569">กรกฎาคม 2569</option>
+                        <option value="มิถุนายน 2569">มิถุนายน 2569</option>
+                        <option value="พฤษภาคม 2569">พฤษภาคม 2569</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ขอบเขตข้อมูล (Checkboxes matching Figma 65:4704) -->
+            <div>
+                <label class="text-[13px] font-semibold text-[#050315] block mb-2">ขอบเขตข้อมูล</label>
+                <div class="flex flex-wrap items-center gap-4 sm:gap-6 pt-1">
+                    <!-- Checkbox 1: สรุปยอดขาย (Checked) -->
+                    <label class="inline-flex items-center gap-2.5 cursor-pointer">
+                        <input type="checkbox" id="chkSales" checked
+                               class="size-4 rounded border-slate-300 text-[#2F39A9] focus:ring-[#2F39A9] accent-[#2F39A9]" />
+                        <span class="text-sm font-medium text-[#050315]">สรุปยอดขาย</span>
+                    </label>
+
+                    <!-- Checkbox 2: การดำเนินการตามคำสั่งซื้อล่วงหน้า (Checked) -->
+                    <label class="inline-flex items-center gap-2.5 cursor-pointer">
+                        <input type="checkbox" id="chkPreorder" checked
+                               class="size-4 rounded border-slate-300 text-[#2F39A9] focus:ring-[#2F39A9] accent-[#2F39A9]" />
+                        <span class="text-sm font-medium text-[#050315]">การดำเนินการตามคำสั่งซื้อล่วงหน้า</span>
+                    </label>
+
+                    <!-- Checkbox 3: สินค้าที่รับเข้า (Unchecked) -->
+                    <label class="inline-flex items-center gap-2.5 cursor-pointer">
+                        <input type="checkbox" id="chkStockIn"
+                               class="size-4 rounded border-slate-300 text-[#2F39A9] focus:ring-[#2F39A9] accent-[#2F39A9]" />
+                        <span class="text-sm font-normal text-slate-600">สินค้าที่รับเข้า</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Actions (Exact Figma Frame 65:4704) -->
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+            <button type="button" onclick="closeExportModal()"
+                    class="px-6 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-sm font-bold text-[#050315] transition cursor-pointer">
+                ยกเลิก
+            </button>
+            <button type="button" onclick="executeExportReport()"
+                    class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-sm font-bold text-white shadow-md shadow-[#2F39A9]/20 transition cursor-pointer">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>สร้างและส่งออกรายงาน</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal 2: ส่งออกข้อมูลสำเร็จ (Exact Figma Frame 65:4576) -->
+<div id="exportSuccessModal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-8 text-center shadow-2xl border border-slate-100 animate-scale-up">
+        <!-- Success Icon -->
+        <div class="size-16 rounded-full bg-[#ECFDF5] text-[#10B981] mx-auto flex items-center justify-center mb-4">
+            <svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+
+        <!-- Title -->
+        <h3 class="text-2xl font-bold text-[#050315] mb-5">ส่งออกข้อมูลสำเร็จ</h3>
+
+        <!-- File Details Card (Exact Figma Frame 65:4576) -->
+        <div class="bg-[#F8F9FC] rounded-2xl p-4 text-left border border-slate-100 mb-6 space-y-3">
+            <div>
+                <div class="text-[11px] font-semibold text-slate-400">ชื่อไฟล์</div>
+                <div class="flex items-center gap-2 mt-1">
+                    <span id="fileIconExcel" class="text-emerald-600">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                        </svg>
+                    </span>
+                    <span id="fileIconPdf" class="text-red-600 hidden">
+                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </span>
+                    <span id="successFileName" class="text-sm font-bold text-[#050315] font-mono">Sales_Report_Q1_2026.xlsx</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/50">
+                <div>
+                    <div class="text-[11px] font-semibold text-slate-400">ขนาดไฟล์</div>
+                    <div class="text-sm font-semibold text-[#050315] mt-0.5">1.2 MB</div>
+                </div>
+                <div>
+                    <div class="text-[11px] font-semibold text-slate-400">ช่วงเวลา</div>
+                    <div id="successPeriod" class="text-[13px] font-semibold text-[#050315] mt-0.5">สิงหาคม 2569</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-3">
+            <button type="button" onclick="closeExportSuccessModal()"
+                    class="w-full py-3 px-4 rounded-xl bg-[#2F39A9] hover:bg-[#2F39A9]/90 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-md shadow-[#2F39A9]/20 transition cursor-pointer">
+                <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>ดาวน์โหลดไฟล์ตอนนี้</span>
+            </button>
+            <button type="button" onclick="closeExportSuccessModal()"
+                    class="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm transition cursor-pointer">
+                ปิด
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentFormat = 'Excel';
+        let currentPeriodType = 'month';
+
+        function openExportModal() {
+            document.getElementById('exportModal')?.classList.remove('hidden');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal')?.classList.add('hidden');
+        }
+
+        function selectFormat(fmt) {
+            currentFormat = fmt;
+            const btnExcel = document.getElementById('btnFormatExcel');
+            const btnPdf = document.getElementById('btnFormatPdf');
+
+            if (fmt === 'Excel') {
+                btnExcel.className = 'p-4 rounded-2xl border-2 border-[#2F39A9] bg-white flex items-center gap-3 text-left transition cursor-pointer';
+                btnExcel.querySelector('div').className = 'size-10 rounded-xl bg-[#2F39A9] text-white flex items-center justify-center shrink-0';
+                btnPdf.className = 'p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 flex items-center gap-3 text-left transition cursor-pointer';
+                btnPdf.querySelector('div').className = 'size-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0';
+            } else {
+                btnPdf.className = 'p-4 rounded-2xl border-2 border-[#2F39A9] bg-white flex items-center gap-3 text-left transition cursor-pointer';
+                btnPdf.querySelector('div').className = 'size-10 rounded-xl bg-[#2F39A9] text-white flex items-center justify-center shrink-0';
+                btnExcel.className = 'p-4 rounded-2xl border border-slate-200 bg-white hover:border-slate-300 flex items-center gap-3 text-left transition cursor-pointer';
+                btnExcel.querySelector('div').className = 'size-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shrink-0';
+            }
+        }
+
+        function selectPeriodType(type) {
+            currentPeriodType = type;
+            const tabMonthly = document.getElementById('tabMonthly');
+            const tabQuarterly = document.getElementById('tabQuarterly');
+            const label = document.getElementById('periodSelectLabel');
+            const select = document.getElementById('periodSelect');
+
+            if (type === 'month') {
+                tabMonthly.className = 'flex-1 py-2.5 rounded-xl text-xs font-medium text-center bg-white shadow-xs text-[#050315] transition cursor-pointer';
+                tabQuarterly.className = 'flex-1 py-2.5 rounded-xl text-xs font-medium text-center text-slate-400 hover:text-slate-700 transition cursor-pointer';
+                label.innerText = 'เลือกเดือน';
+                select.innerHTML = `
+                    <option value="สิงหาคม 2569">สิงหาคม 2569</option>
+                    <option value="กรกฎาคม 2569">กรกฎาคม 2569</option>
+                    <option value="มิถุนายน 2569">มิถุนายน 2569</option>
+                    <option value="พฤษภาคม 2569">พฤษภาคม 2569</option>
+                `;
+            } else {
+                tabQuarterly.className = 'flex-1 py-2.5 rounded-xl text-xs font-medium text-center bg-white shadow-xs text-[#050315] transition cursor-pointer';
+                tabMonthly.className = 'flex-1 py-2.5 rounded-xl text-xs font-medium text-center text-slate-400 hover:text-slate-700 transition cursor-pointer';
+                label.innerText = 'เลือกไตรมาส';
+                select.innerHTML = `
+                    <option value="ไตรมาสที่ 3 ปี 2569">ไตรมาสที่ 3 (ก.ค. - ก.ย. 2569)</option>
+                    <option value="ไตรมาสที่ 2 ปี 2569">ไตรมาสที่ 2 (เม.ย. - มิ.ย. 2569)</option>
+                    <option value="ไตรมาสที่ 1 ปี 2569">ไตรมาสที่ 1 (ม.ค. - มี.ค. 2569)</option>
+                `;
+            }
+        }
+
+        function executeExportReport() {
+            const periodVal = document.getElementById('periodSelect').value;
+            const ext = currentFormat === 'Excel' ? '.xlsx' : '.pdf';
+            let fileName = '';
+
+            if (currentPeriodType === 'quarter') {
+                fileName = `Sales_Report_Q3_2569${ext}`;
+            } else {
+                fileName = `Sales_Report_Aug_2569${ext}`;
+            }
+
+            document.getElementById('successFileName').innerText = fileName;
+            document.getElementById('successPeriod').innerText = periodVal;
+
+            if (currentFormat === 'Excel') {
+                document.getElementById('fileIconExcel').classList.remove('hidden');
+                document.getElementById('fileIconPdf').classList.add('hidden');
+            } else {
+                document.getElementById('fileIconPdf').classList.remove('hidden');
+                document.getElementById('fileIconExcel').classList.add('hidden');
+            }
+
+            closeExportModal();
+            document.getElementById('exportSuccessModal')?.classList.remove('hidden');
+        }
+
+        function closeExportSuccessModal() {
+            document.getElementById('exportSuccessModal')?.classList.add('hidden');
+        }
+    </script>
+}
