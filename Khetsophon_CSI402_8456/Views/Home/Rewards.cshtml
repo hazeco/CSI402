@@ -54,8 +54,10 @@
         }
     };
 
+    var sessionRole = Context.Session.GetString("Role");
     var queryRole = Context.Request.Query["role"].ToString();
-    bool isCustomer = string.Equals(queryRole, "customer", StringComparison.OrdinalIgnoreCase) || 
+    bool isCustomer = string.Equals(sessionRole, "customer", StringComparison.OrdinalIgnoreCase) ||
+                      string.Equals(queryRole, "customer", StringComparison.OrdinalIgnoreCase) || 
                       string.Equals(ViewData["Role"]?.ToString(), "customer", StringComparison.OrdinalIgnoreCase);
 }
 

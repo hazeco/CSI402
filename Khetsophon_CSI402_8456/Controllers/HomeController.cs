@@ -9,6 +9,68 @@ namespace Khetsophon_CSI402_8456.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly Csi402dbContext _db;
+    public HomeController (Csi402dbContext db)
+    {
+        _db = db;
+    }
+
+    public IActionResult Lab9()
+    {
+        // Create
+
+        return View();
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Lab9(Labstudent data)
+    {
+        if(ModelState.IsValid)
+        {
+            if(data.StdPassword != null)
+            {
+                var CheckID = (from a in _db.Labstudents where a.StdId == data.StdId select a).FirstOrDefault();
+                //select * from Labstudents where StdId == "@StdId"
+                if(CheckID == null)
+                {
+                    Labstudent s = new Labstudent();
+                    //table2
+                    s.StdId = data.StdId;
+                    s.StdPassword = data.StdPassword;
+                    s.StdName = data.StdName;
+                    s.StdLastname = data.StdLastname;
+                    _db.Add(s);
+                    _db.SaveChanges();
+                    return View(data);
+                } else {
+                    ViewBag.Status = "This ID is already exists";
+                    return View();
+                }
+                
+            } else
+            {
+                ViewBag.Status = "Please enter password";
+                return View();
+            }
+        } else
+        {
+            return View();
+        }
+    }
+
+    // Read
+    public IActionResult Lab9_1()
+    {
+        // Read data from Labstudents table and return to view
+        var data = _db.Labstudents.ToList();
+        return View(data);
+    }
+
+    public IActionResult UserList()
+    {
+        var users = _db.Users.ToList();
+        return View(users);
+    }
     public IActionResult Index(LoginViewModel data)
     {
         // recive data from login page by viewbag

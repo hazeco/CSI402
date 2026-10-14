@@ -1,0 +1,138 @@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.User>
+
+@{
+    ViewData["Title"] = "รายชื่อผู้ใช้งานทั้งหมด - FriendHouse";
+
+    // Top-of-file Media and Content Configuration
+    var pageContent = new {
+        Badge = "ระบบจัดการข้อมูลผู้ใช้",
+        Title = "รายชื่อผู้ใช้งานทั้งหมดในระบบ",
+        Subtitle = "ดึงข้อมูลจากตาราง Users ในฐานข้อมูล MySQL (Read Operation)",
+        TotalCountLabel = "จำนวนผู้ใช้งานทั้งหมด",
+        EmptyMessage = "ยังไม่มีข้อมูลผู้ใช้งานในระบบ",
+        Headers = new {
+            Id = "ID",
+            UserCode = "รหัสผู้ใช้",
+            Email = "อีเมล",
+            Phone = "เบอร์โทรศัพท์",
+            Role = "บทบาท",
+            Points = "แต้มสะสม",
+            Status = "สถานะ",
+            CreatedAt = "วันที่สมัคร"
+        },
+        Icons = new {
+            Users = "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
+            Shield = "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+            Plus = "M12 4v16m8-8H4"
+        }
+    };
+}
+
+<div class="min-h-screen bg-background py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-6">
+
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
+            <div>
+                <div class="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary mb-2 shadow-xs">
+                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="@pageContent.Icons.Users"></path>
+                    </svg>
+                    <span>@pageContent.Badge</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-text">
+                    @pageContent.Title
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                    @pageContent.Subtitle
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-xs">
+                    <span>@pageContent.TotalCountLabel:</span>
+                    <span class="font-bold text-primary">@(Model?.Count() ?? 0)</span>
+                </span>
+                <a asp-controller="Account" asp-action="Register"
+                   class="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white shadow-xs transition-opacity hover:opacity-90">
+                    <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="@pageContent.Icons.Plus"></path>
+                    </svg>
+                    <span>เพิ่มสมาชิกใหม่</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Table Container Card -->
+        <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 border-b border-slate-200/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        <tr>
+                            <th scope="col" class="py-3.5 pl-6 pr-3">@pageContent.Headers.Id</th>
+                            <th scope="col" class="py-3.5 px-3">@pageContent.Headers.UserCode</th>
+                            <th scope="col" class="py-3.5 px-3">@pageContent.Headers.Email</th>
+                            <th scope="col" class="py-3.5 px-3">@pageContent.Headers.Phone</th>
+                            <th scope="col" class="py-3.5 px-3">@pageContent.Headers.Role</th>
+                            <th scope="col" class="py-3.5 px-3 text-right">@pageContent.Headers.Points</th>
+                            <th scope="col" class="py-3.5 px-3 text-center">@pageContent.Headers.Status</th>
+                            <th scope="col" class="py-3.5 pl-3 pr-6 text-right">@pageContent.Headers.CreatedAt</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var user in Model)
+                            {
+                                <tr class="hover:bg-slate-50/80 transition-colors">
+                                    <td class="py-3.5 pl-6 pr-3 font-semibold text-text">
+                                        #@user.UserId
+                                    </td>
+                                    <td class="py-3.5 px-3 font-mono text-xs text-slate-500">
+                                        @user.UserCode
+                                    </td>
+                                    <td class="py-3.5 px-3 font-medium text-text">
+                                        @user.Email
+                                    </td>
+                                    <td class="py-3.5 px-3 text-slate-600">
+                                        @user.Phone
+                                    </td>
+                                    <td class="py-3.5 px-3">
+                                        <span class="inline-flex items-center rounded-md bg-secondary/30 px-2 py-0.5 text-xs font-semibold text-primary">
+                                            @user.RoleName
+                                        </span>
+                                    </td>
+                                    <td class="py-3.5 px-3 text-right font-bold text-primary">
+                                        @user.Points.ToString("N0")
+                                    </td>
+                                    <td class="py-3.5 px-3 text-center">
+                                        @if (user.IsActive == true)
+                                        {
+                                            <span class="inline-flex size-2 rounded-full bg-emerald-500 ring-4 ring-emerald-50"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="inline-flex size-2 rounded-full bg-rose-500 ring-4 ring-rose-50"></span>
+                                        }
+                                    </td>
+                                    <td class="py-3.5 pl-3 pr-6 text-right text-xs text-slate-400">
+                                        @user.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="py-12 text-center text-sm text-slate-400">
+                                    @pageContent.EmptyMessage
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="~/Khetsophon_CSI402_8456.styles.css" asp-append-version="true" />
 </head>
 @{
+    var sessionRole = Context.Session.GetString("Role");
     var routeAction = ViewContext.RouteData.Values["action"]?.ToString();
     var routeCtrl = ViewContext.RouteData.Values["controller"]?.ToString();
     var queryRole = Context.Request.Query["role"].ToString();
@@ -21,6 +22,10 @@
     if (!string.IsNullOrEmpty(queryRole))
     {
         userRole = queryRole.ToLowerInvariant();
+    }
+    else if (!string.IsNullOrEmpty(sessionRole))
+    {
+        userRole = sessionRole.ToLowerInvariant();
     }
     else if (string.Equals(routeCtrl, "Staff", StringComparison.OrdinalIgnoreCase))
     {

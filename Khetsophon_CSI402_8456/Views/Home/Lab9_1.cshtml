@@ -1,0 +1,24 @@
+@* from create labstudent to Home controller *@
+
+@model IEnumerable<Khetsophon_CSI402_8456.Models.Labstudent>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Password</th>
+        <th>Name</th>
+        <th>Lastname</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.StdId</td>
+            <td>@item.StdPassword</td>
+            <td>@item.StdName</td>
+            <td>@item.StdLastname</td>
+        </tr>
+    }
+</table>
+
+<p style="color: red;">@ViewBag.Status</p>

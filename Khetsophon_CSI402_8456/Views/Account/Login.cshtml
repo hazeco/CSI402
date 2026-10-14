@@ -18,6 +18,20 @@
             @* Form Parameters expected by Controller:
                [Email: string, Password: string]
             *@
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="mb-4 rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-700 font-medium text-center">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            @if (ViewBag.Status != null)
+            {
+                <div class="mb-4 rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-600 font-medium text-center">
+                    @ViewBag.Status
+                </div>
+            }
+
             <form class="space-y-4" asp-controller="Account" asp-action="Login">
               <div>
                 <label class="block text-xs font-medium text-slate-700 mb-1.5">อีเมล</label>
@@ -25,6 +39,7 @@
                   <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l9 6 9-6M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"></path></svg>
                   <input asp-for="Email" type="email" placeholder="you@example.com" class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-300 text-sm text-slate placeholder:text-slate/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                 </div>
+                <span asp-validation-for="Email" class="text-xs text-rose-500 mt-1 block"></span>
               </div>
               <div>
                 <div class="flex items-center justify-between mb-1.5">
@@ -35,6 +50,7 @@
                   <input asp-for="Password" type="password" placeholder="••••••••" class="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-300 text-sm text-slate placeholder:text-slate/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                   <svg class="cursor-pointer w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 </div>
+                <span asp-validation-for="Password" class="text-xs text-rose-500 mt-1 block"></span>
               </div>
               <div class="flex items-center justify-between">
                 <label class="flex items-center gap-2 text-xs text-slate-500">
@@ -108,10 +124,5 @@
               </p>
             </form>
         </div>
-    <div>
-        @ViewBag.Email
-        @ViewBag.Phone
-        @ViewBag.Password
-    </div>
     </div>
 </div>
