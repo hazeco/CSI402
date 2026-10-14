@@ -1,3 +1,4 @@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.Promotion>
 @{
     ViewData["Title"] = "โปรโมชั่นทั้งหมด — FriendHouse";
 
@@ -8,7 +9,7 @@
         Badge = "ข้อเสนอพิเศษ"
     };
 
-    var promoList = new[] {
+    var defaultPromos = new[] {
         new {
             Id = 1,
             Tag = "ล้างสต๊อก",
@@ -70,6 +71,21 @@
             SvgIcon = "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
         }
     };
+
+    var promoList = (Model != null && Model.Any())
+        ? Model.Select(p => new {
+            Id = p.PromotionId,
+            Tag = p.PromoType ?? "โปรโมชั่น",
+            Title = p.Name,
+            Description = $"โปรโมชั่นสำหรับ {p.ApplicableScope} (จำกัด {p.UsageLimit ?? 0} สิทธิ์)",
+            Period = $"{p.StartDate:dd/MM/yyyy} - {p.EndDate:dd/MM/yyyy}",
+            Condition = $"โค้ด: {p.VoucherCode} • ส่วนลด ฿{p.DiscountValue:N0} • ยอดขั้นต่ำ ฿{p.MinimumSpend:N0}",
+            BgClass = "bg-white border-slate-200/80 shadow-xs",
+            BadgeClass = "bg-primary/15 text-primary",
+            IconClass = "text-primary bg-primary/10",
+            SvgIcon = "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+        }).ToArray()
+        : defaultPromos;
 }
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8 bg-white">

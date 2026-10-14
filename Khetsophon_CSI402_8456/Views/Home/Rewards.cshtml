@@ -1,3 +1,4 @@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.Reward>
 @{
     ViewData["Title"] = "แคตตาล็อกแลกแต้มสะสม — FriendHouse";
 
@@ -11,7 +12,7 @@
         new { Label = "แลกได้ทันที", IsActive = false }
     };
 
-    var rewards = new[] {
+    var defaultRewards = new[] {
         new {
             Id = 301,
             Title = "พวงกุญแจอะคริลิก ดาบพิฆาตอสูร Special Ver.",
@@ -53,6 +54,19 @@
             ImageUrl = "~/media/images/naruto_hero_fig.png"
         }
     };
+
+    var rewards = (Model != null && Model.Any())
+        ? Model.Select(r => new {
+            Id = r.RewardId,
+            Title = r.Title,
+            Brand = r.Brand ?? "FriendHouse Exclusive",
+            Points = r.PointsRequired,
+            PointsText = $"{r.PointsRequired:N0} แต้ม",
+            Tag = !string.IsNullOrEmpty(r.CategoryTag) ? r.CategoryTag : "พิเศษ",
+            Available = (r.IsAvailable ?? true) && r.StockQuantity > 0,
+            ImageUrl = !string.IsNullOrEmpty(r.ImageUrl) ? r.ImageUrl : "~/media/images/naruto_hero_fig.png"
+        }).ToArray()
+        : defaultRewards;
 
     var sessionRole = Context.Session.GetString("Role");
     var queryRole = Context.Request.Query["role"].ToString();

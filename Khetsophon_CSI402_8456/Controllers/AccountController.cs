@@ -78,8 +78,10 @@ public class AccountController : Controller
             if (user != null && BCrypt.Net.BCrypt.Verify(data.Password, user.PasswordHash))
             {
                 // save status in session
+                HttpContext.Session.SetInt32("UserId", user.UserId);
                 HttpContext.Session.SetString("Role", user.RoleName);
                 HttpContext.Session.SetString("UserEmail", user.Email);
+                HttpContext.Session.SetString("UserName", user.FullName ?? user.Email);
                 
                 // Login สำเร็จ
                 return RedirectToAction("Index", "Home" );
@@ -93,8 +95,82 @@ public class AccountController : Controller
         return View(data);
     }
 
+    // FAST LOGIN (MOCK LOGIN): ระบบล็อกอินด่วนสำหรับการทดสอบและนำเสนองาน
+    // WHY: ออกแบบมาเพื่อให้อาจารย์และผู้ตรวจสามารถสลับบทบาท (Role) ได้ใน 1 คลิก
+    // WHY SESSION: แม้จะเป็น Mock Login แต่จำเป็นต้องบันทึก Session จริง (UserId, Role, UserEmail, UserName)
+    // เพื่อให้ตัวตรวจสิทธิ์ (Route Guard) ใน Controller หลังบ้าน (Staff, Owner, IT, Accountant) ปล่อยให้ผ่านได้จริง
+    [HttpGet]
+    public IActionResult FastLogin(string role)
+    {
+        string normalizedRole = (role ?? "customer").ToLowerInvariant();
+        
+        int mockUserId = 1;
+        string email = "customer@friendhouse.com";
+        string name = "ลูกค้าทดสอบ (Demo Customer)";
+        string targetAction = "Customer";
+        string targetController = "Home";
+
+        switch (normalizedRole)
+        {
+            case "staff":
+                mockUserId = 2;
+                email = "staff@friendhouse.com";
+                name = "พนักงานหน้าร้าน (Demo Staff)";
+                targetController = "Staff";
+                targetAction = "Index";
+                break;
+
+            case "owner":
+                mockUserId = 3;
+                email = "owner@friendhouse.com";
+                name = "เจ้าของร้าน (Demo Owner)";
+                targetController = "Owner";
+                targetAction = "Promotions";
+                break;
+
+            case "itsupport":
+                mockUserId = 4;
+                email = "it@friendhouse.com";
+                name = "เจ้าหน้าที่ไอที (Demo IT Support)";
+                targetController = "ITSupport";
+                targetAction = "Dashboard";
+                break;
+
+            case "accountant":
+                mockUserId = 5;
+                email = "account@friendhouse.com";
+                name = "นักบัญชี (Demo Accountant)";
+                targetController = "Accountant";
+                targetAction = "Index";
+                break;
+
+            default:
+                normalizedRole = "customer";
+                break;
+        }
+
+        // WHY: ค้นหาใน DB ก่อนเพื่อใช้ ID จริงหากมีการ Seed ไว้ แต่ถ้ายังไม่มีก็มี Fallback ค่าจำลองให้ระบบไม่พัง
+        var dbUser = _db.Users.FirstOrDefault(u => u.RoleName.ToLower() == normalizedRole);
+        if (dbUser != null)
+        {
+            mockUserId = dbUser.UserId;
+            email = dbUser.Email;
+            name = dbUser.FullName ?? dbUser.Email;
+        }
+
+        // บันทึก Session จำเป็นสำหรับใช้ตรวจสอบทุกหน้า
+        HttpContext.Session.SetInt32("UserId", mockUserId);
+        HttpContext.Session.SetString("Role", normalizedRole);
+        HttpContext.Session.SetString("UserEmail", email);
+        HttpContext.Session.SetString("UserName", name);
+
+        TempData["SuccessMessage"] = $"เข้าสู่ระบบด่วนในบทบาท {normalizedRole} สำเร็จ";
+        return RedirectToAction(targetAction, targetController);
+    }
+
     public IActionResult Logout()
     {
+        // WHY: ล้าง Session ทั้งหมดเพื่อตัดการเชื่อมต่อและคืนสถานะเป็นผู้เยี่ยมชม (Guest)
         HttpContext.Session.Clear();
         return RedirectToAction("Index", "Home");
     }

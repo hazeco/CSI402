@@ -1,6 +1,9 @@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.Systemlog>
 @{
     ViewData["Title"] = "บันทึกกิจกรรมและข้อผิดพลาด";
     Layout = "_ITSupportLayout";
+
+    var hasDbLogs = Model != null && Model.Any();
 
     // Top-of-file Media & Content Configuration
     var pageHeader = new {
@@ -84,27 +87,60 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @foreach (var log in logs)
+                    @if (hasDbLogs)
                     {
-                        <tr class="hover:bg-gray-50/70 transition-colors log-row cursor-pointer" data-level="@log.Level" onclick="openLogDetail('@log.Time', '@log.Level', '@log.Message')">
-                            <!-- Timestamp -->
-                            <td class="py-3.5 px-6 text-gray-400 whitespace-nowrap">
-                                @log.Time
-                            </td>
+                        @foreach (var log in Model!)
+                        {
+                            var badgeClass = log.LogLevel == "ERROR" ? "bg-[#FEE2E2] text-[#DC2626]" :
+                                             log.LogLevel == "WARNING" ? "bg-[#FEF3C7] text-[#D97706]" : "bg-[#DBEAFE] text-[#2F39A9]";
+                            var displayTime = log.Timestamp.ToString("HH:mm:ss");
+                            var fullMsg = $"{log.Module}: {log.Message}";
 
-                            <!-- Level Badge -->
-                            <td class="py-3.5 px-6 text-center">
-                                <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold @log.Class">
-                                    @log.Level
-                                </span>
-                            </td>
+                            <tr class="hover:bg-gray-50/70 transition-colors log-row cursor-pointer" data-level="@log.LogLevel" onclick="openLogDetail('@displayTime', '@log.LogLevel', '@fullMsg')">
+                                <!-- Timestamp -->
+                                <td class="py-3.5 px-6 text-gray-400 whitespace-nowrap">
+                                    @displayTime
+                                </td>
 
-                            <!-- Message Content -->
-                            <td class="py-3.5 px-6 text-gray-800 leading-relaxed font-sans">
-                                <span class="font-mono text-gray-900 font-semibold">@log.Message.Split(':')[0]:</span>
-                                <span>@log.Message.Substring(log.Message.IndexOf(':') + 1)</span>
-                            </td>
-                        </tr>
+                                <!-- Level Badge -->
+                                <td class="py-3.5 px-6 text-center">
+                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold @badgeClass">
+                                        @log.LogLevel
+                                    </span>
+                                </td>
+
+                                <!-- Message Content -->
+                                <td class="py-3.5 px-6 text-gray-800 leading-relaxed font-sans">
+                                    <span class="font-mono text-gray-900 font-semibold">@log.Module:</span>
+                                    <span>@log.Message</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var log in logs)
+                        {
+                            <tr class="hover:bg-gray-50/70 transition-colors log-row cursor-pointer" data-level="@log.Level" onclick="openLogDetail('@log.Time', '@log.Level', '@log.Message')">
+                                <!-- Timestamp -->
+                                <td class="py-3.5 px-6 text-gray-400 whitespace-nowrap">
+                                    @log.Time
+                                </td>
+
+                                <!-- Level Badge -->
+                                <td class="py-3.5 px-6 text-center">
+                                    <span class="px-2.5 py-0.5 rounded-md text-[11px] font-bold @log.Class">
+                                        @log.Level
+                                    </span>
+                                </td>
+
+                                <!-- Message Content -->
+                                <td class="py-3.5 px-6 text-gray-800 leading-relaxed font-sans">
+                                    <span class="font-mono text-gray-900 font-semibold">@log.Message.Split(':')[0]:</span>
+                                    <span>@log.Message.Substring(log.Message.IndexOf(':') + 1)</span>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

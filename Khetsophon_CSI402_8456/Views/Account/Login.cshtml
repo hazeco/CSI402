@@ -66,9 +66,9 @@
 
               <!-- Mock Fast Login for Demo -->
               <div class="pt-2 border-t border-slate-100 space-y-2">
-                  <span class="block text-[11px] font-bold text-slate-400 text-center uppercase tracking-wider">เข้าสู่ระบบด่วน (Mock Fast Login)</span>
+                  <span class="block text-[11px] font-bold text-slate-400 text-center uppercase tracking-wider">เข้าสู่ระบบด่วน (Mock Fast Login พร้อม Session)</span>
                   <div class="grid grid-cols-2 gap-2">
-                      <a asp-controller="Home" asp-action="Customer"
+                      <a asp-controller="Account" asp-action="FastLogin" asp-route-role="customer"
                          class="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-secondary/25 py-2 px-3 text-xs font-bold text-primary hover:bg-secondary/40 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -76,7 +76,7 @@
                           </svg>
                           <span>ลูกค้าทั่วไป (Customer View)</span>
                       </a>
-                      <a asp-controller="Staff" asp-action="Index"
+                      <a asp-controller="Account" asp-action="FastLogin" asp-route-role="staff"
                          class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
@@ -84,14 +84,14 @@
                           </svg>
                           <span>พนักงาน (Staff)</span>
                       </a>
-                      <a asp-controller="Owner" asp-action="Promotions"
+                      <a asp-controller="Account" asp-action="FastLogin" asp-route-role="owner"
                          class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                           </svg>
                           <span>เจ้าของร้าน (Owner)</span>
                       </a>
-                      <a asp-controller="ITSupport" asp-action="Dashboard"
+                      <a asp-controller="Account" asp-action="FastLogin" asp-route-role="itsupport"
                          class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <rect x="3" y="3" width="7" height="7"></rect>
@@ -101,7 +101,7 @@
                           </svg>
                           <span>ไอที (IT Support)</span>
                       </a>
-                      <a asp-controller="Accountant" asp-action="Index"
+                      <a asp-controller="Account" asp-action="FastLogin" asp-route-role="accountant"
                          class="flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-2 px-2 text-xs font-bold text-text hover:bg-slate-50 transition-colors cursor-pointer">
                           <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                               <line x1="12" y1="1" x2="12" y2="23"></line>

@@ -12,12 +12,12 @@
     var serverStats = new {
         ServerStatus = "ออนไลน์",
         ServerLatency = "ตอบสนอง 118 มิลลิวินาที",
-        DbStatus = "ปกติ",
-        DbBackup = "สำรองข้อมูลล่าสุด 03:00 น.",
-        Uptime = "99.82%",
-        Downtime = "ดาวน์ไทม์รวม 47 นาที",
-        Errors = "3 ครั้ง",
-        LastError = "ล่าสุด 13:47 น. — sync ล้มเหลว"
+        DbStatus = "MySQL ปกติ",
+        DbBackup = ViewBag.TotalProducts != null ? $"สินค้าในระบบ {ViewBag.TotalProducts} รายการ" : "สำรองข้อมูลล่าสุด 03:00 น.",
+        Uptime = ViewBag.TotalUsers != null ? $"{ViewBag.TotalUsers} บัญชี" : "99.82%",
+        Downtime = "ผู้ใช้งานในระบบทั้งหมด",
+        Errors = ViewBag.ErrorLogs != null ? $"{ViewBag.ErrorLogs} ครั้ง" : "0 ครั้ง",
+        LastError = ViewBag.TotalLogs != null ? $"บันทึกทั้งหมด {ViewBag.TotalLogs} รายการ" : "ล่าสุด 13:47 น."
     };
 
     var recentEvents = new[] {

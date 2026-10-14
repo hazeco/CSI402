@@ -1,7 +1,9 @@
-@* Form Parameters: [StartDate: string (dd/MM/yyyy), EndDate: string (dd/MM/yyyy), SearchTerm: string, PaymentMethod: string, ExportRange: string] *@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.Receipt>
 @{
     ViewData["Title"] = "ประวัติใบเสร็จ / ธุรกรรม";
     Layout = "_AccountantLayout";
+
+    var hasDbReceipts = Model != null && Model.Any();
 
     // Media & Content Configuration (Top of File)
     var pageHeader = new {
@@ -219,64 +221,133 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100/80 text-[11px] font-normal">
-                    @foreach (var r in receipts)
+                    @if (hasDbReceipts)
                     {
-                        <tr class="hover:bg-slate-50/60 transition-colors receipt-row cursor-pointer"
-                            onclick="previewReceipt('@r.ReceiptNo', '@r.Date @r.Time', '@r.CustomerName', '@(string.IsNullOrEmpty(r.CustomerPhone) ? "ลูกค้าทั่วไป" : r.CustomerPhone)', '@r.Items', '@r.Total', '@r.Vat', '@r.PaymentMethod', '@r.StaffName', '@r.Promotion')">
-                            <!-- วันที่/เวลา -->
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <div class="text-[11px] text-[#050315]">@r.Date</div>
-                                <div class="text-[10px] text-slate-400 mt-0.5">@r.Time</div>
-                            </td>
+                        @foreach (var r in Model!)
+                        {
+                            var itemSummary = r.Receiptitems.Any() ? string.Join(", ", r.Receiptitems.Select(i => $"{i.ItemDescription} x{i.Quantity}")) : "สินค้าหน้าร้าน x1";
+                            var customerName = r.Customer != null ? (r.Customer.FullName ?? r.Customer.Email) : (string.IsNullOrEmpty(r.CustomerPhone) ? "ลูกค้าทั่วไป" : "ลูกค้าสมาชิก");
+                            var staffName = r.CashierUser != null ? (r.CashierUser.FullName ?? r.CashierUser.Email) : "พนักงานหน้าร้าน";
 
-                            <!-- ลูกค้า -->
-                            <td class="px-4 py-3.5 whitespace-nowrap">
-                                @if (r.CustomerType == "สมาชิก")
-                                {
-                                    <div class="text-[11px] text-[#050315] font-mono">@r.CustomerPhone</div>
-                                    <div class="mt-0.5">
-                                        <span class="inline-block px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-600 text-[10px]">
-                                            @r.CustomerType
+                            <tr class="hover:bg-slate-50/60 transition-colors receipt-row cursor-pointer"
+                                onclick="previewReceipt('@r.ReceiptNo', '@r.IssuedAt.ToString("dd MMM yyyy HH:mm น.")', '@customerName', '@(string.IsNullOrEmpty(r.CustomerPhone) ? "ลูกค้าทั่วไป" : r.CustomerPhone)', '@itemSummary', '฿@r.NetTotalAmount.ToString("N0")', '฿@r.VatAmount.ToString("N2")', 'เงินสด / สแกน', '@staffName', '@(r.DiscountAmount > 0 ? "ส่วนลดพิเศษ" : "—")')">
+                                <!-- วันที่/เวลา -->
+                                <td class="px-5 py-3.5 whitespace-nowrap">
+                                    <div class="text-[11px] text-[#050315]">@r.IssuedAt.ToString("dd MMM yyyy")</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">@r.IssuedAt.ToString("HH:mm น.")</div>
+                                </td>
+
+                                <!-- ลูกค้า -->
+                                <td class="px-4 py-3.5 whitespace-nowrap">
+                                    @if (!string.IsNullOrEmpty(r.CustomerPhone))
+                                    {
+                                        <div class="text-[11px] text-[#050315] font-mono">@r.CustomerPhone</div>
+                                        <div class="mt-0.5">
+                                            <span class="inline-block px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-600 text-[10px]">
+                                                @(r.Customer != null ? "สมาชิก" : "ลูกค้า")
+                                            </span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-[11px] text-[#050315]">ลูกค้าทั่วไป</span>
+                                    }
+                                </td>
+
+                                <!-- รายการสินค้า -->
+                                <td class="px-4 py-3.5 text-[11px] text-[#050315]">
+                                    @itemSummary
+                                </td>
+
+                                <!-- ยอดรวม -->
+                                <td class="px-4 py-3.5 text-right whitespace-nowrap font-semibold text-[11px] text-[#050315]">
+                                    ฿@r.NetTotalAmount.ToString("N0")
+                                </td>
+
+                                <!-- โปรโมชั่นที่ใช้ -->
+                                <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                                    @if (r.DiscountAmount <= 0)
+                                    {
+                                        <span class="text-slate-400 text-[11px]">—</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#E0F2FE] text-[#0284C7] text-[10px] font-normal">
+                                            ลด ฿@r.DiscountAmount.ToString("N0")
                                         </span>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span class="text-[11px] text-[#050315]">@r.CustomerType</span>
-                                }
-                            </td>
+                                    }
+                                </td>
 
-                            <!-- รายการสินค้า -->
-                            <td class="px-4 py-3.5 text-[11px] text-[#050315]">
-                                @r.Items
-                            </td>
-
-                            <!-- ยอดรวม -->
-                            <td class="px-4 py-3.5 text-right whitespace-nowrap font-semibold text-[11px] text-[#050315]">
-                                @r.Total
-                            </td>
-
-                            <!-- โปรโมชั่นที่ใช้ -->
-                            <td class="px-4 py-3.5 text-center whitespace-nowrap">
-                                @if (r.Promotion == "—")
-                                {
-                                    <span class="text-slate-400 text-[11px]">@r.Promotion</span>
-                                }
-                                else
-                                {
-                                    <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#E0F2FE] text-[#0284C7] text-[10px] font-normal">
-                                        @r.Promotion
+                                <!-- สถานะ -->
+                                <td class="px-5 py-3.5 text-center whitespace-nowrap">
+                                    <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-[10px] font-normal">
+                                        สำเร็จ
                                     </span>
-                                }
-                            </td>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var r in receipts)
+                        {
+                            <tr class="hover:bg-slate-50/60 transition-colors receipt-row cursor-pointer"
+                                onclick="previewReceipt('@r.ReceiptNo', '@r.Date @r.Time', '@r.CustomerName', '@(string.IsNullOrEmpty(r.CustomerPhone) ? "ลูกค้าทั่วไป" : r.CustomerPhone)', '@r.Items', '@r.Total', '@r.Vat', '@r.PaymentMethod', '@r.StaffName', '@r.Promotion')">
+                                <!-- วันที่/เวลา -->
+                                <td class="px-5 py-3.5 whitespace-nowrap">
+                                    <div class="text-[11px] text-[#050315]">@r.Date</div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">@r.Time</div>
+                                </td>
 
-                            <!-- สถานะ -->
-                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
-                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-[10px] font-normal">
-                                    @r.Status
-                                </span>
-                            </td>
-                        </tr>
+                                <!-- ลูกค้า -->
+                                <td class="px-4 py-3.5 whitespace-nowrap">
+                                    @if (r.CustomerType == "สมาชิก")
+                                    {
+                                        <div class="text-[11px] text-[#050315] font-mono">@r.CustomerPhone</div>
+                                        <div class="mt-0.5">
+                                            <span class="inline-block px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-600 text-[10px]">
+                                                @r.CustomerType
+                                            </span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-[11px] text-[#050315]">@r.CustomerType</span>
+                                    }
+                                </td>
+
+                                <!-- รายการสินค้า -->
+                                <td class="px-4 py-3.5 text-[11px] text-[#050315]">
+                                    @r.Items
+                                </td>
+
+                                <!-- ยอดรวม -->
+                                <td class="px-4 py-3.5 text-right whitespace-nowrap font-semibold text-[11px] text-[#050315]">
+                                    @r.Total
+                                </td>
+
+                                <!-- โปรโมชั่นที่ใช้ -->
+                                <td class="px-4 py-3.5 text-center whitespace-nowrap">
+                                    @if (r.Promotion == "—")
+                                    {
+                                        <span class="text-slate-400 text-[11px]">@r.Promotion</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#E0F2FE] text-[#0284C7] text-[10px] font-normal">
+                                            @r.Promotion
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- สถานะ -->
+                                <td class="px-5 py-3.5 text-center whitespace-nowrap">
+                                    <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-[10px] font-normal">
+                                        @r.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

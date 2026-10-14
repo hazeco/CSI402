@@ -1,25 +1,56 @@
+@model Khetsophon_CSI402_8456.Models.Preorder?
 @{
     ViewData["Title"] = "สถานะพรีออเดอร์ของฉัน — FriendHouse";
 
     // Top-of-file Media & Content Configuration
+    var firstItem = Model?.Preorderitems.FirstOrDefault();
+
     var statusMedia = new {
-        ProductImageUrl = "~/media/images/cloud_bear_plush.png"
+        ProductImageUrl = firstItem?.Product?.ImageUrl ?? "~/media/images/cloud_bear_plush.png"
     };
 
+    string statusBadgeText = "รอดำเนินการ";
+    string statusBadgeClass = "bg-amber-50/80 border-amber-200/80 text-amber-800";
+    string noticeText = "รายการนี้จะแสดงสถานะอัปเดตแบบเรียลไทม์จากหน้าร้าน เมื่อมารับสินค้าแล้วสามารถแจ้งรหัสใบจองนี้ที่เคาน์เตอร์ได้ทันที";
+
+    // กำหนดขั้นตอน Timeline: แจ้งจองออเดอร์ -> ชำระเงิน/รับสินค้า -> หากชำระเงินแล้ว เพิ่มอีก 1 สถานะคือ "สำเร็จ"
+    var stepsList = new List<dynamic>();
+
+    if (Model == null || Model.CurrentStatus == "PendingConfirm" || Model.CurrentStatus == "WaitingStock" || Model.CurrentStatus == "ReadyForPickup")
+    {
+        statusBadgeText = Model?.CurrentStatus == "ReadyForPickup" ? "สินค้าพร้อมรับแล้ว" : "รอดำเนินการ";
+        stepsList.Add(new { StepNumber = 1, Title = "แจ้งจองออเดอร์", IsCompleted = true, IsActive = false, IsCancelled = false });
+        stepsList.Add(new { StepNumber = 2, Title = "รอชำระเงิน/รับสินค้า", IsCompleted = false, IsActive = true, IsCancelled = false });
+    }
+    else if (Model.CurrentStatus == "Completed")
+    {
+        statusBadgeText = "สำเร็จเรียบร้อย";
+        statusBadgeClass = "bg-emerald-50/80 border-emerald-200/80 text-emerald-800";
+        noticeText = "รายการพรีออเดอร์นี้เสร็จสมบูรณ์เรียบร้อย ลูกค้าชำระเงินและรับสินค้าแล้ว ขอขอบคุณที่เลือกซื้อสินค้ากับ FriendHouse";
+        stepsList.Add(new { StepNumber = 1, Title = "แจ้งจองออเดอร์", IsCompleted = true, IsActive = false, IsCancelled = false });
+        stepsList.Add(new { StepNumber = 2, Title = "ชำระเงิน/รับสินค้าแล้ว", IsCompleted = true, IsActive = false, IsCancelled = false });
+        stepsList.Add(new { StepNumber = 3, Title = "สำเร็จ", IsCompleted = true, IsActive = true, IsCancelled = false });
+    }
+    else if (Model.CurrentStatus == "Cancelled")
+    {
+        statusBadgeText = "ยกเลิก / ไม่รับสินค้า";
+        statusBadgeClass = "bg-rose-50/80 border-rose-200/80 text-rose-800";
+        noticeText = "รายการนี้ถูกยกเลิกแล้ว (ลูกค้าไม่รับสินค้าหรือไม่ได้มารับสินค้าตามกำหนด) และระบบได้คืนสต็อกแล้ว";
+        stepsList.Add(new { StepNumber = 1, Title = "แจ้งจองออเดอร์", IsCompleted = true, IsActive = false, IsCancelled = false });
+        stepsList.Add(new { StepNumber = 2, Title = "ไม่รับสินค้า / ยกเลิก", IsCompleted = false, IsActive = false, IsCancelled = true });
+    }
+
     var order = new {
-        RefCode = "#PO-000482",
-        Status = "รอดำเนินการ",
-        ProductName = "Cloud Bear ตุ๊กตาหมีเมฆ (สีฟ้าพาสเทล)",
-        Price = "฿590",
-        Quantity = 1,
-        OrderDate = "5 ก.ย. 2569",
-        PickupDeadline = "20 ก.ย. 2569",
-        CurrentStep = 2,
-        Steps = new[] {
-            new { StepNumber = 1, Title = "แจ้งจองออเดอร์", IsCompleted = true, IsActive = false },
-            new { StepNumber = 2, Title = "ชำระเงิน/รับสินค้า", IsCompleted = false, IsActive = true }
-        },
-        Notice = "รายการนี้จะแสดงอยู่ที่นี่จนกว่าจะมีการอัปเดตสถานะที่หน้าร้าน และจะหายไปโดยอัตโนมัติเมื่อพนักงานบันทึกว่า \"รับสินค้าและชำระเงินแล้ว\" หรือ \"ไม่มารับตามนัด (No-show)\" — ระบบจะไม่แสดงประวัติพรีออเดอร์ที่ปิดรายการแล้ว"
+        RefCode = Model?.ReservationNumber ?? "#PO-000482",
+        Status = statusBadgeText,
+        StatusClass = statusBadgeClass,
+        ProductName = firstItem?.Product?.Name ?? "Cloud Bear ตุ๊กตาหมีเมฆ (สีฟ้าพาสเทล)",
+        Price = $"฿{(Model?.TotalFinalPrice ?? 590):N0}",
+        Quantity = firstItem?.Quantity ?? 1,
+        OrderDate = Model != null ? Model.CreatedAt.ToString("d MMM yyyy") : "5 ก.ย. 2569",
+        PickupDeadline = Model != null ? Model.EstimatedPickupDate.ToString("d MMM yyyy") : "20 ก.ย. 2569",
+        Steps = stepsList.ToArray(),
+        Notice = noticeText
     };
 }
 
@@ -40,15 +71,15 @@
     <!-- Active Pre-order Card (Figma Node 60:1130) -->
     <div class="rounded-3xl border border-slate-200/80 bg-white shadow-sm overflow-hidden transition-all hover:border-primary/30">
         <!-- Top Banner with Ref and Status -->
-        <div class="flex items-center justify-between border-b border-amber-200/80 bg-amber-50/80 px-6 py-3.5">
-            <div class="flex items-center gap-2 text-amber-800 text-xs sm:text-sm font-bold">
+        <div class="flex items-center justify-between border-b @order.StatusClass px-6 py-3.5">
+            <div class="flex items-center gap-2 text-xs sm:text-sm font-bold">
                 <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
                 <span>@order.Status</span>
             </div>
-            <span class="text-xs font-semibold text-amber-700/80">อ้างอิง @order.RefCode</span>
+            <span class="text-xs font-semibold opacity-80">อ้างอิง @order.RefCode</span>
         </div>
 
         <!-- Order Item Info -->
@@ -77,19 +108,29 @@
                 </div>
             </div>
 
-            <!-- 2-Step Progress Tracker -->
+            <!-- Dynamic Progress Tracker -->
             <div class="border-t border-slate-100 pt-6">
                 <div class="relative max-w-md mx-auto">
                     <!-- Connecting Track Behind Steps -->
-                    <div class="absolute top-4.5 left-1/4 right-1/4 h-0.5 bg-slate-200 -z-0">
+                    <div class="absolute top-4.5 left-8 right-8 h-0.5 bg-slate-200 -z-0">
                         <div class="h-full bg-primary w-full"></div>
                     </div>
 
-                    <div class="relative z-10 grid grid-cols-2 gap-8">
+                    <div class="relative z-10 grid @(order.Steps.Length == 3 ? "grid-cols-3" : "grid-cols-2") gap-4 sm:gap-8">
                         @foreach (var step in order.Steps)
                         {
                             <div class="flex flex-col items-center text-center space-y-2">
-                                @if (step.IsCompleted)
+                                @if (step.IsCancelled)
+                                {
+                                    <div class="flex size-9 sm:size-10 items-center justify-center rounded-full bg-rose-500 text-white shadow-xs">
+                                        <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs sm:text-sm font-bold text-rose-600">@step.Title</span>
+                                }
+                                else if (step.IsCompleted)
                                 {
                                     <div class="flex size-9 sm:size-10 items-center justify-center rounded-full bg-primary text-white shadow-xs">
                                         <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">

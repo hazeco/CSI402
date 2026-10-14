@@ -3,17 +3,17 @@
 
     // Top-of-file Media and Content Configuration
     var pageMedia = new {
-        NarutoModelUrl = "~/media/models/naruto_kyubi_sage.glb",
+        NarutoModelUrl = (string?)ViewBag.HeroModel3D ?? "~/media/models/naruto_kyubi_sage.glb",
         NarutoFallbackImg = "~/media/images/naruto_hero_fallback.png"
     };
 
     var heroContent = new {
         Badge = "ฟิกเกอร์คอลเลกชัน · มีสินค้า",
-        TitlePrefix = "นารูโตะ อุซึมากิ",
-        TitleHighlight = "โหมดคิวบิเซจ — Ultimate Ninja Storm",
+        TitlePrefix = (string?)ViewBag.HeroName ?? "นารูโตะ อุซึมากิ",
+        TitleHighlight = ViewBag.HeroName != null ? "" : "โหมดคิวบิเซจ — Ultimate Ninja Storm",
         Description = "งานปั้นรายละเอียดสูง จับจังหวะท่าโจมตีจากฉากไคลแมกซ์ในซีรีส์ หล่อจากเรซิ่นคุณภาพสูง ทาสีมือทุกชิ้น — หมุนดูโมเดล 3 มิติได้รอบตัวก่อนตัดสินใจสั่งจอง",
         PriceLabel = "ราคาฟิกเกอร์",
-        Price = "฿4,290",
+        Price = (string?)ViewBag.HeroPrice ?? "฿4,290",
         Notice = "มีสินค้าพร้อมส่งมอบ — มารับและชำระเงินที่หน้าร้านได้ทันที",
         Specs = new[] {
             new { Label = "น้ำหนัก", Value = "1.2 กก." },

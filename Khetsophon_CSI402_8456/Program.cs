@@ -42,5 +42,13 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Seed Initial Data (Hero Product 3D model, Default Role Users, Initial Categories)
+// WHY: ดำเนินการเตรียมข้อมูลที่จำเป็น (รวมถึงโมเดล 3D) ลง MySQL ทันทีที่สตาร์ตโปรเจกต์
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<Csi402dbContext>();
+    Khetsophon_CSI402_8456.Data.DbInitializer.Initialize(context);
+}
 
 app.Run();

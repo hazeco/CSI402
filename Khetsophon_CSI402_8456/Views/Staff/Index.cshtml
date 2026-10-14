@@ -1,6 +1,9 @@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.Product>
 @{
     ViewData["Title"] = "สต็อกสินค้า";
     Layout = "_StaffLayout";
+
+    var hasDbProducts = Model != null && Model.Any();
 
     // Top-of-file Media & Content Configuration (Rule-compliant)
     var pageHeader = new {
@@ -204,89 +207,142 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @foreach (var item in stockItems)
+                    @if (hasDbProducts)
                     {
-                        <tr class="hover:bg-gray-50/70 transition-colors stock-row" data-category="@item.Category" data-status="@item.Status">
-                            <!-- Product Name & SVG Icon -->
-                            <td class="py-4 px-6 flex items-center gap-3.5">
-                                <div class="size-8 rounded-lg bg-[#92EEFF]/25 text-[#2F39A9] flex items-center justify-center shrink-0">
-                                    @if (item.IconType == "bear")
-                                    {
-                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="14" r="7"></circle>
-                                            <circle cx="7" cy="8" r="3"></circle>
-                                            <circle cx="17" cy="8" r="3"></circle>
-                                            <circle cx="10" cy="13" r="1" fill="currentColor"></circle>
-                                            <circle cx="14" cy="13" r="1" fill="currentColor"></circle>
-                                            <path d="M11 16c.6.4 1.4.4 2 0"></path>
-                                        </svg>
-                                    }
-                                    else if (item.IconType == "box")
-                                    {
+                        @foreach (var p in Model!)
+                        {
+                            var totalStock = p.Inventory != null ? p.Inventory.QuantityOnHand : 0;
+                            var statusText = totalStock <= 0 ? "หมด" : totalStock <= 3 ? "ใกล้หมด" : "ปกติ";
+                            var statusClass = totalStock <= 0 ? "bg-[#FEE2E2] text-[#DC2626]" : totalStock <= 3 ? "bg-[#FEF3C7] text-[#D97706]" : "bg-[#DCFCE7] text-[#16A34A]";
+                            var stockClass = totalStock <= 0 ? "text-[#DC2626]" : totalStock <= 3 ? "text-[#D97706]" : "text-[#050315]";
+                            var categoryName = p.Category?.CategoryName ?? "ทั่วไป";
+
+                            <tr class="hover:bg-gray-50/70 transition-colors stock-row" data-category="@categoryName" data-status="@statusText">
+                                <!-- Product Name & SVG Icon -->
+                                <td class="py-4 px-6 flex items-center gap-3.5">
+                                    <div class="size-8 rounded-lg bg-[#92EEFF]/25 text-[#2F39A9] flex items-center justify-center shrink-0">
                                         <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                                             <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                                             <line x1="12" y1="22.08" x2="12" y2="12"></line>
                                         </svg>
-                                    }
-                                    else if (item.IconType == "key")
-                                    {
-                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="7.5" cy="15.5" r="4.5"></circle>
-                                            <path d="M21 3l-9.5 9.5"></path>
-                                            <path d="M15 4l3 3"></path>
-                                            <path d="M18 7l1.5-1.5"></path>
-                                        </svg>
-                                    }
-                                    else if (item.IconType == "card")
-                                    {
-                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                            <circle cx="12" cy="12" r="4"></circle>
-                                            <line x1="3" y1="9" x2="21" y2="9"></line>
-                                        </svg>
-                                    }
-                                    else if (item.IconType == "notebook")
-                                    {
-                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                                            <line x1="8" y1="7" x2="16" y2="7"></line>
-                                            <line x1="8" y1="11" x2="14" y2="11"></line>
-                                        </svg>
-                                    }
-                                    else
-                                    {
-                                        <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
-                                        </svg>
-                                    }
-                                </div>
-                                <span class="font-medium text-[#050315]">@item.Name</span>
-                            </td>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-[#050315] text-sm">@p.Name</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">@categoryName · ฿@p.RetailPrice.ToString("N0")</div>
+                                    </div>
+                                </td>
 
-                            <!-- SKU -->
-                            <td class="py-4 px-6 text-gray-500 font-mono text-xs">
-                                @item.Sku
-                            </td>
+                                <!-- SKU -->
+                                <td class="py-4 px-6 font-mono text-xs text-gray-500">
+                                    @p.Sku
+                                </td>
 
-                            <!-- Stock Count (Centered, Bold) -->
-                            <td class="py-4 px-6 text-center font-bold text-base @item.StockClass">
-                                @item.Stock
-                            </td>
+                                <!-- Stock Count -->
+                                <td class="py-4 px-6 text-center font-bold text-base @stockClass">
+                                    @totalStock
+                                </td>
 
-                            <!-- Status Pill (Centered) -->
-                            <td class="py-4 px-6 text-center">
-                                <span class="text-xs font-semibold px-3 py-1 rounded-full @item.StatusClass">
-                                    @item.Status
-                                </span>
-                            </td>
+                                <!-- Status Pill -->
+                                <td class="py-4 px-6 text-center">
+                                    <span class="text-xs font-semibold px-3 py-1 rounded-full @statusClass">
+                                        @statusText
+                                    </span>
+                                </td>
 
-                            <!-- Last Restocked Date -->
-                            <td class="py-4 px-6 text-gray-500 text-xs">
-                                @item.Date
-                            </td>
-                        </tr>
+                                <!-- Last Restocked Date -->
+                                <td class="py-4 px-6 text-gray-500 text-xs">
+                                    @p.CreatedAt.ToString("dd MMM yyyy")
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var item in stockItems)
+                        {
+                            <tr class="hover:bg-gray-50/70 transition-colors stock-row" data-category="@item.Category" data-status="@item.Status">
+                                <!-- Product Name & SVG Icon -->
+                                <td class="py-4 px-6 flex items-center gap-3.5">
+                                    <div class="size-8 rounded-lg bg-[#92EEFF]/25 text-[#2F39A9] flex items-center justify-center shrink-0">
+                                        @if (item.IconType == "bear")
+                                        {
+                                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="14" r="7"></circle>
+                                                <circle cx="7" cy="8" r="3"></circle>
+                                                <circle cx="17" cy="8" r="3"></circle>
+                                                <circle cx="10" cy="13" r="1" fill="currentColor"></circle>
+                                                <circle cx="14" cy="13" r="1" fill="currentColor"></circle>
+                                                <path d="M11 16c.6.4 1.4.4 2 0"></path>
+                                            </svg>
+                                        }
+                                        else if (item.IconType == "box")
+                                        {
+                                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                            </svg>
+                                        }
+                                        else if (item.IconType == "key")
+                                        {
+                                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="7.5" cy="15.5" r="4.5"></circle>
+                                                <path d="M21 3l-9.5 9.5"></path>
+                                                <path d="M15 4l3 3"></path>
+                                                <path d="M18 7l1.5-1.5"></path>
+                                            </svg>
+                                        }
+                                        else if (item.IconType == "card")
+                                        {
+                                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <circle cx="12" cy="12" r="4"></circle>
+                                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                            </svg>
+                                        }
+                                        else if (item.IconType == "notebook")
+                                        {
+                                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                                <line x1="8" y1="7" x2="16" y2="7"></line>
+                                                <line x1="8" y1="11" x2="14" y2="11"></line>
+                                            </svg>
+                                        }
+                                        else
+                                        {
+                                            <svg class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+                                            </svg>
+                                        }
+                                    </div>
+                                    <span class="font-medium text-[#050315]">@item.Name</span>
+                                </td>
+
+                                <!-- SKU -->
+                                <td class="py-4 px-6 text-gray-500 font-mono text-xs">
+                                    @item.Sku
+                                </td>
+
+                                <!-- Stock Count (Centered, Bold) -->
+                                <td class="py-4 px-6 text-center font-bold text-base @item.StockClass">
+                                    @item.Stock
+                                </td>
+
+                                <!-- Status Pill (Centered) -->
+                                <td class="py-4 px-6 text-center">
+                                    <span class="text-xs font-semibold px-3 py-1 rounded-full @item.StatusClass">
+                                        @item.Status
+                                    </span>
+                                </td>
+
+                                <!-- Last Restocked Date -->
+                                <td class="py-4 px-6 text-gray-500 text-xs">
+                                    @item.Date
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

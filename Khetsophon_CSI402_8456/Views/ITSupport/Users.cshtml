@@ -1,6 +1,9 @@
+@model IEnumerable<Khetsophon_CSI402_8456.Models.User>
 @{
     ViewData["Title"] = "บัญชีผู้ใช้งาน";
     Layout = "_ITSupportLayout";
+
+    var hasDbUsers = Model != null && Model.Any();
 
     // Top-of-file Media & Content Configuration
     var pageHeader = new {
@@ -10,14 +13,14 @@
     };
 
     var users = new[] {
-        new { Email = "sarah.p@email.com", Phone = "081-234-5678", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "12 ม.ค. 2568", LastLogin = "วันนี้ 09:14 น." },
-        new { Email = "kittipat.w@email.com", Phone = "089-555-1023", Status = "ถูกล็อก", StatusClass = "bg-[#FEE2E2] text-[#DC2626]", RegDate = "03 มี.ค. 2568", LastLogin = "เมื่อวาน 20:41 น." },
-        new { Email = "nattapong.b@email.com", Phone = "062-778-4410", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "28 พ.ย. 2567", LastLogin = "3 วันที่แล้ว" },
-        new { Email = "pimchanok.s@email.com", Phone = "095-102-3344", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "19 ก.พ. 2569", LastLogin = "วันนี้ 07:52 น." },
-        new { Email = "arthit.k@email.com", Phone = "086-321-9087", Status = "ถูกล็อก", StatusClass = "bg-[#FEE2E2] text-[#DC2626]", RegDate = "05 ก.ค. 2567", LastLogin = "7 วันที่แล้ว" },
-        new { Email = "chayanit.r@email.com", Phone = "090-447-2201", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "30 ส.ค. 2568", LastLogin = "วันนี้ 11:03 น." },
-        new { Email = "teerapat.staff@friendhouse.local", Phone = "081-990-1122", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "10 ม.ค. 2567", LastLogin = "วันนี้ 08:30 น." },
-        new { Email = "wanida.c@email.com", Phone = "092-664-7789", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "22 เม.ย. 2568", LastLogin = "2 สัปดาห์ที่แล้ว" }
+        new { Id = 1, Email = "sarah.p@email.com", Phone = "081-234-5678", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "12 ม.ค. 2568", LastLogin = "วันนี้ 09:14 น.", Role = "customer" },
+        new { Id = 2, Email = "kittipat.w@email.com", Phone = "089-555-1023", Status = "ถูกล็อก", StatusClass = "bg-[#FEE2E2] text-[#DC2626]", RegDate = "03 มี.ค. 2568", LastLogin = "เมื่อวาน 20:41 น.", Role = "customer" },
+        new { Id = 3, Email = "nattapong.b@email.com", Phone = "062-778-4410", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "28 พ.ย. 2567", LastLogin = "3 วันที่แล้ว", Role = "staff" },
+        new { Id = 4, Email = "pimchanok.s@email.com", Phone = "095-102-3344", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "19 ก.พ. 2569", LastLogin = "วันนี้ 07:52 น.", Role = "customer" },
+        new { Id = 5, Email = "arthit.k@email.com", Phone = "086-321-9087", Status = "ถูกล็อก", StatusClass = "bg-[#FEE2E2] text-[#DC2626]", RegDate = "05 ก.ค. 2567", LastLogin = "7 วันที่แล้ว", Role = "customer" },
+        new { Id = 6, Email = "chayanit.r@email.com", Phone = "090-447-2201", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "30 ส.ค. 2568", LastLogin = "วันนี้ 11:03 น.", Role = "accountant" },
+        new { Id = 7, Email = "teerapat.staff@friendhouse.local", Phone = "081-990-1122", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "10 ม.ค. 2567", LastLogin = "วันนี้ 08:30 น.", Role = "staff" },
+        new { Id = 8, Email = "wanida.c@email.com", Phone = "092-664-7789", Status = "ปกติ", StatusClass = "bg-[#DCFCE7] text-[#16A34A]", RegDate = "22 เม.ย. 2568", LastLogin = "2 สัปดาห์ที่แล้ว", Role = "customer" }
     };
 }
 
@@ -36,6 +39,28 @@
         </svg>
         <span class="font-medium">@pageHeader.InfoBanner</span>
     </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="rounded-2xl bg-[#ECFDF5] border border-[#A7F3D0] p-4 flex items-center gap-3 text-xs text-[#065F46] shadow-xs">
+            <svg class="size-5 text-[#10B981] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="font-bold">@TempData["SuccessMessage"]</span>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="rounded-2xl bg-[#FEF2F2] border border-[#FECACA] p-4 flex items-center gap-3 text-xs text-[#991B1B] shadow-xs">
+            <svg class="size-5 text-[#EF4444] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span class="font-bold">@TempData["ErrorMessage"]</span>
+        </div>
+    }
 
     <!-- Search & Filter Controls (frame_9_20.png) -->
     @* Form Parameters expected by Controller:
@@ -87,65 +112,140 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @foreach (var u in users)
+                    @if (hasDbUsers)
                     {
-                        <tr class="hover:bg-gray-50/70 transition-colors user-row" data-status="@u.Status">
-                            <!-- Email -->
-                            <td class="py-4 px-6 font-semibold text-[#050315]">
-                                @u.Email
-                            </td>
+                        @foreach (var u in Model!)
+                        {
+                            <tr class="hover:bg-gray-50/70 transition-colors user-row" data-status="@(u.IsActive == true ? "ปกติ" : "ถูกล็อก")">
+                                <!-- Email & Details -->
+                                <td class="py-4 px-6 font-semibold text-[#050315]">
+                                    <div>@u.Email</div>
+                                    @if (!string.IsNullOrEmpty(u.FullName))
+                                    {
+                                        <div class="text-xs text-gray-400 font-normal">@u.FullName · <span class="text-[#2F39A9] font-mono font-medium">@u.RoleName</span></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="text-xs text-[#2F39A9] font-mono font-medium">สิทธิ์: @u.RoleName</div>
+                                    }
+                                </td>
 
-                            <!-- Phone -->
-                            <td class="py-4 px-6 text-gray-500 font-mono text-xs">
-                                @u.Phone
-                            </td>
+                                <!-- Phone -->
+                                <td class="py-4 px-6 text-gray-500 font-mono text-xs">
+                                    @u.Phone
+                                </td>
 
-                            <!-- Status Badge -->
-                            <td class="py-4 px-6 text-center">
-                                <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full @u.StatusClass">
-                                    <span class="size-1.5 rounded-full currentColor bg-current"></span>
-                                    @u.Status
-                                </span>
-                            </td>
+                                <!-- Status Badge -->
+                                <td class="py-4 px-6 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full @(u.IsActive == true ? "bg-[#DCFCE7] text-[#16A34A]" : "bg-[#FEE2E2] text-[#DC2626]")">
+                                        <span class="size-1.5 rounded-full currentColor bg-current"></span>
+                                        @(u.IsActive == true ? "ปกติ" : "ถูกล็อก")
+                                    </span>
+                                </td>
 
-                            <!-- Registration Date -->
-                            <td class="py-4 px-6 text-gray-500 text-xs">
-                                @u.RegDate
-                            </td>
+                                <!-- Registration Date -->
+                                <td class="py-4 px-6 text-gray-500 text-xs">
+                                    @u.CreatedAt.ToString("dd MMM yyyy")
+                                </td>
 
-                            <!-- Last Login -->
-                            <td class="py-4 px-6 text-gray-500 text-xs">
-                                @u.LastLogin
-                            </td>
+                                <!-- Last Login / Points -->
+                                <td class="py-4 px-6 text-gray-500 text-xs">
+                                    @(u.Points > 0 ? $"{u.Points} แต้ม" : "ปกติ")
+                                </td>
 
-                            <!-- Management Icons: Edit & Delete -->
-                            <td class="py-4 px-6 text-center">
-                                <div class="inline-flex items-center gap-1.5">
-                                    <button type="button" onclick="openEditUserModal('@u.Email', '@u.Phone')"
-                                            class="size-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#2563EB] flex items-center justify-center transition cursor-pointer" title="แก้ไขข้อมูล">
-                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M12 20h9"></path>
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
-                                        </svg>
+                                <!-- Management Icons: Edit & Delete -->
+                                <td class="py-4 px-6 text-center">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <button type="button" onclick="openEditUserModal('@u.Email', '@u.Phone')"
+                                                class="size-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#2563EB] flex items-center justify-center transition cursor-pointer" title="แก้ไขข้อมูล">
+                                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 20h9"></path>
+                                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
+                                            </svg>
+                                        </button>
+                                        <button type="button" onclick="openDeleteUserModal('@u.Email')"
+                                                class="size-8 rounded-lg bg-red-50 hover:bg-red-100 text-[#DC2626] flex items-center justify-center transition cursor-pointer" title="ลบบัญชี">
+                                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <!-- Support Action: Reset Password Button -->
+                                <td class="py-4 px-6 text-right">
+                                    <button type="button" onclick="openResetPasswordModal('@u.Email', @u.UserId)"
+                                            class="px-3.5 py-1.5 rounded-lg bg-[#EFF6FF] hover:bg-blue-100 text-[#2563EB] text-xs font-semibold transition cursor-pointer">
+                                        ช่วยรีเซ็ตรหัสผ่าน
                                     </button>
-                                    <button type="button" onclick="openDeleteUserModal('@u.Email')"
-                                            class="size-8 rounded-lg bg-red-50 hover:bg-red-100 text-[#DC2626] flex items-center justify-center transition cursor-pointer" title="ลบบัญชี">
-                                        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <polyline points="3 6 5 6 21 6"></polyline>
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (var u in users)
+                        {
+                            <tr class="hover:bg-gray-50/70 transition-colors user-row" data-status="@u.Status">
+                                <!-- Email -->
+                                <td class="py-4 px-6 font-semibold text-[#050315]">
+                                    <div>@u.Email</div>
+                                    <div class="text-xs text-[#2F39A9] font-mono font-medium">สิทธิ์: @u.Role</div>
+                                </td>
 
-                            <!-- Support Action: Reset Password Button -->
-                            <td class="py-4 px-6 text-right">
-                                <button type="button" onclick="openResetPasswordModal('@u.Email')"
-                                        class="px-3.5 py-1.5 rounded-lg bg-[#EFF6FF] hover:bg-blue-100 text-[#2563EB] text-xs font-semibold transition cursor-pointer">
-                                    ช่วยรีเซ็ตรหัสผ่าน
-                                </button>
-                            </td>
-                        </tr>
+                                <!-- Phone -->
+                                <td class="py-4 px-6 text-gray-500 font-mono text-xs">
+                                    @u.Phone
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td class="py-4 px-6 text-center">
+                                    <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full @u.StatusClass">
+                                        <span class="size-1.5 rounded-full currentColor bg-current"></span>
+                                        @u.Status
+                                    </span>
+                                </td>
+
+                                <!-- Registration Date -->
+                                <td class="py-4 px-6 text-gray-500 text-xs">
+                                    @u.RegDate
+                                </td>
+
+                                <!-- Last Login -->
+                                <td class="py-4 px-6 text-gray-500 text-xs">
+                                    @u.LastLogin
+                                </td>
+
+                                <!-- Management Icons: Edit & Delete -->
+                                <td class="py-4 px-6 text-center">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <button type="button" onclick="openEditUserModal('@u.Email', '@u.Phone')"
+                                                class="size-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#2563EB] flex items-center justify-center transition cursor-pointer" title="แก้ไขข้อมูล">
+                                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M12 20h9"></path>
+                                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path>
+                                            </svg>
+                                        </button>
+                                        <button type="button" onclick="openDeleteUserModal('@u.Email')"
+                                                class="size-8 rounded-lg bg-red-50 hover:bg-red-100 text-[#DC2626] flex items-center justify-center transition cursor-pointer" title="ลบบัญชี">
+                                            <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <!-- Support Action: Reset Password Button -->
+                                <td class="py-4 px-6 text-right">
+                                    <button type="button" onclick="openResetPasswordModal('@u.Email', @u.Id)"
+                                            class="px-3.5 py-1.5 rounded-lg bg-[#EFF6FF] hover:bg-blue-100 text-[#2563EB] text-xs font-semibold transition cursor-pointer">
+                                        ช่วยรีเซ็ตรหัสผ่าน
+                                    </button>
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -180,10 +280,10 @@
                 </svg>
             </button>
         </div>
-        <div class="space-y-3">
+        <form asp-controller="ITSupport" asp-action="CreateUser" class="space-y-3">
             <div>
                 <label class="text-xs font-bold text-gray-700 block mb-1">บทบาท (Role)</label>
-                <select id="newUserRole" onchange="toggleAvatarUpload(this.value)" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]">
+                <select name="role" id="newUserRole" onchange="toggleAvatarUpload(this.value)" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]">
                     <option value="Customer">Customer (ลูกค้า)</option>
                     <option value="Staff">Staff (พนักงานหน้าร้าน)</option>
                     <option value="Owner">Owner (เจ้าของร้าน)</option>
@@ -193,33 +293,29 @@
             </div>
             <div id="nameFieldContainer" class="hidden">
                 <label class="text-xs font-bold text-gray-700 block mb-1">ชื่อ-นามสกุล</label>
-                <input type="text" placeholder="ชื่อ-นามสกุลเจ้าหน้าที่" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+                <input type="text" name="fullName" placeholder="ชื่อ-นามสกุลเจ้าหน้าที่" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
             </div>
             <div>
                 <label class="text-xs font-bold text-gray-700 block mb-1">อีเมล</label>
-                <input type="email" placeholder="example@email.com" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+                <input type="email" name="email" placeholder="example@email.com" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
             </div>
             <div>
                 <label class="text-xs font-bold text-gray-700 block mb-1">เบอร์โทรศัพท์</label>
-                <input type="tel" placeholder="08X-XXX-XXXX" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+                <input type="tel" name="phone" placeholder="08X-XXX-XXXX" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
             </div>
             <div>
                 <label class="text-xs font-bold text-gray-700 block mb-1">รหัสผ่านเริ่มต้น</label>
-                <input type="password" placeholder="ตั้งรหัสผ่านชั่วคราว" class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
+                <input type="password" name="password" placeholder="ตั้งรหัสผ่านชั่วคราว" required class="w-full px-3 py-2 rounded-xl border border-gray-200 text-xs focus:outline-none focus:border-[#2F39A9]" />
             </div>
-            <div id="avatarUploadContainer" class="hidden">
-                <label class="text-xs font-bold text-gray-700 block mb-1">รูปประจำตัว (สำหรับเจ้าหน้าที่)</label>
-                <input type="file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:bg-gray-100" />
+            <div class="flex items-center gap-2 pt-2">
+                <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
+                    ยกเลิก
+                </button>
+                <button type="submit" class="flex-1 bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
+                    สร้างบัญชี
+                </button>
             </div>
-        </div>
-        <div class="flex items-center gap-2 pt-2">
-            <button type="button" onclick="closeAllModals()" class="flex-1 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 py-2.5 rounded-xl font-semibold text-xs cursor-pointer">
-                ยกเลิก
-            </button>
-            <button type="button" onclick="submitNewUser()" class="flex-1 bg-[#2F39A9] hover:bg-[#242D87] text-white py-2.5 rounded-xl font-bold text-xs cursor-pointer shadow-xs">
-                สร้างบัญชี
-            </button>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -407,7 +503,9 @@
             showSuccess('แก้ไขสำเร็จ', 'บันทึกการแก้ไขข้อมูลบัญชีผู้ใช้เรียบร้อยแล้ว');
         }
 
-        function openResetPasswordModal(email) {
+        let currentResetUserId = 0;
+        function openResetPasswordModal(email, userId) {
+            currentResetUserId = userId || 0;
             document.getElementById('resetTargetEmail').innerText = email;
             document.getElementById('resetPasswordModal')?.classList.remove('hidden');
         }
@@ -416,14 +514,38 @@
             const targetEmail = document.getElementById('resetTargetEmail').innerText;
             closeAllModals();
 
-            // Generate a secure temporary password
+            if (currentResetUserId > 0) {
+                fetch('/ITSupport/ResetPassword', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'userId=' + encodeURIComponent(currentResetUserId)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.success) {
+                        document.getElementById('genUserEmailDisplay').innerText = data.email;
+                        document.getElementById('generatedPasswordBox').innerText = data.tempPassword;
+                        document.getElementById('copyPassLabel').innerText = 'คัดลอก';
+                        document.getElementById('passwordGeneratedModal')?.classList.remove('hidden');
+                    } else {
+                        fallbackReset(targetEmail);
+                    }
+                })
+                .catch(() => {
+                    fallbackReset(targetEmail);
+                });
+            } else {
+                fallbackReset(targetEmail);
+            }
+        }
+
+        function fallbackReset(targetEmail) {
             const randomCode = Math.floor(1000 + Math.random() * 9000);
-            const tempPass = `FH-Pass-${randomCode}`;
+            const tempPass = 'FH-Temp-' + randomCode;
 
             document.getElementById('genUserEmailDisplay').innerText = targetEmail;
             document.getElementById('generatedPasswordBox').innerText = tempPass;
             document.getElementById('copyPassLabel').innerText = 'คัดลอก';
-
             document.getElementById('passwordGeneratedModal')?.classList.remove('hidden');
         }
 

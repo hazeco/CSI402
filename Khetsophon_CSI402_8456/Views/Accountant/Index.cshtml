@@ -9,15 +9,19 @@
         SelectedMonth = "กันยายน 2569"
     };
 
+    var revenueVal = ViewBag.TotalMonthlyRevenue != null && (decimal)ViewBag.TotalMonthlyRevenue > 0 ? (decimal)ViewBag.TotalMonthlyRevenue : 486250m;
+    var costVal = ViewBag.RecordedExpenses != null && (decimal)ViewBag.RecordedExpenses > 0 ? (decimal)ViewBag.RecordedExpenses : 298400m;
+    var grossProfitVal = revenueVal - costVal;
+
     var financeStats = new {
-        Revenue = "฿486,250",
-        RevenueDelta = "▲ +11.0% จากเดือนก่อน",
-        Cost = "฿298,400",
-        CostSubtext = "มูลค่าสต็อกที่รับเข้าตามใบรับสินค้า",
-        GrossProfit = "฿187,850",
-        GrossProfitSubtext = "รายได้ - ต้นทุนสินค้า",
-        GrossMargin = "38.6%",
-        GrossMarginSubtext = "เทียบเป้าหมาย 35%"
+        Revenue = "฿" + revenueVal.ToString("N0"),
+        RevenueDelta = ViewBag.StorefrontRevenue != null ? $"หน้าร้าน ฿{((decimal)ViewBag.StorefrontRevenue):N0}" : "▲ +11.0% จากเดือนก่อน",
+        Cost = "฿" + costVal.ToString("N0"),
+        CostSubtext = "รายจ่ายที่บันทึกในสมุดบัญชี",
+        GrossProfit = "฿" + grossProfitVal.ToString("N0"),
+        GrossProfitSubtext = "รายได้สุทธิ - รายจ่าย",
+        GrossMargin = revenueVal > 0 ? ((grossProfitVal / revenueVal) * 100).ToString("N1") + "%" : "38.6%",
+        GrossMarginSubtext = ViewBag.PreordersPendingTotal != null ? $"พรีออเดอร์ค้างรับ ฿{((decimal)ViewBag.PreordersPendingTotal):N0}" : "เทียบเป้าหมาย 35%"
     };
 
     var dualBarData = new[] {

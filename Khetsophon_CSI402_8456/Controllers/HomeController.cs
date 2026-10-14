@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Khetsophon_CSI402_8456.Models;
 using Microsoft.VisualBasic;
 using System.Security.Cryptography.X509Certificates;
@@ -71,22 +72,38 @@ public class HomeController : Controller
         var users = _db.Users.ToList();
         return View(users);
     }
-    public IActionResult Index(LoginViewModel data)
+    public IActionResult Index(LoginViewModel? data)
     {
-        // recive data from login page by viewbag
-        ViewBag.Email = data.Email;
-        ViewBag.Password = data.Password;
+        // receive data from login page by viewbag
+        if (data != null)
+        {
+            ViewBag.Email = data.Email;
+            ViewBag.Password = data.Password;
+        }
+
+        var heroProduct = _db.Products.FirstOrDefault(p => p.IsFeaturedHero)
+                          ?? _db.Products.FirstOrDefault(p => !string.IsNullOrEmpty(p.Model3Dpath));
+
+        if (heroProduct != null)
+        {
+            ViewBag.HeroModel3D = !string.IsNullOrEmpty(heroProduct.Model3Dpath) ? heroProduct.Model3Dpath : "~/media/models/naruto_kyubi_sage.glb";
+            ViewBag.HeroName = heroProduct.Name;
+            ViewBag.HeroPrice = $"฿{heroProduct.RetailPrice:N0}";
+        }
+
         return View();
     }
 
     public IActionResult Collection()
     {
-        return View();
+        var products = _db.Products.Where(p => p.IsActive == true || p.IsActive == null).ToList();
+        return View(products);
     }
 
     public IActionResult Promotion()
     {
-        return View();
+        var promotions = _db.Promotions.Where(p => p.IsActive == true || p.IsActive == null).ToList();
+        return View(promotions);
     }
 
     public IActionResult Customer()
@@ -106,12 +123,36 @@ public class HomeController : Controller
 
     public IActionResult PreorderStatus()
     {
-        return View();
+        // WHY: ดึงสถานะพรีออเดอร์ของสมาชิกปัจจุบันเพื่อนำมาแสดงผลแบบ Real-time ตามสถานะจริงใน DB
+        var userId = HttpContext.Session.GetInt32("UserId");
+        Preorder? preorder = null;
+
+        if (userId.HasValue)
+        {
+            preorder = _db.Preorders
+                .Include(p => p.Preorderitems)
+                    .ThenInclude(pi => pi.Product)
+                .OrderByDescending(p => p.CreatedAt)
+                .FirstOrDefault(p => p.UserId == userId.Value);
+        }
+
+        // หากยังไม่ได้ล็อกอิน ให้ดึงใบจองล่าสุดในระบบ หรือปล่อยให้ View ใช้ Fallback Mock
+        if (preorder == null)
+        {
+            preorder = _db.Preorders
+                .Include(p => p.Preorderitems)
+                    .ThenInclude(pi => pi.Product)
+                .OrderByDescending(p => p.CreatedAt)
+                .FirstOrDefault();
+        }
+
+        return View(preorder);
     }
 
     public IActionResult Rewards()
     {
-        return View();
+        var rewards = _db.Rewards.Where(r => r.IsAvailable == true || r.IsAvailable == null).ToList();
+        return View(rewards);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
