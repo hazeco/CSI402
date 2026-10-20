@@ -39,7 +39,7 @@ public class AccountController : Controller
                 newUser.Phone = data.Phone;
                 newUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(data.Password);
                 newUser.FullName = null;
-                newUser.AvatarUrl = "";
+                newUser.AvatarUrl = null;
                 newUser.RoleName = "customer";
                 newUser.Points = 0;
                 newUser.IsActive = true;

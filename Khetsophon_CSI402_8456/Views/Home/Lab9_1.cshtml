@@ -1,26 +1,177 @@
-@* from create labstudent to Home controller *@
-
 @model IEnumerable<Khetsophon_CSI402_8456.Models.Labstudent>
+@{
+    ViewData["Title"] = "รายชื่อนักศึกษา (Lab 9.1 & Lab 10.1)";
 
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Password</th>
-        <th>Name</th>
-        <th>Lastname</th>
-    </tr>
-    @foreach (var item in Model)
+    var rawStatus = (string?)ViewBag.Status;
+    if (string.IsNullOrEmpty(rawStatus))
     {
-        <tr>
-            <td>@item.StdId</td>
-            <td>@item.StdPassword</td>
-            <td>@item.StdName</td>
-            <td>@item.StdLastname</td>
-            <td><a asp-action="Lab10" asp-controller="Home" asp-route-StdId="@item.StdId">Edit</a></td>
-            <td><a asp-action="Lab10_1" asp-controller="Home" asp-route-StdId="@item.StdId">Delete</a></td>
-        </tr>
+        rawStatus = Context.Request.Query["status"].ToString();
     }
-</table>
 
-<p style="color: red;">@ViewBag.Status</p>
+    var pageConfig = new {
+        Title = "รายชื่อนักศึกษาในระบบ",
+        Subtitle = "ระบบจัดการและแสดงรายการข้อมูลนักศึกษา (Lab 9.1 - Read / Lab 10.1 - Delete)",
+        AddUrl = Url.Action("Lab9", "Home"),
+        Icons = new {
+            Add = "M12 4v16m8-8H4",
+            Edit = "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
+            Delete = "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16",
+            Check = "M5 13l4 4L19 7",
+            Alert = "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z",
+            Users = "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
+            Empty = "M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+        },
+        Labels = new {
+            AddBtn = "เพิ่มนักศึกษาใหม่",
+            Total = "จำนวนทั้งหมด",
+            Unit = "คน",
+            ColId = "รหัสนักศึกษา",
+            ColPassword = "รหัสผ่าน",
+            ColName = "ชื่อจริง",
+            ColLastname = "นามสกุล",
+            ColActions = "การจัดการ",
+            BtnEdit = "แก้ไข",
+            BtnDelete = "ลบ",
+            EmptyTitle = "ยังไม่มีข้อมูลนักศึกษาในระบบ",
+            EmptySubtitle = "สามารถกดปุ่มเพิ่มข้อมูลนักศึกษาใหม่เพื่อเริ่มต้นใช้งาน"
+        }
+    };
+
+    bool isSuccess = !string.IsNullOrEmpty(rawStatus) && (rawStatus.Contains("Success", StringComparison.OrdinalIgnoreCase) || rawStatus.Contains("สำเร็จ", StringComparison.OrdinalIgnoreCase));
+}
+
+<div class="min-h-screen bg-background py-8 sm:py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto space-y-6">
+
+        <!-- แถบด้านบน: หัวเรื่อง + ปุ่มเพิ่มข้อมูล -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-md">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="@pageConfig.Icons.Users"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <h1 class="text-xl sm:text-2xl font-bold text-text">@pageConfig.Title</h1>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary/30 text-primary border border-secondary">
+                            Lab 9.1 & 10.1
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-0.5">@pageConfig.Subtitle</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-medium text-slate-600">
+                    @pageConfig.Labels.Total: <span class="font-bold text-primary">@(Model?.Count() ?? 0)</span> @pageConfig.Labels.Unit
+                </div>
+                <a asp-action="Lab9" asp-controller="Home" class="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl bg-primary text-white text-xs sm:text-sm font-semibold hover:bg-accent focus:outline-none focus:ring-4 focus:ring-primary/20 shadow-md hover:shadow-lg transition-all cursor-pointer">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="@pageConfig.Icons.Add"></path>
+                    </svg>
+                    <span>@pageConfig.Labels.AddBtn</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- กล่องแจ้งเตือนสถานะการทำงาน (Update / Delete) -->
+        @if (!string.IsNullOrEmpty(rawStatus))
+        {
+            <div class="rounded-2xl p-4 flex items-center gap-3 text-sm @(isSuccess ? "bg-emerald-50 border border-emerald-200 text-emerald-800" : "bg-rose-50 border border-rose-200 text-rose-800") shadow-sm">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 @(isSuccess ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600")">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="@(isSuccess ? pageConfig.Icons.Check : pageConfig.Icons.Alert)"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 font-medium">
+                    สถานะการทำงาน: <span class="font-bold">@rawStatus</span>
+                </div>
+            </div>
+        }
+
+        <!-- ตารางแสดงข้อมูล -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            @if (Model != null && Model.Any())
+            {
+                <!-- ตารางสำหรับหน้าจอ Desktop และ Tablet -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                <th class="py-4 px-6">@pageConfig.Labels.ColId</th>
+                                <th class="py-4 px-6">@pageConfig.Labels.ColPassword</th>
+                                <th class="py-4 px-6">@pageConfig.Labels.ColName</th>
+                                <th class="py-4 px-6">@pageConfig.Labels.ColLastname</th>
+                                <th class="py-4 px-6 text-right">@pageConfig.Labels.ColActions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-sm">
+                            @foreach (var item in Model)
+                            {
+                                <tr class="hover:bg-slate-50/60 transition-colors">
+                                    <td class="py-4 px-6 font-semibold text-text">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 text-xs font-mono">
+                                            @item.StdId
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6 text-slate-500 font-mono text-xs">
+                                        ••••••••
+                                    </td>
+                                    <td class="py-4 px-6 text-text font-medium">
+                                        @item.StdName
+                                    </td>
+                                    <td class="py-4 px-6 text-text font-medium">
+                                        @item.StdLastname
+                                    </td>
+                                    <td class="py-4 px-6 text-right">
+                                        <div class="inline-flex items-center justify-end gap-2">
+                                            <!-- ปุ่มแก้ไข (Edit -> Lab 10) -->
+                                            <a asp-action="Lab10" asp-controller="Home" asp-route-StdId="@item.StdId" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-primary/30 text-primary text-xs font-semibold hover:bg-primary hover:text-white transition-all cursor-pointer">
+                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="@pageConfig.Icons.Edit"></path>
+                                                </svg>
+                                                <span>@pageConfig.Labels.BtnEdit</span>
+                                            </a>
+
+                                            <!-- ปุ่มลบ (Delete -> Lab 10_1, -->
+                                            <form asp-action="Lab10_1" asp-controller="Home" asp-route-StdId="@item.StdId" class="inline-block m-0">
+                                                <button type="submit" onclick="return confirm('คุณต้องการลบข้อมูลนักศึกษารหัส @item.StdId ใช่หรือไม่?');" class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-lg border border-rose-200 text-rose-600 text-xs font-semibold hover:bg-rose-600 hover:text-white transition-all cursor-pointer">
+                                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="@pageConfig.Icons.Delete"></path>
+                                                    </svg>
+                                                    <span>@pageConfig.Labels.BtnDelete</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <!-- กรณีไม่มีข้อมูล -->
+                <div class="p-12 text-center">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">
+                        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="@pageConfig.Icons.Empty"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold text-text">@pageConfig.Labels.EmptyTitle</h3>
+                    <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">@pageConfig.Labels.EmptySubtitle</p>
+                    <div class="mt-5">
+                        <a asp-action="Lab9" asp-controller="Home" class="inline-flex items-center gap-2 py-2.5 px-5 rounded-xl bg-primary text-white text-xs font-semibold hover:bg-accent transition-all shadow-md">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="@pageConfig.Icons.Add"></path>
+                            </svg>
+                            <span>@pageConfig.Labels.AddBtn</span>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

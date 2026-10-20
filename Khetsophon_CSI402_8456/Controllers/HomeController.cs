@@ -18,20 +18,20 @@ public class HomeController : Controller
 
     public IActionResult Lab9()
     {
-        // Create
+        // show form for create data 
 
         return View();
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Lab9(Labstudent data)
+    public IActionResult Lab9(Labstudent data) //create user into DB
     {
         if(ModelState.IsValid)
         {
             if(data.StdPassword != null)
             {
                 var CheckID = (from a in _db.Labstudents where a.StdId == data.StdId select a).FirstOrDefault();
-                //select * from Labstudents where StdId == "@StdId"
+                //select * from Labstudents where StdId == "@StdId" 
                 if(CheckID == null)
                 {
                     Labstudent s = new Labstudent();
@@ -42,7 +42,7 @@ public class HomeController : Controller
                     s.StdLastname = data.StdLastname;
                     _db.Add(s);
                     _db.SaveChanges();
-                    return View(data);
+                    return RedirectToAction("Lab9_1", "Home", new { status = "Create Success" });
                 } else {
                     ViewBag.Status = "This ID is already exists";
                     return View();
@@ -67,14 +67,14 @@ public class HomeController : Controller
         return View(data);
     }
 
-    public IActionResult Lab10(string? StdId)
+    public IActionResult Lab10(string? StdId) // show form for update data
     {
         var User = (from s in _db.Labstudents where s.StdId == StdId select s).FirstOrDefault();
         return View(User);
     }
 
     [HttpPost]
-    public IActionResult Lab10(Labstudent data)
+    public IActionResult Lab10(Labstudent data) // update user into DB
     {
         var User = (from s in _db.Labstudents where s.StdId == data.StdId select s).FirstOrDefault();
         User.StdPassword = data.StdPassword;
@@ -84,7 +84,7 @@ public class HomeController : Controller
         return RedirectToAction("Lab9_1", "Home", new { status = "Update Success" });
     }
 
-    [HttpPost]
+    [HttpPost] // delete user from DB
     public IActionResult Lab10_1(string? StdId){
         var Check = (from s in _db.Labstudents where s.StdId == StdId select s).FirstOrDefault();
         if(Check != null)
