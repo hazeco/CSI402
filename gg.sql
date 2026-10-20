@@ -34,7 +34,7 @@ CREATE TABLE `cartitems` (
   CONSTRAINT `fk_cart_product` FOREIGN KEY (`ProductId`) REFERENCES `products` (`ProductId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_cart_user` FOREIGN KEY (`UserId`) REFERENCES `users` (`UserId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `chk_cart_qty` CHECK ((`Quantity` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,7 @@ CREATE TABLE `categories` (
   `IsActive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`CategoryId`),
   UNIQUE KEY `uq_categories_slug` (`Slug`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `financialledger` (
   CONSTRAINT `fk_ledger_user` FOREIGN KEY (`RecordedByUserId`) REFERENCES `users` (`UserId`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_ledger_amount` CHECK ((`Amount` > 0)),
   CONSTRAINT `chk_ledger_type` CHECK ((`EntryType` in (_utf8mb4'expense',_utf8mb4'income')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `inventories` (
   CONSTRAINT `chk_inv_qoh` CHECK ((`QuantityOnHand` >= 0)),
   CONSTRAINT `chk_inv_rsv` CHECK ((`ReservedQuantity` >= 0)),
   CONSTRAINT `chk_inv_safety` CHECK ((`SafetyStockLevel` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +156,7 @@ CREATE TABLE `labstudent` (
   `StdName` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `StdLastname` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   PRIMARY KEY (`StdId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +190,7 @@ CREATE TABLE `preorderitems` (
   CONSTRAINT `fk_poi_product` FOREIGN KEY (`ProductId`) REFERENCES `products` (`ProductId`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_poi_price` CHECK ((`UnitPrice` >= 0)),
   CONSTRAINT `chk_poi_qty` CHECK ((`Quantity` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -228,7 +228,7 @@ CREATE TABLE `preorders` (
   CONSTRAINT `fk_preorders_user` FOREIGN KEY (`UserId`) REFERENCES `users` (`UserId`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_po_final` CHECK ((`TotalFinalPrice` >= 0)),
   CONSTRAINT `chk_po_status` CHECK ((`CurrentStatus` in (_utf8mb4'PendingConfirm',_utf8mb4'WaitingStock',_utf8mb4'ReadyForPickup',_utf8mb4'Completed',_utf8mb4'Cancelled')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,7 +277,7 @@ CREATE TABLE `products` (
   CONSTRAINT `fk_products_category` FOREIGN KEY (`CategoryId`) REFERENCES `categories` (`CategoryId`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_products_height` CHECK (((`HeightCm` > 0) or (`HeightCm` is null))),
   CONSTRAINT `chk_products_retail` CHECK ((`RetailPrice` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +320,7 @@ CREATE TABLE `promotions` (
   CONSTRAINT `chk_promo_type` CHECK ((`PromoType` in (_utf8mb4'percent',_utf8mb4'fixed',_utf8mb4'bogo',_utf8mb4'bundle',_utf8mb4'double_points'))),
   CONSTRAINT `chk_promo_usage_cnt` CHECK ((`CurrentUsageCount` >= 0)),
   CONSTRAINT `chk_promo_usage_lmt` CHECK (((`UsageLimit` > 0) or (`UsageLimit` is null)))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,7 +354,7 @@ CREATE TABLE `receiptitems` (
   CONSTRAINT `fk_ri_receipt` FOREIGN KEY (`ReceiptId`) REFERENCES `receipts` (`ReceiptId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `chk_ri_price` CHECK ((`UnitPrice` >= 0)),
   CONSTRAINT `chk_ri_qty` CHECK ((`Quantity` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -399,7 +399,7 @@ CREATE TABLE `receipts` (
   CONSTRAINT `chk_rcpt_net` CHECK ((`NetTotalAmount` >= 0)),
   CONSTRAINT `chk_rcpt_subtotal` CHECK ((`SubtotalAmount` >= 0)),
   CONSTRAINT `chk_rcpt_vat` CHECK ((`VatAmount` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -435,7 +435,7 @@ CREATE TABLE `rewardredemptions` (
   CONSTRAINT `fk_rdm_user` FOREIGN KEY (`UserId`) REFERENCES `users` (`UserId`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `chk_rdm_points` CHECK ((`PointsSpent` > 0)),
   CONSTRAINT `chk_rdm_status` CHECK ((`Status` in (_utf8mb4'PendingPickup',_utf8mb4'Completed',_utf8mb4'Cancelled')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -469,7 +469,7 @@ CREATE TABLE `rewards` (
   UNIQUE KEY `uq_rewards_code` (`RewardCode`),
   CONSTRAINT `chk_rwd_points` CHECK ((`PointsRequired` > 0)),
   CONSTRAINT `chk_rwd_stock` CHECK ((`StockQuantity` >= 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -505,7 +505,7 @@ CREATE TABLE `systemlogs` (
   KEY `fk_logs_user` (`UserId`),
   CONSTRAINT `fk_logs_user` FOREIGN KEY (`UserId`) REFERENCES `users` (`UserId`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `chk_logs_level` CHECK ((`LogLevel` in (_utf8mb4'Info',_utf8mb4'Warning',_utf8mb4'Error',_utf8mb4'Critical')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -543,7 +543,7 @@ CREATE TABLE `users` (
   KEY `idx_users_role_active` (`RoleName`,`IsActive`),
   CONSTRAINT `chk_users_points` CHECK ((`Points` >= 0)),
   CONSTRAINT `chk_users_role` CHECK ((`RoleName` in (_utf8mb4'Customer',_utf8mb4'Staff',_utf8mb4'Owner',_utf8mb4'ITSupport',_utf8mb4'Accountant')))
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

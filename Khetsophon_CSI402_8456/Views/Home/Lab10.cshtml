@@ -1,0 +1,9 @@
+@model Khetsophon_CSI402_8456.Models.Labstudent
+
+<form asp-action="Lab10" asp-controller="Home">
+    StudentID<input readonly type="text" asp-for="StdId" class="form-control" /><br/>
+    Password<input type="password" asp-for="StdPassword" class="form-control" /><br/>
+    Firstname<input type="text" asp-for="StdName" class="form-control" /><br/>
+    Lastname<input type="text" asp-for="StdLastname" class="form-control" /><br/>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
